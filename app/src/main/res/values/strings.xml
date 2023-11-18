@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">PillarBaseDisplayerApp</string>
+    <string name="browse_option">Tallóz...</string>
+    <string name="exit_option">Kilépés</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="start_fragment_label"></string>
+    <string name="base_displayer_fragment_label">Second Fragment</string>
+</resources>

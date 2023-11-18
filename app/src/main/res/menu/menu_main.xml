@@ -1,0 +1,19 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.david.giczi.pillarbasedisplayerapp.MainActivity">
+    <group android:id="@+id/browse">
+    <item
+        android:id="@+id/browse_option"
+        android:orderInCategory="100"
+        android:title="@string/browse_option"
+        app:showAsAction="never" />
+</group>
+    <group android:id="@+id/exit">
+        <item
+            android:id="@+id/exit_option"
+            android:orderInCategory="100"
+            android:title="@string/exit_option"
+            app:showAsAction="never" />
+    </group>
+</menu>
