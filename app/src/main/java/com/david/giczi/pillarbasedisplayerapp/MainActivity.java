@@ -8,20 +8,26 @@ import android.os.Bundle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.MenuCompat;
+import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import com.david.giczi.pillarbasedisplayerapp.databinding.ActivityMainBinding;
+import com.david.giczi.pillarbasedisplayerapp.databinding.FragmentFirstBinding;
+
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration appBarConfiguration;
     private ActivityMainBinding binding;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +41,6 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-        addBackgroundImage();
     }
 
     @Override
@@ -58,7 +63,9 @@ public class MainActivity extends AppCompatActivity {
             getDialog();
         }
         else if(id == R.id.browse_option){
-
+            NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+            navController.navigateUp();
+           navController.navigate(R.id.action_FirstFragment_to_SecondFragment);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -97,19 +104,4 @@ public class MainActivity extends AppCompatActivity {
                 || super.onSupportNavigateUp();
     }
 
-    private void addBackgroundImage(){
-        Drawable backgroundImage;
-        switch ((int) (Math.random() * 3) + 1){
-            case 1 :
-                backgroundImage  = getDrawable(R.drawable.pillars1);
-                break;
-            case 2 :
-                backgroundImage  = getDrawable(R.drawable.pillars2);
-                break;
-            default:
-                backgroundImage  = getDrawable(R.drawable.pillars3);
-        }
-        TextView startPage = (TextView) findViewById(R.id.start_page);
-        startPage.setBackground(backgroundImage);
-    }
 }
