@@ -4,5 +4,7 @@
     <string name="exit_option">Kilépés</string>
     <!-- Strings used for fragments for navigation -->
     <string name="start_fragment_label">Start Fragment</string>
-    <string name="base_displayer_fragment_label">Second Fragment</string>
+    <string name="base_fragment_label">Base Fragment</string>
+    <string name="data_fragment_label">Data Fragment</string>
+    <string name="coordinates_fragment_label">Coordinates Fragment</string>
 </resources>

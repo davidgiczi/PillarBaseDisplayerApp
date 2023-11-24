@@ -1,32 +1,34 @@
 package com.david.giczi.pillarbasedisplayerapp;
 
-import android.app.Activity;
 import android.content.DialogInterface;
-import android.graphics.drawable.Drawable;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.MenuCompat;
-import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import com.david.giczi.pillarbasedisplayerapp.databinding.ActivityMainBinding;
-import com.david.giczi.pillarbasedisplayerapp.databinding.FragmentFirstBinding;
 
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.File;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration appBarConfiguration;
     private ActivityMainBinding binding;
+    public static List<String> BASE_DATA;
 
 
     @Override
@@ -63,9 +65,14 @@ public class MainActivity extends AppCompatActivity {
             getDialog();
         }
         else if(id == R.id.browse_option){
-            NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-            navController.navigateUp();
-           navController.navigate(R.id.action_FirstFragment_to_SecondFragment);
+
+            openPillarBaseDataFile();
+
+            /*NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+            if( !navController.navigateUp() ) {
+
+                 navController.navigate(R.id.action_StartFragment_to_BaseFragment);
+            }*/
         }
         return super.onOptionsItemSelected(item);
     }
@@ -104,4 +111,26 @@ public class MainActivity extends AppCompatActivity {
                 || super.onSupportNavigateUp();
     }
 
+    private void openPillarBaseDataFile()  {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("*/*");
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+
+        try {
+            startActivityForResult(Intent.createChooser(intent, "Válassz projekt fájlt"), 100);
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(this, "Please install a File Manager.",
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+
+           Uri uri = data.getData();
+           File file = new File(uri.getPath());
+           System.out.println(file.getAbsolutePath());
+
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 }

@@ -6,25 +6,24 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import com.david.giczi.pillarbasedisplayerapp.databinding.FragmentFirstBinding;
+import com.david.giczi.pillarbasedisplayerapp.databinding.FragmentStartBinding;
+
 
 public class StartFragment extends Fragment {
 
-    private FragmentFirstBinding binding;
+    private FragmentStartBinding fragmentStartBinding;
 
     @Override
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState
     ) {
-        binding = FragmentFirstBinding.inflate(inflater, container, false);
+        fragmentStartBinding = FragmentStartBinding.inflate(inflater, container,false);
         addBackgroundImage();
-        return binding.getRoot();
+        return fragmentStartBinding.getRoot();
 
     }
 
@@ -35,7 +34,7 @@ public class StartFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        binding = null;
+        fragmentStartBinding = null;
     }
 
     private void addBackgroundImage(){
@@ -50,7 +49,7 @@ public class StartFragment extends Fragment {
             default:
                 backgroundImage  =((MainActivity) getActivity()).getDrawable(R.drawable.pillars3);
         }
-        binding.startPage.setBackground(backgroundImage);
+        fragmentStartBinding.startPage.setBackground(backgroundImage);
     }
 
 }

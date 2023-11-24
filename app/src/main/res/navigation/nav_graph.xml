@@ -3,26 +3,42 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/FirstFragment">
+    app:startDestination="@id/StartFragment">
 
     <fragment
-        android:id="@+id/FirstFragment"
+        android:id="@+id/StartFragment"
         android:name="com.david.giczi.pillarbasedisplayerapp.StartFragment"
         android:label="@string/start_fragment_label"
-        tools:layout="@layout/fragment_first">
-
+        tools:layout="@layout/fragment_start">
         <action
-            android:id="@+id/action_FirstFragment_to_SecondFragment"
-            app:destination="@id/SecondFragment" />
+            android:id="@+id/action_StartFragment_to_BaseFragment"
+            app:destination="@id/BaseFragment" />
     </fragment>
     <fragment
-        android:id="@+id/SecondFragment"
-        android:name="com.david.giczi.pillarbasedisplayerapp.PillarBaseDisplayerFragment"
-        android:label="@string/base_displayer_fragment_label"
-        tools:layout="@layout/fragment_second">
-
+        android:id="@+id/BaseFragment"
+        android:name="com.david.giczi.pillarbasedisplayerapp.PillarBaseFragment"
+        android:label="@string/base_fragment_label"
+        tools:layout="@layout/fragment_base" >
         <action
-            android:id="@+id/action_SecondFragment_to_FirstFragment"
-            app:destination="@id/FirstFragment" />
+            android:id="@+id/action_BaseFragment_to_DataFragment"
+            app:destination="@id/DataFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/DataFragment"
+        android:name="com.david.giczi.pillarbasedisplayerapp.PillarDataFragment"
+        android:label="@string/data_fragment_label"
+        tools:layout="@layout/fragment_data" >
+        <action
+            android:id="@+id/action_DataFragment_to_CoordsFragment"
+            app:destination="@id/CoordsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/CoordsFragment"
+        android:name="com.david.giczi.pillarbasedisplayerapp.PillarCoordsFragment"
+        android:label="@string/coordinates_fragment_label"
+        tools:layout="@layout/fragment_coords">
+        <action
+            android:id="@+id/action_CoordsFragment_to_BaseFragment"
+            app:destination="@id/BaseFragment" />
     </fragment>
 </navigation>
