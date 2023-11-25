@@ -1,10 +1,12 @@
 package com.david.giczi.pillarbasedisplayerapp;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,11 +18,17 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import com.david.giczi.pillarbasedisplayerapp.databinding.ActivityMainBinding;
 
+import android.os.Environment;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -63,12 +71,10 @@ public class MainActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.exit_option) {
             getDialog();
-        }
-        else if(id == R.id.browse_option){
+        } else if (id == R.id.browse_option) {
 
             openPillarBaseDataFile();
-
-            /*NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+           /* NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
             if( !navController.navigateUp() ) {
 
                  navController.navigate(R.id.action_StartFragment_to_BaseFragment);
@@ -77,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void getDialog(){
+    private void getDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         builder.setTitle("Alkamazás bezárása");
@@ -111,26 +117,37 @@ public class MainActivity extends AppCompatActivity {
                 || super.onSupportNavigateUp();
     }
 
-    private void openPillarBaseDataFile()  {
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("*/*");
+    private void openPillarBaseDataFile() {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.setType("text/plain");
         intent.addCategory(Intent.CATEGORY_OPENABLE);
-
-        try {
-            startActivityForResult(Intent.createChooser(intent, "Válassz projekt fájlt"), 100);
-        } catch (android.content.ActivityNotFoundException ex) {
-            Toast.makeText(this, "Please install a File Manager.",
-                    Toast.LENGTH_SHORT).show();
-        }
+        startActivityForResult(
+                Intent.createChooser(intent, "Choose a file"),
+                101);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-
-           Uri uri = data.getData();
-           File file = new File(uri.getPath());
-           System.out.println(file.getAbsolutePath());
-
         super.onActivityResult(requestCode, resultCode, data);
+        String path = data.getData().getPath();
+        path = path.substring(path.indexOf(":") + 1);
+        Toast.makeText(this, "file://" + path,
+                Toast.LENGTH_SHORT).show();
+        //readProjectFile(new File("file://" + path));
+    }
+
+    private void readProjectFile(File file){
+        BASE_DATA = new ArrayList<>();
+        try( BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+               BASE_DATA.add(line);
+            }
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        Toast.makeText(this, "rows: " + BASE_DATA.size(),
+                Toast.LENGTH_SHORT).show();
     }
 }
