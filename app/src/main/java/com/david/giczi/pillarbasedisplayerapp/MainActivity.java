@@ -1,17 +1,15 @@
 package com.david.giczi.pillarbasedisplayerapp;
 
+
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.MenuCompat;
-import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -19,15 +17,20 @@ import androidx.navigation.ui.NavigationUI;
 import com.david.giczi.pillarbasedisplayerapp.databinding.ActivityMainBinding;
 
 import android.os.Environment;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -118,36 +121,74 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void openPillarBaseDataFile() {
-        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-        intent.setType("text/plain");
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("text/*");
         startActivityForResult(
-                Intent.createChooser(intent, "Choose a file"),
-                101);
+                Intent.createChooser(intent, "Choose a file"), 101);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        String path = data.getData().getPath();
-        path = path.substring(path.indexOf(":") + 1);
-        Toast.makeText(this, "file://" + path,
-                Toast.LENGTH_SHORT).show();
-        //readProjectFile(new File("file://" + path));
-    }
-
-    private void readProjectFile(File file){
-        BASE_DATA = new ArrayList<>();
-        try( BufferedReader br = new BufferedReader(new FileReader(file))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-               BASE_DATA.add(line);
+        if (requestCode == 101 && resultCode == Activity.RESULT_OK) {
+            if (data != null) {
+                Uri uri = data.getData();
+                String path = uri.getPath();
+                path = "/sdcard/" + path.substring(path.indexOf(":") + 1);
+                Toast.makeText(this, path, Toast.LENGTH_SHORT).show();
+                readProjectFile(path);
             }
         }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-        Toast.makeText(this, "rows: " + BASE_DATA.size(),
-                Toast.LENGTH_SHORT).show();
     }
-}
+    private void readProjectFile(String path){
+        BASE_DATA = new ArrayList<>();
+        File projectFile = new File(path);
+        try{
+            BufferedReader br = new BufferedReader(
+                    new FileReader(projectFile));
+            String line;
+            while((line = br.readLine()) != null){
+                BASE_DATA.add(line);
+            }
+            br.close();
+        }catch (IOException e){
+            e.printStackTrace();
+        }finally {
+            Toast.makeText(this, "rows: " + BASE_DATA.size(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void readFromFile(String fileName){
+        BASE_DATA = new ArrayList<>();
+        File file = Environment.getExternalStorageDirectory();
+        File projectFile = new File(file, fileName);
+        try{
+            BufferedReader br = new BufferedReader(
+                    new FileReader(projectFile));
+            String line;
+            while((line = br.readLine()) != null){
+                BASE_DATA.add(line);
+            }
+            br.close();
+        }catch (IOException e){
+            e.printStackTrace();
+        }finally {
+            Toast.makeText(this, BASE_DATA.get(0), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void saveFile() {;
+        File projectFile = new File( "/sdcard/Documents/PILLARS/test.txt");
+        try {
+            projectFile.createNewFile();
+            BufferedWriter bw = new BufferedWriter(
+                    new FileWriter(projectFile));
+            bw.write("Hello Dave!");
+            bw.close();
+        } catch (IOException e) {
+            Toast.makeText(this, projectFile.getAbsolutePath(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    }
