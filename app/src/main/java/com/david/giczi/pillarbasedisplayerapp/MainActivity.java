@@ -10,27 +10,23 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.MenuCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import com.david.giczi.pillarbasedisplayerapp.databinding.ActivityMainBinding;
-
 import android.os.Environment;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+        //saveFile();
     }
 
     @Override
@@ -74,18 +71,28 @@ public class MainActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.exit_option) {
             getDialog();
-        } else if (id == R.id.browse_option) {
-
+        } else if (id == R.id.input_data) {
             openPillarBaseDataFile();
-           /* NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-            if( !navController.navigateUp() ) {
-
-                 navController.navigate(R.id.action_StartFragment_to_BaseFragment);
-            }*/
+        } else if (id == R.id.goto_fragment_data) {
+           goToDataFragment();
         }
-        return super.onOptionsItemSelected(item);
+            return super.onOptionsItemSelected(item);
     }
 
+    private void goToDataFragment(){
+        NavController navController =
+                Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+        navController.navigate(R.id.action_StartFragment_to_DataFragment);
+    }
+    private Fragment getVisibleFragment() {
+        FragmentManager fragmentManager = MainActivity.this.getSupportFragmentManager();
+        List<Fragment> fragments = fragmentManager.getFragments();
+        for (Fragment fragment : fragments) {
+            if (fragment != null && fragment.isVisible())
+                return fragment;
+        }
+        return null;
+    }
     private void getDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
@@ -135,15 +142,14 @@ public class MainActivity extends AppCompatActivity {
             if (data != null) {
                 Uri uri = data.getData();
                 String path = uri.getPath();
-                path = "/sdcard/" + path.substring(path.indexOf(":") + 1);
-                Toast.makeText(this, path, Toast.LENGTH_SHORT).show();
+                path =  path.substring(path.indexOf(":") + 1);
                 readProjectFile(path);
             }
         }
     }
     private void readProjectFile(String path){
         BASE_DATA = new ArrayList<>();
-        File projectFile = new File(path);
+        File projectFile = new File(Environment.getExternalStorageDirectory(), path);
         try{
             BufferedReader br = new BufferedReader(
                     new FileReader(projectFile));
@@ -154,41 +160,16 @@ public class MainActivity extends AppCompatActivity {
             br.close();
         }catch (IOException e){
             e.printStackTrace();
-        }finally {
-            Toast.makeText(this, "rows: " + BASE_DATA.size(), Toast.LENGTH_SHORT).show();
+        }
+
+        if( BASE_DATA.isEmpty() ){
+            Toast.makeText(this, "Az adatok beolvasása sikertelen",
+                    Toast.LENGTH_LONG).show();
+        }
+        else {
+            Toast.makeText(this, "Az adatok sikeresen beolvasva",
+                    Toast.LENGTH_LONG).show();
         }
     }
 
-    private void readFromFile(String fileName){
-        BASE_DATA = new ArrayList<>();
-        File file = Environment.getExternalStorageDirectory();
-        File projectFile = new File(file, fileName);
-        try{
-            BufferedReader br = new BufferedReader(
-                    new FileReader(projectFile));
-            String line;
-            while((line = br.readLine()) != null){
-                BASE_DATA.add(line);
-            }
-            br.close();
-        }catch (IOException e){
-            e.printStackTrace();
-        }finally {
-            Toast.makeText(this, BASE_DATA.get(0), Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void saveFile() {;
-        File projectFile = new File( "/sdcard/Documents/PILLARS/test.txt");
-        try {
-            projectFile.createNewFile();
-            BufferedWriter bw = new BufferedWriter(
-                    new FileWriter(projectFile));
-            bw.write("Hello Dave!");
-            bw.close();
-        } catch (IOException e) {
-            Toast.makeText(this, projectFile.getAbsolutePath(), Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    }
+}

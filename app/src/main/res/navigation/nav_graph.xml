@@ -11,8 +11,8 @@
         android:label="@string/start_fragment_label"
         tools:layout="@layout/fragment_start">
         <action
-            android:id="@+id/action_StartFragment_to_BaseFragment"
-            app:destination="@id/BaseFragment" />
+            android:id="@+id/action_StartFragment_to_DataFragment"
+            app:destination="@id/DataFragment" />
     </fragment>
     <fragment
         android:id="@+id/BaseFragment"
@@ -40,5 +40,8 @@
         <action
             android:id="@+id/action_CoordsFragment_to_BaseFragment"
             app:destination="@id/BaseFragment" />
+       <action
+        android:id="@+id/action_CoordsFragment_to_DataFragment"
+        app:destination="@id/DataFragment" />
     </fragment>
 </navigation>
