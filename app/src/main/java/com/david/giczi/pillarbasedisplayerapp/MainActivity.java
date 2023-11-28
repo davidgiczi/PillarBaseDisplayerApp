@@ -10,8 +10,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.MenuCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -36,21 +34,19 @@ public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration appBarConfiguration;
     private ActivityMainBinding binding;
     public static List<String> BASE_DATA;
+    private static final String[] BASE_TYPE = {"#WeightBase", "#PlateBase"};
+    private static int PAGE_COUNTER;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
         setSupportActionBar(binding.toolbar);
-
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-        //saveFile();
     }
 
     @Override
@@ -70,40 +66,46 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.exit_option) {
-            getDialog();
+            exitDialog();
         } else if (id == R.id.input_data) {
             openPillarBaseDataFile();
         } else if (id == R.id.goto_fragment_data) {
-           goToDataFragment();
+           gotoNextFragment();
         }
             return super.onOptionsItemSelected(item);
     }
 
-    private void goToDataFragment(){
+    private void gotoNextFragment(){
         NavController navController =
                 Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        navController.navigate(R.id.action_StartFragment_to_DataFragment);
+            switch (PAGE_COUNTER % 4){
+                case 0 :
+                    navController.navigate(R.id.action_StartFragment_to_DataFragment);
+                    break;
+                case 1 :
+                    saveDialog(navController);
+                    break;
+                case 2 :
+                    navController.navigate(R.id.action_CoordsFragment_to_BaseFragment);
+                    break;
+                case 3 :
+                    navController.navigate(R.id.action_BaseFragment_to_StartFragment);
+                    break;
+            }
+            PAGE_COUNTER++;
     }
-    private Fragment getVisibleFragment() {
-        FragmentManager fragmentManager = MainActivity.this.getSupportFragmentManager();
-        List<Fragment> fragments = fragmentManager.getFragments();
-        for (Fragment fragment : fragments) {
-            if (fragment != null && fragment.isVisible())
-                return fragment;
-        }
-        return null;
-    }
-    private void getDialog() {
+
+    private void exitDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-        builder.setTitle("Alkamazás bezárása");
+        builder.setTitle("Alkalmazás bezárása");
         builder.setMessage("Biztos, hogy ki akarsz lépni az alkalmazásból?");
 
         builder.setPositiveButton("Igen", new DialogInterface.OnClickListener() {
 
             public void onClick(DialogInterface dialog, int which) {
-                System.exit(0);
                 dialog.dismiss();
+               System.exit(0);
             }
         });
 
@@ -119,10 +121,37 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog alert = builder.create();
         alert.show();
     }
+    private void saveDialog(NavController navController) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle("Adatok mentése");
+        builder.setMessage("Kivánja menteni az adatokat?");
+
+        builder.setPositiveButton("Igen", new DialogInterface.OnClickListener() {
+
+            public void onClick(DialogInterface dialog, int which) {
+                saveProjectFile();
+                navController.navigate(R.id.action_DataFragment_to_CoordsFragment);
+                dialog.dismiss();
+            }
+        });
+        builder.setNegativeButton("Nem", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                navController.navigate(R.id.action_DataFragment_to_CoordsFragment);
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
 
     @Override
     public boolean onSupportNavigateUp() {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+        PAGE_COUNTER--;
         return NavigationUI.navigateUp(navController, appBarConfiguration)
                 || super.onSupportNavigateUp();
     }
@@ -160,6 +189,11 @@ public class MainActivity extends AppCompatActivity {
             br.close();
         }catch (IOException e){
             e.printStackTrace();
+        }finally {
+            if( !BASE_DATA.get(0).equals(BASE_TYPE[0])
+                    && !BASE_DATA.get(0).equals(BASE_TYPE[1]) ){
+                BASE_DATA.clear();
+            }
         }
 
         if( BASE_DATA.isEmpty() ){
@@ -170,6 +204,33 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Az adatok sikeresen beolvasva",
                     Toast.LENGTH_LONG).show();
         }
+    }
+
+    private void saveProjectFile() {
+        if( BASE_DATA == null ){
+            Toast.makeText(this, "Az adatok mentése sikertelen:\nNincs menthető adat.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        File projectFile =
+                new File(Environment.getExternalStorageDirectory(),
+                        "/Documents/SavedData.txt");
+        try {
+            BufferedWriter bw = new BufferedWriter(
+                    new FileWriter(projectFile));
+            for (String data : BASE_DATA) {
+                bw.write(data);
+                bw.newLine();
+            }
+            bw.close();
+        } catch (IOException e) {
+            Toast.makeText(this, projectFile.getName() +
+                    " fájl mentése sikertelen", Toast.LENGTH_SHORT).show();
+        }finally {
+            Toast.makeText(this,
+                    "Projekt fájl mentve:\n"
+                            + projectFile.getName() , Toast.LENGTH_SHORT).show();
+        }
+
     }
 
 }

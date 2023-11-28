@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">PillarBaseDisplayerApp</string>
     <string name="input_option">Adatok beolvasása</string>
-    <string name="show_data">Adatok oldalra</string>
+    <string name="next_fragment">Következő oldalra</string>
     <string name="exit_option">Kilépés</string>
     <!-- Strings used for fragments for navigation -->
     <string name="start_fragment_label">Start Fragment</string>

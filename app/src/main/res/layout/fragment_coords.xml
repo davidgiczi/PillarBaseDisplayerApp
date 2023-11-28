@@ -11,14 +11,5 @@
         android:layout_height="match_parent"
         android:padding="16dp">
 
-        <Button
-            android:id="@+id/base_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="600dp"
-            android:text="Alaprajz"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

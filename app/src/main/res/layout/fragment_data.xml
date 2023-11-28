@@ -11,16 +11,6 @@
         android:layout_height="match_parent"
         android:padding="16dp">
 
-        <Button
-            android:id="@+id/coords_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="600dp"
-            android:text="Koordináták"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
         <TextView
             android:id="@+id/data"
             android:layout_width="wrap_content"

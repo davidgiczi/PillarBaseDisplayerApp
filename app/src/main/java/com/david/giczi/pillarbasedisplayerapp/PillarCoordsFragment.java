@@ -25,13 +25,6 @@ public class PillarCoordsFragment extends Fragment {
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        fragmentCoordsBinding.baseBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                NavHostFragment.findNavController(PillarCoordsFragment.this)
-                        .navigate(R.id.action_CoordsFragment_to_BaseFragment);
-            }
-        });
     }
 
     @Override

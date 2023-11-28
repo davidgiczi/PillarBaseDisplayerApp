@@ -39,14 +39,6 @@ public class PillarDataFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        fragmentDataBinding.coordsBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                saveProjectFile();
-                NavHostFragment.findNavController(PillarDataFragment.this)
-                        .navigate(R.id.action_DataFragment_to_CoordsFragment);
-            }
-        });
     }
 
     @Override
@@ -65,31 +57,6 @@ public class PillarDataFragment extends Fragment {
                         sb.append("\n");
                     }
       fragmentDataBinding.data.setText(sb.toString());
-    }
-    private void saveProjectFile() {
-        if( inputData == null ){
-            return;
-        }
-        File projectFile =
-                new File(Environment.getExternalStorageDirectory(),
-                        "/Documents/SavedData.txt");
-        try {
-            BufferedWriter bw = new BufferedWriter(
-                    new FileWriter(projectFile));
-            for (String data : inputData) {
-                bw.write(data);
-                bw.newLine();
-            }
-            bw.close();
-        } catch (IOException e) {
-            Toast.makeText(getContext(), projectFile.getAbsolutePath() +
-                    " fájl mentése sikertelen", Toast.LENGTH_SHORT).show();
-        }finally {
-            Toast.makeText(getContext(),
-                    "Projekt fájl mentve: "
-                            + projectFile.getName() , Toast.LENGTH_SHORT).show();
-        }
-
     }
 
 }

@@ -29,13 +29,6 @@ public class PillarBaseFragment extends Fragment {
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        fragmentBaseBinding.dataBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                NavHostFragment.findNavController(PillarBaseFragment.this)
-                        .navigate(R.id.action_BaseFragment_to_DataFragment);
-            }
-        });
     }
 
     @Override
