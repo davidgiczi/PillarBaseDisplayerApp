@@ -148,12 +148,11 @@ public class MainActivity extends AppCompatActivity {
         alert.show();
     }
 
-    @Override
+   @Override
     public boolean onSupportNavigateUp() {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         PAGE_COUNTER--;
-        return NavigationUI.navigateUp(navController, appBarConfiguration)
-                || super.onSupportNavigateUp();
+        return NavigationUI.navigateUp(navController, appBarConfiguration)|| super.onSupportNavigateUp();
     }
 
     private void openPillarBaseDataFile() {
@@ -196,13 +195,32 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+        gotoStartFragment();
+        PAGE_COUNTER = 0;
         if( BASE_DATA.isEmpty() ){
             Toast.makeText(this, "Az adatok beolvasása sikertelen",
                     Toast.LENGTH_LONG).show();
         }
         else {
+
             Toast.makeText(this, "Az adatok sikeresen beolvasva",
                     Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void gotoStartFragment(){
+        NavController navController =
+                Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+        switch (PAGE_COUNTER % 4){
+            case 1 :
+                navController.navigate(R.id.action_DataFragment_to_StartFragment);
+                break;
+            case 2 :
+                navController.navigate(R.id.action_CoordsFragment_to_StartFragment);
+                break;
+            case 3 :
+                navController.navigate(R.id.action_BaseFragment_to_StartFragment);
+                break;
         }
     }
 
@@ -233,4 +251,17 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        PAGE_COUNTER--;
+        }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        PAGE_COUNTER = 0;
+        BASE_DATA = null;
+    }
 }

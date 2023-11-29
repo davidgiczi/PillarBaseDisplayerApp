@@ -15,15 +15,6 @@
             app:destination="@id/DataFragment" />
     </fragment>
     <fragment
-        android:id="@+id/BaseFragment"
-        android:name="com.david.giczi.pillarbasedisplayerapp.PillarBaseFragment"
-        android:label="@string/base_fragment_label"
-        tools:layout="@layout/fragment_base" >
-        <action
-            android:id="@+id/action_BaseFragment_to_StartFragment"
-            app:destination="@id/StartFragment" />
-    </fragment>
-    <fragment
         android:id="@+id/DataFragment"
         android:name="com.david.giczi.pillarbasedisplayerapp.PillarDataFragment"
         android:label="@string/data_fragment_label"
@@ -31,6 +22,9 @@
         <action
             android:id="@+id/action_DataFragment_to_CoordsFragment"
             app:destination="@id/CoordsFragment" />
+        <action
+            android:id="@+id/action_DataFragment_to_StartFragment"
+            app:destination="@id/StartFragment" />
     </fragment>
     <fragment
         android:id="@+id/CoordsFragment"
@@ -40,5 +34,17 @@
         <action
             android:id="@+id/action_CoordsFragment_to_BaseFragment"
             app:destination="@id/BaseFragment" />
+        <action
+            android:id="@+id/action_CoordsFragment_to_StartFragment"
+            app:destination="@id/StartFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/BaseFragment"
+        android:name="com.david.giczi.pillarbasedisplayerapp.PillarBaseFragment"
+        android:label="@string/base_fragment_label"
+        tools:layout="@layout/fragment_base" >
+        <action
+            android:id="@+id/action_BaseFragment_to_StartFragment"
+            app:destination="@id/StartFragment" />
     </fragment>
 </navigation>
