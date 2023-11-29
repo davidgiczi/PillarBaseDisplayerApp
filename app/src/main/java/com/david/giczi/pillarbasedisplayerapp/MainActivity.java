@@ -83,7 +83,12 @@ public class MainActivity extends AppCompatActivity {
                     navController.navigate(R.id.action_StartFragment_to_DataFragment);
                     break;
                 case 1 :
-                    saveDialog(navController);
+                    if( BASE_DATA != null && !BASE_DATA.isEmpty() ){
+                        saveDialog(navController);
+                    }
+                   else {
+                        navController.navigate(R.id.action_DataFragment_to_CoordsFragment);
+                    }
                     break;
                 case 2 :
                     navController.navigate(R.id.action_CoordsFragment_to_BaseFragment);
@@ -99,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         builder.setTitle("Alkalmazás bezárása");
-        builder.setMessage("Biztos, hogy ki akarsz lépni az alkalmazásból?");
+        builder.setMessage("Biztos, hogy ki akarsz lépni az alkalmazásból?\n\nA nem mentett adatok elvesznek.");
 
         builder.setPositiveButton("Igen", new DialogInterface.OnClickListener() {
 
@@ -242,7 +247,7 @@ public class MainActivity extends AppCompatActivity {
             bw.close();
         } catch (IOException e) {
             Toast.makeText(this, projectFile.getName() +
-                    " fájl mentése sikertelen", Toast.LENGTH_SHORT).show();
+                    " Projekt fájl mentése sikertelen", Toast.LENGTH_SHORT).show();
         }finally {
             Toast.makeText(this,
                     "Projekt fájl mentve:\n"
