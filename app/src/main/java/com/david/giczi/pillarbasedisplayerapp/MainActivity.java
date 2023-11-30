@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
             exitDialog();
         } else if (id == R.id.input_data) {
             openPillarBaseDataFile();
-        } else if (id == R.id.goto_fragment_data) {
+        } else if (id == R.id.goto_next_fragment) {
            gotoNextFragment();
         }
         else if( id == R.id.weight_base
