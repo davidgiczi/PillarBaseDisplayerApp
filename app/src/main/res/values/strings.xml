@@ -2,10 +2,11 @@
     <string name="app_name">PillarBaseDisplayerApp</string>
     <string name="input_option">Adatok beolvasása</string>
     <string name="next_fragment">Következő oldalra</string>
+    <string name="weight_base_option">Súlyalap</string>
+    <string name="plate_base_option">Lemezalap</string>
+    <string name="ticked_weight_base_option">Súlyalap ✔️</string>
+    <string name="ticked_plate_base_option">Lemezalap ✔️</string>
     <string name="exit_option">Kilépés</string>
     <!-- Strings used for fragments for navigation -->
-    <string name="start_fragment_label">Start Fragment</string>
-    <string name="base_fragment_label">Base Fragment</string>
-    <string name="data_fragment_label">Data Fragment</string>
-    <string name="coordinates_fragment_label">Coordinates Fragment</string>
+    <string name="project_file_name_label"></string>
 </resources>

@@ -10,6 +10,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.MenuCompat;
+import androidx.core.widget.TextViewCompat;
+import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -18,7 +20,11 @@ import com.david.giczi.pillarbasedisplayerapp.databinding.ActivityMainBinding;
 import android.os.Environment;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import org.w3c.dom.Text;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -33,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration appBarConfiguration;
     private ActivityMainBinding binding;
+    private Menu optionMenu;
     public static List<String> BASE_DATA;
     private static final String[] BASE_TYPE = {"#WeightBase", "#PlateBase"};
     private static int PAGE_COUNTER;
@@ -54,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         MenuCompat.setGroupDividerEnabled(menu, true);
+        optionMenu = menu;
         return true;
     }
 
@@ -63,7 +71,6 @@ public class MainActivity extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
         //noinspection SimplifiableIfStatement
         if (id == R.id.exit_option) {
             exitDialog();
@@ -71,6 +78,16 @@ public class MainActivity extends AppCompatActivity {
             openPillarBaseDataFile();
         } else if (id == R.id.goto_fragment_data) {
            gotoNextFragment();
+        }
+        else if( id == R.id.weight_base
+                && item.getTitle().toString().equals(getString(R.string.weight_base_option))){
+            item.setTitle(R.string.ticked_weight_base_option);
+            optionMenu.findItem(R.id.plate_base).setTitle(R.string.plate_base_option);
+        }
+        else if( id == R.id.plate_base
+                && item.getTitle().toString().equals(getString(R.string.plate_base_option))){
+            item.setTitle(R.string.ticked_plate_base_option);
+            optionMenu.findItem(R.id.weight_base).setTitle(R.string.weight_base_option);
         }
             return super.onOptionsItemSelected(item);
     }
@@ -207,10 +224,16 @@ public class MainActivity extends AppCompatActivity {
                     Toast.LENGTH_LONG).show();
         }
         else {
-
+            setTitle(projectFile.getName());
             Toast.makeText(this, "Az adatok sikeresen beolvasva",
                     Toast.LENGTH_LONG).show();
         }
+    }
+
+    private void setTitle(String projectFileName){
+        String projectName = projectFileName.substring(0, projectFileName.indexOf("."));
+        TextView title = findViewById(R.id.projectNameTitle);
+        title.setText(projectName);
     }
 
     private void gotoStartFragment(){

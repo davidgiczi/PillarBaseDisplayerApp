@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/StartFragment"
         android:name="com.david.giczi.pillarbasedisplayerapp.StartFragment"
-        android:label="@string/start_fragment_label"
+        android:label="@string/project_file_name_label"
         tools:layout="@layout/fragment_start">
         <action
             android:id="@+id/action_StartFragment_to_DataFragment"
@@ -17,7 +17,7 @@
     <fragment
         android:id="@+id/DataFragment"
         android:name="com.david.giczi.pillarbasedisplayerapp.PillarDataFragment"
-        android:label="@string/data_fragment_label"
+        android:label="@string/project_file_name_label"
         tools:layout="@layout/fragment_data" >
         <action
             android:id="@+id/action_DataFragment_to_CoordsFragment"
@@ -29,7 +29,7 @@
     <fragment
         android:id="@+id/CoordsFragment"
         android:name="com.david.giczi.pillarbasedisplayerapp.PillarCoordsFragment"
-        android:label="@string/coordinates_fragment_label"
+        android:label="@string/project_file_name_label"
         tools:layout="@layout/fragment_coords">
         <action
             android:id="@+id/action_CoordsFragment_to_BaseFragment"
@@ -41,7 +41,7 @@
     <fragment
         android:id="@+id/BaseFragment"
         android:name="com.david.giczi.pillarbasedisplayerapp.PillarBaseFragment"
-        android:label="@string/base_fragment_label"
+        android:label="@string/project_file_name_label"
         tools:layout="@layout/fragment_base" >
         <action
             android:id="@+id/action_BaseFragment_to_StartFragment"

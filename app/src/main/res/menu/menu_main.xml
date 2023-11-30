@@ -2,7 +2,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.david.giczi.pillarbasedisplayerapp.MainActivity">
-    <group android:id="@+id/input">
+
+
+
+<group android:id="@+id/input">
     <item
         android:id="@+id/input_data"
         android:orderInCategory="100"
@@ -15,7 +18,18 @@
             app:showAsAction="never" />
 </group>
 
-
+    <group android:id="@+id/base_type">
+        <item
+            android:id="@+id/weight_base"
+            android:orderInCategory="100"
+            android:title="@string/ticked_weight_base_option"
+            app:showAsAction="never" />
+        <item
+            android:id="@+id/plate_base"
+            android:orderInCategory="100"
+            android:title="@string/plate_base_option"
+            app:showAsAction="never" />
+    </group>
 
     <group android:id="@+id/exit">
         <item
