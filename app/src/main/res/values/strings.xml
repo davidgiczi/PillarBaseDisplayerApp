@@ -9,22 +9,22 @@
     <string name="exit_option">Kilépés</string>
     <!-- Strings used for fragments for navigation -->
     <string name="project_file_name_label"></string>
+    <string name="text_project_name">Projekt neve</string>
     <string name="set_place_of_pillar">Az oszlop adatainak megadása</string>
     <string name="set_id_of_pillar">Az oszlop azonosítója</string>
     <string name="y_coordinate">Y koordináta</string>
     <string name="x_coordinate">X koordináta</string>
     <string name="set_next_prev_pillar">Az előző/következő oszlop adatainak megadása</string>
     <string name="set_base_geometry_data">Az alap geometriai adatainak megadása</string>
-    <string name="distance_of_direction_points">Az iránypontok távolságának megadása</string>
-    <string name="distance_of_legs_perpendicularly">Az oszloplábak távolsága az oszlopkarra merőlegesen</string>
-    <string name="distance_of_legs_parallel">Az oszloplábak távolsága az oszlopkarral párhuzamosan</string>
-    <string name="distance_of_hole_perpendicularly">A lábak gödrének oldalhossza az oszlopkarra merőlegesen</string>
-    <string name="distance_of_hole_parallel">A lábak gödrének oldalhossza az oszlopkarral párhuzamosan</string>
+    <string name="distance_of_direction_points">Az iránypontok távolsága</string>
+    <string name="distance_of_legs_perpendicularly">Karra merőleges lábtávolság</string>
+    <string name="distance_of_legs_parallel">Karral párhuzamos lábtávolság</string>
+    <string name="distance_of_hole_perpendicularly">Karra merőleges gödörméret</string>
+    <string name="distance_of_hole_parallel">Karral párhuzamos gödörméret</string>
     <string name="angle_between_main_lines">A nyomvonal által közbezárt</string>
-    <string name="distance_of_base_perpendicularly">Az alap gödrének oldalhossza az oszlopkarra merőlegesen</string>
-    <string name="distance_of_base_parallel">Az alap gödrének oldalhossza az oszlopkarral párhuzamosan</string>
-    <string name="distance_from_side_of_hole_of_base_parallel">Az alap gödrétől vett távolság az oszlopkarral párhuzamosan</string>
-    <string name="distance_from_side_of_hole_of_base_perpendicularly">Az alap gödrétől vett távolság az oszlopkarra merőlegesen</string>
+    <string name="distance_from_side_of_hole_of_base_parallel">Karral párhuzamos irány távolság</string>
+    <string name="distance_from_side_of_hole_of_base_perpendicularly">Karra merőleges irány távolság</string>
+    <string name="save_data_format">Koordináták fájlba mentése</string>
     <string name="format_of_TPS">TPS formátum</string>
     <string name="format_of_RTK">RTK formátum</string>
 </resources>

@@ -10,16 +10,18 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+
         <TextView
             android:id="@+id/text_set_pillar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-light"
             android:text="@string/set_place_of_pillar"
-            android:textColor="@color/base_text"
+            android:textColor="@color/data_text"
             android:textSize="17sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -27,58 +29,59 @@
             android:id="@+id/input_pillar_id"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:ems="10"
+            android:height="10dp"
+            android:ems="13"
             android:gravity="center"
             android:hint="@string/set_id_of_pillar"
             android:inputType="text"
+            android:textColor="@color/data_text"
             android:textSize="16sp"
-            android:minHeight="48dp"
-            android:textColor="@color/base_text"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_set_pillar" />
+            app:layout_constraintTop_toBottomOf="@+id/text_set_pillar"
+            tools:ignore="TouchTargetSizeCheck" />
 
         <EditText
             android:id="@+id/input_y_coordinate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:ems="10"
+            android:ems="13"
             android:gravity="center"
             android:hint="@string/y_coordinate"
             android:inputType="numberDecimal"
-            android:textSize="16sp"
             android:maxLength="10"
-            android:minHeight="48dp"
-            android:textColor="@color/base_text"
+            android:minHeight="10dp"
+            android:textColor="@color/data_text"
+            android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/input_pillar_id" />
+            app:layout_constraintTop_toBottomOf="@+id/input_pillar_id"
+            tools:ignore="TouchTargetSizeCheck" />
 
         <EditText
             android:id="@+id/input_x_coordinate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:ems="10"
+            android:ems="13"
             android:gravity="center"
             android:hint="@string/x_coordinate"
             android:inputType="numberDecimal"
-            android:textSize="16sp"
             android:maxLength="10"
-            android:minHeight="48dp"
-            android:textColor="@color/base_text"
+            android:minHeight="10dp"
+            android:textColor="@color/data_text"
+            android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/input_y_coordinate" />
+            app:layout_constraintTop_toBottomOf="@+id/input_y_coordinate"
+            tools:ignore="TouchTargetSizeCheck" />
 
         <TextView
             android:id="@+id/text_next_prev_pillar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
             android:fontFamily="sans-serif-light"
             android:text="@string/set_next_prev_pillar"
-            android:textColor="@color/base_text"
+            android:textColor="@color/data_text"
             android:textSize="17sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
@@ -89,49 +92,327 @@
             android:id="@+id/input_next_prev_pillar_id"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:ems="10"
+            android:ems="13"
             android:gravity="center"
             android:hint="@string/set_id_of_pillar"
             android:inputType="text"
+            android:minHeight="10dp"
+            android:textColor="@color/data_text"
             android:textSize="16sp"
-            android:minHeight="48dp"
-            android:textColor="@color/base_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_next_prev_pillar" />
+            app:layout_constraintTop_toBottomOf="@+id/text_next_prev_pillar"
+            tools:ignore="TouchTargetSizeCheck" />
 
         <EditText
             android:id="@+id/input_next_prev_y_coordinate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:ems="10"
+            android:ems="13"
             android:gravity="center"
             android:hint="@string/y_coordinate"
             android:inputType="numberDecimal"
-            android:textSize="16sp"
             android:maxLength="10"
-            android:minHeight="48dp"
-            android:textColor="@color/base_text"
+            android:minHeight="10dp"
+            android:textColor="@color/data_text"
+            android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/input_next_prev_pillar_id" />
+            app:layout_constraintTop_toBottomOf="@+id/input_next_prev_pillar_id"
+            tools:ignore="TouchTargetSizeCheck" />
 
         <EditText
             android:id="@+id/input_next_prev_x_coordinate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:ems="10"
+            android:ems="13"
             android:gravity="center"
             android:hint="@string/x_coordinate"
             android:inputType="numberDecimal"
-            android:textSize="16sp"
             android:maxLength="10"
-            android:minHeight="48dp"
-            android:textColor="@color/base_text"
+            android:minHeight="10dp"
+            android:textColor="@color/data_text"
+            android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/input_next_prev_y_coordinate" />
+            app:layout_constraintTop_toBottomOf="@+id/input_next_prev_y_coordinate"
+            tools:ignore="TouchTargetSizeCheck" />
+
+        <TextView
+            android:id="@+id/text_base_geometry"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-light"
+            android:text="@string/set_base_geometry_data"
+            android:textColor="@color/data_text"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/input_next_prev_x_coordinate" />
+
+        <EditText
+            android:id="@+id/input_distance_of_direction_points"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="13"
+            android:gravity="center"
+            android:hint="@string/distance_of_direction_points"
+            android:inputType="numberDecimal"
+            android:maxLength="10"
+            android:minHeight="10dp"
+            android:textColor="@color/data_text"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text_base_geometry"
+            tools:ignore="TouchTargetSizeCheck" />
+
+        <EditText
+            android:id="@+id/input_foot_distance_perpendicularly"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="13"
+            android:gravity="center"
+            android:hint="@string/distance_of_legs_perpendicularly"
+            android:inputType="numberDecimal"
+            android:maxLength="10"
+            android:minHeight="10dp"
+            android:textColor="@color/data_text"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/input_distance_of_direction_points"
+            tools:ignore="TouchTargetSizeCheck" />
+
+        <EditText
+            android:id="@+id/input_foot_distance_parallel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="13"
+            android:gravity="center"
+            android:hint="@string/distance_of_legs_parallel"
+            android:inputType="numberDecimal"
+            android:maxLength="10"
+            android:minHeight="10dp"
+            android:textColor="@color/data_text"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/input_foot_distance_perpendicularly"
+            tools:ignore="TouchTargetSizeCheck" />
+
+        <EditText
+            android:id="@+id/input_hole_distance_perpendicularly"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="13"
+            android:gravity="center"
+            android:hint="@string/distance_of_hole_perpendicularly"
+            android:inputType="numberDecimal"
+            android:maxLength="10"
+            android:minHeight="10dp"
+            android:textColor="@color/data_text"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/input_foot_distance_parallel"
+            tools:ignore="TouchTargetSizeCheck" />
+
+        <EditText
+            android:id="@+id/input_hole_distance_parallel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="13"
+            android:gravity="center"
+            android:hint="@string/distance_of_hole_parallel"
+            android:inputType="numberDecimal"
+            android:maxLength="10"
+            android:minHeight="10dp"
+            android:textColor="@color/data_text"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/input_hole_distance_perpendicularly"
+            tools:ignore="TouchTargetSizeCheck" />
+
+        <TextView
+            android:id="@+id/text_angle_between_main_lines"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="80dp"
+            android:fontFamily="sans-serif-light"
+            android:text="@string/angle_between_main_lines"
+            android:textColor="@color/data_text"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/input_hole_distance_parallel" />
+
+        <RadioGroup
+            android:id="@+id/radioGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text_angle_between_main_lines">
+
+            <RadioButton
+                android:id="@+id/radio_left"
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-light"
+                android:text="bal oldali,"
+                android:textColor="@color/data_text"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+
+            <RadioButton
+                android:id="@+id/radio_right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-light"
+                android:text="jobb oldali szög"
+                android:textColor="@color/data_text"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+        </RadioGroup>
+
+        <EditText
+            android:id="@+id/input_angle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="90dp"
+            android:ems="3"
+            android:gravity="center"
+            android:inputType="number"
+            android:maxLength="3"
+            android:minHeight="10dp"
+            android:text="180"
+            android:textColor="@color/data_text"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/radioGroup"
+            tools:ignore="TouchTargetSizeCheck" />
+
+        <EditText
+            android:id="@+id/input_sec"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:ems="3"
+            android:gravity="center"
+            android:inputType="number"
+            android:maxLength="2"
+            android:minHeight="10dp"
+            android:text="00"
+            android:textColor="@color/data_text"
+            android:textSize="16sp"
+            app:layout_constraintStart_toEndOf="@+id/input_angle"
+            app:layout_constraintTop_toBottomOf="@+id/radioGroup"
+            tools:ignore="TouchTargetSizeCheck" />
+
+        <EditText
+            android:id="@+id/input_min"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:ems="3"
+            android:gravity="center"
+            android:inputType="number"
+            android:maxLength="2"
+            android:minHeight="10dp"
+            android:text="00"
+            android:textColor="@color/data_text"
+            android:textSize="16sp"
+            app:layout_constraintStart_toEndOf="@+id/input_sec"
+            app:layout_constraintTop_toBottomOf="@+id/radioGroup"
+            tools:ignore="TouchTargetSizeCheck" />
+
+        <TextView
+            android:id="@+id/angle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-light"
+            android:text="°"
+            android:textColor="@color/data_text"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/input_sec"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/input_angle"
+            app:layout_constraintTop_toTopOf="@+id/input_angle" />
+
+        <TextView
+            android:id="@+id/min"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:fontFamily="sans-serif-light"
+            android:text="'"
+            android:textColor="@color/data_text"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/input_sec"
+            app:layout_constraintTop_toTopOf="@+id/input_sec" />
+
+        <TextView
+            android:id="@+id/sec"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:fontFamily="sans-serif-light"
+            android:text="''"
+            android:textColor="@color/data_text"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/input_min"
+            app:layout_constraintTop_toTopOf="@+id/input_min" />
+
+        <TextView
+            android:id="@+id/text_save_format"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-light"
+            android:text="@string/save_data_format"
+            android:textColor="@color/data_text"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.507"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/input_sec" />
+
+        <CheckBox
+            android:id="@+id/format_rtk"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="52dp"
+            android:fontFamily="sans-serif-light"
+            android:text="@string/format_of_RTK"
+            android:textColor="@color/data_text"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/format_tps"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text_save_format" />
+
+        <CheckBox
+            android:id="@+id/format_tps"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="52dp"
+            android:fontFamily="sans-serif-light"
+            android:text="@string/format_of_TPS"
+            android:textColor="@color/data_text"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text_save_format" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

@@ -22,12 +22,17 @@
 
     <include layout="@layout/content_main" />
 
-    <TextView
+    <EditText
         android:id="@+id/projectNameTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-light"
-        android:paddingTop="50dp"
+        android:background="@drawable/project_name_edit_text_style"
+        android:paddingTop="40dp"
+        android:ems="13"
+        android:inputType="text"
+        android:gravity="center"
+        android:hint="@string/text_project_name"
         android:textColor="?attr/colorPrimary"
         android:textSize="20sp"
         android:textStyle="bold"
