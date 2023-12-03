@@ -10,8 +10,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.MenuCompat;
-import androidx.core.widget.TextViewCompat;
-import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -20,12 +18,11 @@ import com.david.giczi.pillarbasedisplayerapp.databinding.ActivityMainBinding;
 import android.os.Environment;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import org.w3c.dom.Text;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -34,7 +31,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -46,7 +42,6 @@ public class MainActivity extends AppCompatActivity {
     public static List<String> BASE_DATA;
     private static final String[] BASE_TYPE = {"#WeightBase", "#PlateBase"};
     private static int PAGE_COUNTER;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
             exitDialog();
         } else if (id == R.id.input_data) {
             openPillarBaseDataFile();
+            //displayInputData();
         } else if (id == R.id.goto_next_fragment) {
            gotoNextFragment();
         }
@@ -86,11 +82,13 @@ public class MainActivity extends AppCompatActivity {
                 && item.getTitle().toString().equals(getString(R.string.weight_base_option))){
             item.setTitle(R.string.ticked_weight_base_option);
             optionMenu.findItem(R.id.plate_base).setTitle(R.string.plate_base_option);
+            getDataFragmentForWeightBase();
         }
         else if( id == R.id.plate_base
                 && item.getTitle().toString().equals(getString(R.string.plate_base_option))){
             item.setTitle(R.string.ticked_plate_base_option);
             optionMenu.findItem(R.id.weight_base).setTitle(R.string.weight_base_option);
+            getDataFragmentForPlateBase();
         }
             return super.onOptionsItemSelected(item);
     }
@@ -107,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
                         saveDialog(navController);
                     }
                    else {
-                        navController.navigate(R.id.action_DataFragment_to_CoordsFragment);
+                    navController.navigate(R.id.action_DataFragment_to_CoordsFragment);
                     }
                     break;
                 case 2 :
@@ -118,6 +116,98 @@ public class MainActivity extends AppCompatActivity {
                     break;
             }
             PAGE_COUNTER++;
+    }
+
+    private void getDataFragmentForPlateBase(){
+        EditText inputForDirectionDistance = (EditText) findViewById(R.id.input_distance_of_direction_points);
+        if( inputForDirectionDistance == null){
+            return;
+        }
+        inputForDirectionDistance.setVisibility(View.INVISIBLE);
+        EditText inputForPerpendicularlyFootDistance = (EditText) findViewById(R.id.input_foot_distance_perpendicularly);
+        inputForPerpendicularlyFootDistance.setHint(R.string.distance_from_side_of_hole_of_base_perpendicularly);
+        EditText inputForParallelFootDistance = (EditText) findViewById(R.id.input_foot_distance_parallel);
+        inputForParallelFootDistance.setHint(R.string.distance_from_side_of_hole_of_base_parallel);
+    }
+
+    private void getDataFragmentForWeightBase(){
+        EditText inputForDirectionDistance = (EditText) findViewById(R.id.input_distance_of_direction_points);
+        if( inputForDirectionDistance == null){
+            return;
+        }
+        inputForDirectionDistance.setVisibility(View.VISIBLE);
+        EditText inputForPerpendicularlyFootDistance = (EditText) findViewById(R.id.input_foot_distance_perpendicularly);
+        inputForPerpendicularlyFootDistance.setHint(R.string.distance_of_legs_perpendicularly);
+        EditText inputForParallelFootDistance = (EditText) findViewById(R.id.input_foot_distance_parallel);
+        inputForParallelFootDistance.setHint(R.string.distance_of_legs_parallel);
+    }
+
+    private void displayInputData(){
+        EditText inputForPillarId = (EditText) findViewById(R.id.input_pillar_id);
+        inputForPillarId.setText(BASE_DATA.get(1));
+        EditText inputForPillarY = (EditText) findViewById(R.id.input_y_coordinate);
+        inputForPillarY.setText(BASE_DATA.get(2));
+        EditText inputForPillarX = (EditText) findViewById(R.id.input_x_coordinate);
+        inputForPillarX.setText(BASE_DATA.get(3));
+        EditText inputForPrevNextPillarId = (EditText) findViewById(R.id.input_next_prev_pillar_id);
+        inputForPrevNextPillarId.setText(BASE_DATA.get(4));
+        EditText inputForPrevNextY = (EditText) findViewById(R.id.input_next_prev_y_coordinate);
+        inputForPrevNextY.setText(BASE_DATA.get(5));
+        EditText inputForPrevNextX = (EditText) findViewById(R.id.input_next_prev_x_coordinate);
+        inputForPrevNextX.setText(BASE_DATA.get(6));
+
+        if( BASE_TYPE.equals(BASE_DATA.get(0)) ){
+            optionMenu.findItem(R.id.weight_base).setTitle(R.string.ticked_weight_base_option);
+            optionMenu.findItem(R.id.plate_base).setTitle(R.string.plate_base_option);
+            getDataFragmentForWeightBase();
+            EditText inputForDirectionDistance = (EditText) findViewById(R.id.input_distance_of_direction_points);
+            inputForDirectionDistance.setText(BASE_DATA.get(7));
+            EditText inputForFootDistancePerpendicularly = (EditText) findViewById(R.id.input_foot_distance_perpendicularly);
+            inputForFootDistancePerpendicularly.setText(BASE_DATA.get(8));
+            EditText inputForFootDistanceParallel = (EditText) findViewById(R.id.input_foot_distance_parallel);
+            inputForFootDistanceParallel.setText(BASE_DATA.get(9));
+            EditText inputForHoleDistancePerpendicularly = (EditText) findViewById(R.id.input_hole_distance_perpendicularly);
+            inputForHoleDistancePerpendicularly.setText(BASE_DATA.get(10));
+            EditText inputForHoleDistanceParallel = (EditText) findViewById(R.id.input_hole_distance_parallel);
+            inputForHoleDistanceParallel.setText(BASE_DATA.get(11));
+            if( "0".equals(BASE_DATA.get(15))){
+                ((RadioButton) findViewById(R.id.radio_right)).setActivated(true);
+            }
+            else if( "1".equals(BASE_DATA.get(15))){
+                ((RadioButton) findViewById(R.id.radio_left)).setActivated(true);
+            }
+            EditText inputAngle = (EditText) findViewById(R.id.input_angle);
+            inputAngle.setText(BASE_DATA.get(12));
+            EditText inputMin = (EditText) findViewById(R.id.input_min);
+            inputMin.setText(BASE_DATA.get(13));
+            EditText inputSec = (EditText) findViewById(R.id.input_sec);
+            inputSec.setText(BASE_DATA.get(14));
+        }
+        else if( BASE_TYPE.equals(BASE_DATA.get(1)) ) {
+            optionMenu.findItem(R.id.weight_base).setTitle(R.string.weight_base_option);
+            optionMenu.findItem(R.id.plate_base).setTitle(R.string.ticked_plate_base_option);
+            getDataFragmentForPlateBase();
+            EditText inputForHoleDistancePerpendicularly = (EditText) findViewById(R.id.input_hole_distance_perpendicularly);
+            inputForHoleDistancePerpendicularly.setText(BASE_DATA.get(7));
+            EditText inputForHoleDistanceParallel = (EditText) findViewById(R.id.input_hole_distance_parallel);
+            inputForHoleDistanceParallel.setText(BASE_DATA.get(8));
+            EditText inputFromHoleDistancePerpendicularly = (EditText) findViewById(R.id.input_foot_distance_perpendicularly);
+            inputFromHoleDistancePerpendicularly.setText(BASE_DATA.get(9));
+            EditText inputFromHoleDistanceParallel = (EditText) findViewById(R.id.input_foot_distance_parallel);
+            inputFromHoleDistanceParallel.setText(BASE_DATA.get(10));
+            if( "0".equals(BASE_DATA.get(14))){
+                ((RadioButton) findViewById(R.id.radio_right)).setActivated(true);
+            }
+            else if( "1".equals(BASE_DATA.get(14))){
+                ((RadioButton) findViewById(R.id.radio_left)).setActivated(true);
+            }
+            EditText inputAngle = (EditText) findViewById(R.id.input_angle);
+            inputAngle.setText(BASE_DATA.get(11));
+            EditText inputMin = (EditText) findViewById(R.id.input_min);
+            inputMin.setText(BASE_DATA.get(12));
+            EditText inputSec = (EditText) findViewById(R.id.input_sec);
+            inputSec.setText(BASE_DATA.get(13));
+        }
     }
 
     private void exitDialog() {
@@ -219,9 +309,7 @@ public class MainActivity extends AppCompatActivity {
                 BASE_DATA.clear();
             }
         }
-
-        gotoStartFragment();
-        PAGE_COUNTER = 0;
+        gotoDataFragment();
         if( BASE_DATA.isEmpty() ){
             Toast.makeText(this, "Az adatok beolvasása sikertelen",
                     Toast.LENGTH_LONG).show();
@@ -239,25 +327,27 @@ public class MainActivity extends AppCompatActivity {
         title.setText(projectName);
     }
 
-    private void gotoStartFragment(){
+    private void gotoDataFragment(){
         NavController navController =
                 Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         switch (PAGE_COUNTER % 4){
-            case 1 :
-                navController.navigate(R.id.action_DataFragment_to_StartFragment);
+            case 0 :
+                navController.navigate(R.id.action_StartFragment_to_DataFragment);
                 break;
             case 2 :
-                navController.navigate(R.id.action_CoordsFragment_to_StartFragment);
+                navController.navigate(R.id.action_CoordsFragment_to_DataFragment);
                 break;
             case 3 :
-                navController.navigate(R.id.action_BaseFragment_to_StartFragment);
+                navController.navigate(R.id.action_BaseFragment_to_DataFragment);
                 break;
         }
+        PAGE_COUNTER = 1;
     }
 
     private void saveProjectFile() {
         if( BASE_DATA == null ){
-            Toast.makeText(this, "Az adatok mentése sikertelen:\nNincs menthető adat.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Az adatok mentése sikertelen:\nNincs menthető adat.",
+                    Toast.LENGTH_SHORT).show();
             return;
         }
         File projectFile =
