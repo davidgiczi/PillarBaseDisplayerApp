@@ -1,6 +1,8 @@
 package com.david.giczi.pillarbasedisplayerapp;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +39,60 @@ public class PillarDataFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        fragmentDataBinding.inputPillarId.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    fragmentDataBinding.inputNextPrevPillarId
+                            .setText(fragmentDataBinding.inputPillarId.getText().toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
+        fragmentDataBinding.inputYCoordinate.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if(fragmentDataBinding.inputYCoordinate.getText().toString().length() > 3 ){
+                    fragmentDataBinding.inputNextPrevYCoordinate
+                            .setText(fragmentDataBinding.inputYCoordinate.getText().toString().substring(0, 3));
+                }
+                else if(fragmentDataBinding.inputYCoordinate.getText().toString().length() < 3 ){
+                    fragmentDataBinding.inputNextPrevYCoordinate.setText("");
+                }
+
+            }
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        });
+        fragmentDataBinding.inputXCoordinate.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if(fragmentDataBinding.inputXCoordinate.getText().toString().length() > 3 ){
+                    fragmentDataBinding.inputNextPrevXCoordinate
+                            .setText(fragmentDataBinding.inputXCoordinate.getText().toString().substring(0, 3));
+                }
+                else if(fragmentDataBinding.inputXCoordinate.getText().toString().length() < 3 ){
+                    fragmentDataBinding.inputNextPrevXCoordinate.setText("");
+                }
+            }
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        });
     }
 
     @Override

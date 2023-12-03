@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
     public Menu optionMenu;
     public static List<String> BASE_DATA;
     public static final String[] BASE_TYPE = {"#WeightBase", "#PlateBase"};
-    public static boolean IS_WEIGHT_BASE;
+    public static boolean IS_WEIGHT_BASE = true;
     private static int PAGE_COUNTER;
 
     @Override
@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+        BASE_DATA = new ArrayList<>();
     }
 
     @Override
@@ -75,7 +76,6 @@ public class MainActivity extends AppCompatActivity {
             exitDialog();
         } else if (id == R.id.input_data) {
             openPillarBaseDataFile();
-            //displayInputData();
         } else if (id == R.id.goto_next_fragment) {
            gotoNextFragment();
         }
@@ -102,23 +102,20 @@ public class MainActivity extends AppCompatActivity {
             switch (PAGE_COUNTER % 4){
                 case 0 :
                     navController.navigate(R.id.action_StartFragment_to_DataFragment);
+                    PAGE_COUNTER++;
                     break;
                 case 1 :
-                    if( BASE_DATA != null && !BASE_DATA.isEmpty() ){
-                        saveDialog(navController);
-                    }
-                   else {
-                    navController.navigate(R.id.action_DataFragment_to_CoordsFragment);
-                    }
+                    saveDialog(navController);
                     break;
                 case 2 :
                     navController.navigate(R.id.action_CoordsFragment_to_BaseFragment);
+                    PAGE_COUNTER++;
                     break;
                 case 3 :
                     navController.navigate(R.id.action_BaseFragment_to_StartFragment);
+                    PAGE_COUNTER++;
                     break;
             }
-            PAGE_COUNTER++;
     }
 
     public void getDataFragmentForPlateBase(){
@@ -180,8 +177,12 @@ public class MainActivity extends AppCompatActivity {
         builder.setPositiveButton("Igen", new DialogInterface.OnClickListener() {
 
             public void onClick(DialogInterface dialog, int which) {
-                saveProjectFile();
-                navController.navigate(R.id.action_DataFragment_to_CoordsFragment);
+                if( isValidInputData() ){
+                    getDataFromDataFragment();
+                    saveProjectFile();
+                    navController.navigate(R.id.action_DataFragment_to_CoordsFragment);
+                    PAGE_COUNTER++;
+                }
                 dialog.dismiss();
             }
         });
@@ -190,6 +191,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 navController.navigate(R.id.action_DataFragment_to_CoordsFragment);
+                PAGE_COUNTER++;
                 dialog.dismiss();
             }
         });
@@ -226,7 +228,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     private void readProjectFile(String path){
-        BASE_DATA = new ArrayList<>();
+        BASE_DATA.clear();
         File projectFile = new File(Environment.getExternalStorageDirectory(), path);
         try{
             BufferedReader br = new BufferedReader(
@@ -246,12 +248,12 @@ public class MainActivity extends AppCompatActivity {
         }
         gotoDataFragment();
         if( BASE_DATA.isEmpty() ){
-            Toast.makeText(this, "Az adatok beolvasása sikertelen",
+            Toast.makeText(this, "Az adatok beolvasása sikertelen.",
                     Toast.LENGTH_LONG).show();
         }
         else {
             setTitle(projectFile.getName());
-            Toast.makeText(this, "Az adatok sikeresen beolvasva",
+            Toast.makeText(this, "Az adatok sikeresen beolvasva.",
                     Toast.LENGTH_LONG).show();
         }
     }
@@ -280,7 +282,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void saveProjectFile() {
-        getDataFromFragmentData();
         String fileName = ((TextView) findViewById(R.id.projectNameTitle)).getText().toString();
         File projectFile =
                 new File(Environment.getExternalStorageDirectory(),
@@ -295,7 +296,7 @@ public class MainActivity extends AppCompatActivity {
             bw.close();
         } catch (IOException e) {
             Toast.makeText(this, projectFile.getName() +
-                    " Projekt fájl mentése sikertelen", Toast.LENGTH_SHORT).show();
+                    " Projekt fájl mentése sikertelen.", Toast.LENGTH_SHORT).show();
         }finally {
             Toast.makeText(this,
                     "Projekt fájl mentve:\n"
@@ -303,45 +304,154 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void getDataFromFragmentData(){
-        BASE_DATA.set(1, ((EditText) findViewById(R.id.input_pillar_id)).getText().toString());
-        BASE_DATA.set(2, ((EditText) findViewById(R.id.input_y_coordinate)).getText().toString());
-        BASE_DATA.set(3, ((EditText) findViewById(R.id.input_x_coordinate)).getText().toString());
-        BASE_DATA.set(4, ((EditText) findViewById(R.id.input_next_prev_pillar_id)).getText().toString());
-        BASE_DATA.set(5, ((EditText) findViewById(R.id.input_next_prev_y_coordinate)).getText().toString());
-        BASE_DATA.set(6, ((EditText) findViewById(R.id.input_next_prev_x_coordinate)).getText().toString());
+    private boolean isValidInputData(){
+        if(((TextView) findViewById(R.id.projectNameTitle)).getText().toString().isEmpty() ){
+            Toast.makeText(this, "Projeknév megadása szükséges.", Toast.LENGTH_LONG).show();
+            return false;
+        }
+        else if( ((EditText) findViewById(R.id.input_pillar_id)).getText().toString().isEmpty() ){
+            Toast.makeText(this, "Az oszlop azonosítójának megadása szükséges.",
+                    Toast.LENGTH_LONG).show();
+            return false;
+        }
+        else if(((EditText) findViewById(R.id.input_y_coordinate)).getText().toString().isEmpty() ){
+            Toast.makeText(this, "Az oszlop Y koordinátájának megadása szükséges.",
+                    Toast.LENGTH_LONG).show();
+            return false;
+        }
+        else if(((EditText) findViewById(R.id.input_x_coordinate)).getText().toString().isEmpty()){
+            Toast.makeText(this, "Az oszlop X koordinátájának megadása szükséges.",
+                    Toast.LENGTH_LONG).show();
+            return false;
+        }
+        else if(((EditText) findViewById(R.id.input_next_prev_pillar_id)).getText().toString().isEmpty()){
+            Toast.makeText(this, "Az előző/következő oszlop azonosítójának megadása szükséges.",
+                    Toast.LENGTH_LONG).show();
+            return false;
+        }
+        else if(((EditText) findViewById(R.id.input_next_prev_y_coordinate)).getText().toString().isEmpty()){
+            Toast.makeText(this, "Az előző/következő oszlop Y koordinátájának megadása szükséges.",
+                    Toast.LENGTH_LONG).show();
+            return false;
+        }
+        else if(((EditText) findViewById(R.id.input_next_prev_x_coordinate)).getText().toString().isEmpty()){
+            Toast.makeText(this, "Az előző/következő oszlop X koordinátájának megadása szükséges.",
+                    Toast.LENGTH_LONG).show();
+            return false;
+        }
+
         if( IS_WEIGHT_BASE ){
-            BASE_DATA.set(0, BASE_TYPE[0]);
-        BASE_DATA.set(7, ((EditText) findViewById(R.id.input_distance_of_direction_points)).getText().toString());
-        BASE_DATA.set(8, ((EditText) findViewById(R.id.input_foot_distance_perpendicularly)).getText().toString());
-        BASE_DATA.set(9, ((EditText) findViewById(R.id.input_foot_distance_parallel)).getText().toString());
-        BASE_DATA.set(10, ((EditText) findViewById(R.id.input_hole_distance_perpendicularly)).getText().toString());
-        BASE_DATA.set(11, ((EditText) findViewById(R.id.input_hole_distance_parallel)).getText().toString());
-        BASE_DATA.set(12, ((EditText) findViewById(R.id.input_angle)).getText().toString());
-        BASE_DATA.set(13, ((EditText) findViewById(R.id.input_min)).getText().toString());
-        BASE_DATA.set(14, ((EditText) findViewById(R.id.input_sec)).getText().toString());
+
+            if(((EditText) findViewById(R.id.input_distance_of_direction_points)).getText().toString().isEmpty()){
+                Toast.makeText(this, "Az iránypontok távolságának megadása szükséges.",
+                        Toast.LENGTH_LONG).show();
+                return false;
+            }
+            else if(((EditText) findViewById(R.id.input_foot_distance_perpendicularly)).getText().toString().isEmpty()){
+                Toast.makeText(this, "A karra merőleges lábtávolság megadása szükséges.",
+                        Toast.LENGTH_LONG).show();
+                return false;
+            }
+            else if(((EditText) findViewById(R.id.input_foot_distance_parallel)).getText().toString().isEmpty()){
+                Toast.makeText(this, "A karral párhuzamos lábtávolság megadása szükséges.",
+                        Toast.LENGTH_LONG).show();
+                return false;
+            }
+        }
+        else {
+
+            if(((EditText) findViewById(R.id.input_foot_distance_perpendicularly)).getText().toString().isEmpty()){
+                Toast.makeText(this, "A karra merőleges irány, " +
+                                "a gödör szélétől vett távolságának megadása szükséges.",
+                        Toast.LENGTH_LONG).show();
+                return false;
+            }
+            else if(((EditText) findViewById(R.id.input_foot_distance_parallel)).getText().toString().isEmpty()){
+                Toast.makeText(this, "A karral párhuzamos irány, a gödör szélétől vett " +
+                                "távolságának megadása szükséges.",
+                        Toast.LENGTH_LONG).show();
+                return false;
+            }
+
+        }
+
+        if(((EditText) findViewById(R.id.input_hole_distance_perpendicularly)).getText().toString().isEmpty()){
+            Toast.makeText(this, "A karra merőleges gödör oldalhosszának megadása szükséges.",
+                    Toast.LENGTH_LONG).show();
+            return false;
+        }
+        else if(((EditText) findViewById(R.id.input_hole_distance_parallel)).getText().toString().isEmpty()){
+            Toast.makeText(this, "A karral párhuzamos gödör oldalhosszának megadása szükséges.",
+                    Toast.LENGTH_LONG).show();
+            return false;
+        }
+        else if( !((RadioButton)findViewById(R.id.radio_left)).isChecked() &&
+                !((RadioButton)findViewById(R.id.radio_right)).isChecked() ){
+            Toast.makeText(this, "A nyomvonal által közbezárt szög bal/jobb helyének megadása szükséges.",
+                    Toast.LENGTH_LONG).show();
+            return false;
+        }
+        else if(((EditText) findViewById(R.id.input_angle)).getText().toString().isEmpty()){
+            Toast.makeText(this, "A nyomvonal által közbezárt szög értékének megadása szükséges.",
+                    Toast.LENGTH_LONG).show();
+            return false;
+        }
+        else if(((EditText) findViewById(R.id.input_min)).getText().toString().isEmpty()){
+            Toast.makeText(this, "A nyomvonal által közbezárt szög perc értékének megadása szükséges.",
+                    Toast.LENGTH_LONG).show();
+            return false;
+        }
+        else if(((EditText) findViewById(R.id.input_sec)).getText().toString().isEmpty() ){
+            Toast.makeText(this, "A nyomvonal által közbezárt szög másodperc értékének megadása szükséges.",
+                    Toast.LENGTH_LONG).show();
+            return false;
+        }
+
+        return true;
+    }
+
+    private void getDataFromDataFragment(){
+        if( BASE_DATA == null ){
+            BASE_DATA = new ArrayList<>();
+        }
+       else if( BASE_DATA != null && !BASE_DATA.isEmpty() ){
+            BASE_DATA.clear();
+        }
+        if( IS_WEIGHT_BASE ){
+            BASE_DATA.add(BASE_TYPE[0]);
+        } else {
+            BASE_DATA.add(BASE_TYPE[1]);
+        }
+        BASE_DATA.add(((EditText) findViewById(R.id.input_pillar_id)).getText().toString());
+        BASE_DATA.add(((EditText) findViewById(R.id.input_y_coordinate)).getText().toString());
+        BASE_DATA.add(((EditText) findViewById(R.id.input_x_coordinate)).getText().toString());
+        BASE_DATA.add(((EditText) findViewById(R.id.input_next_prev_pillar_id)).getText().toString());
+        BASE_DATA.add(((EditText) findViewById(R.id.input_next_prev_y_coordinate)).getText().toString());
+        BASE_DATA.add(((EditText) findViewById(R.id.input_next_prev_x_coordinate)).getText().toString());
+        if( IS_WEIGHT_BASE ){
+        BASE_DATA.add(((EditText) findViewById(R.id.input_distance_of_direction_points)).getText().toString());
+        BASE_DATA.add(((EditText) findViewById(R.id.input_foot_distance_perpendicularly)).getText().toString());
+        BASE_DATA.add(((EditText) findViewById(R.id.input_foot_distance_parallel)).getText().toString());
+        BASE_DATA.add(((EditText) findViewById(R.id.input_hole_distance_perpendicularly)).getText().toString());
+        BASE_DATA.add(((EditText) findViewById(R.id.input_hole_distance_parallel)).getText().toString());
+        BASE_DATA.add(((EditText) findViewById(R.id.input_angle)).getText().toString());
+        BASE_DATA.add(((EditText) findViewById(R.id.input_min)).getText().toString());
+        BASE_DATA.add(((EditText) findViewById(R.id.input_sec)).getText().toString());
+   }
+        else {
+        BASE_DATA.add(((EditText) findViewById(R.id.input_foot_distance_perpendicularly)).getText().toString());
+        BASE_DATA.add(((EditText) findViewById(R.id.input_foot_distance_parallel)).getText().toString());
+        BASE_DATA.add(((EditText) findViewById(R.id.input_hole_distance_perpendicularly)).getText().toString());
+        BASE_DATA.add(((EditText) findViewById(R.id.input_hole_distance_parallel)).getText().toString());
+        BASE_DATA.add(((EditText) findViewById(R.id.input_angle)).getText().toString());
+        BASE_DATA.add(((EditText) findViewById(R.id.input_min)).getText().toString());
+        BASE_DATA.add(((EditText) findViewById(R.id.input_sec)).getText().toString());
+   }
         if(((RadioButton) findViewById(R.id.radio_right)).isChecked()){
-            BASE_DATA.set(15, "0");
+            BASE_DATA.add("0");
         }
         else if(((RadioButton) findViewById(R.id.radio_left)).isChecked()){
-            BASE_DATA.set(15, "1");
-        }
-   }
-        else{
-            BASE_DATA.set(0, BASE_TYPE[1]);
-            BASE_DATA.set(7, ((EditText) findViewById(R.id.input_foot_distance_perpendicularly)).getText().toString());
-            BASE_DATA.set(8, ((EditText) findViewById(R.id.input_foot_distance_parallel)).getText().toString());
-            BASE_DATA.set(9, ((EditText) findViewById(R.id.input_hole_distance_perpendicularly)).getText().toString());
-            BASE_DATA.set(10, ((EditText) findViewById(R.id.input_hole_distance_parallel)).getText().toString());
-            BASE_DATA.set(11, ((EditText) findViewById(R.id.input_angle)).getText().toString());
-            BASE_DATA.set(12, ((EditText) findViewById(R.id.input_min)).getText().toString());
-            BASE_DATA.set(13, ((EditText) findViewById(R.id.input_sec)).getText().toString());
-            if(((RadioButton) findViewById(R.id.radio_right)).isChecked()){
-                BASE_DATA.set(14, "0");
-            }
-            else if(((RadioButton) findViewById(R.id.radio_left)).isChecked()){
-                BASE_DATA.set(14, "1");
-            }
+            BASE_DATA.add("1");
         }
     }
 
