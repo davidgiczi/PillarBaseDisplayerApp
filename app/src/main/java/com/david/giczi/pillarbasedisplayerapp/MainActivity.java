@@ -38,9 +38,10 @@ public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration appBarConfiguration;
     private ActivityMainBinding binding;
-    private Menu optionMenu;
+    public Menu optionMenu;
     public static List<String> BASE_DATA;
-    private static final String[] BASE_TYPE = {"#WeightBase", "#PlateBase"};
+    public static final String[] BASE_TYPE = {"#WeightBase", "#PlateBase"};
+    public static boolean IS_WEIGHT_BASE;
     private static int PAGE_COUNTER;
 
     @Override
@@ -83,12 +84,14 @@ public class MainActivity extends AppCompatActivity {
             item.setTitle(R.string.ticked_weight_base_option);
             optionMenu.findItem(R.id.plate_base).setTitle(R.string.plate_base_option);
             getDataFragmentForWeightBase();
+            IS_WEIGHT_BASE = true;
         }
         else if( id == R.id.plate_base
                 && item.getTitle().toString().equals(getString(R.string.plate_base_option))){
             item.setTitle(R.string.ticked_plate_base_option);
             optionMenu.findItem(R.id.weight_base).setTitle(R.string.weight_base_option);
             getDataFragmentForPlateBase();
+            IS_WEIGHT_BASE = false;
         }
             return super.onOptionsItemSelected(item);
     }
@@ -118,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
             PAGE_COUNTER++;
     }
 
-    private void getDataFragmentForPlateBase(){
+    public void getDataFragmentForPlateBase(){
         EditText inputForDirectionDistance = (EditText) findViewById(R.id.input_distance_of_direction_points);
         if( inputForDirectionDistance == null){
             return;
@@ -130,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
         inputForParallelFootDistance.setHint(R.string.distance_from_side_of_hole_of_base_parallel);
     }
 
-    private void getDataFragmentForWeightBase(){
+    public void getDataFragmentForWeightBase(){
         EditText inputForDirectionDistance = (EditText) findViewById(R.id.input_distance_of_direction_points);
         if( inputForDirectionDistance == null){
             return;
@@ -140,74 +143,6 @@ public class MainActivity extends AppCompatActivity {
         inputForPerpendicularlyFootDistance.setHint(R.string.distance_of_legs_perpendicularly);
         EditText inputForParallelFootDistance = (EditText) findViewById(R.id.input_foot_distance_parallel);
         inputForParallelFootDistance.setHint(R.string.distance_of_legs_parallel);
-    }
-
-    private void displayInputData(){
-        EditText inputForPillarId = (EditText) findViewById(R.id.input_pillar_id);
-        inputForPillarId.setText(BASE_DATA.get(1));
-        EditText inputForPillarY = (EditText) findViewById(R.id.input_y_coordinate);
-        inputForPillarY.setText(BASE_DATA.get(2));
-        EditText inputForPillarX = (EditText) findViewById(R.id.input_x_coordinate);
-        inputForPillarX.setText(BASE_DATA.get(3));
-        EditText inputForPrevNextPillarId = (EditText) findViewById(R.id.input_next_prev_pillar_id);
-        inputForPrevNextPillarId.setText(BASE_DATA.get(4));
-        EditText inputForPrevNextY = (EditText) findViewById(R.id.input_next_prev_y_coordinate);
-        inputForPrevNextY.setText(BASE_DATA.get(5));
-        EditText inputForPrevNextX = (EditText) findViewById(R.id.input_next_prev_x_coordinate);
-        inputForPrevNextX.setText(BASE_DATA.get(6));
-
-        if( BASE_TYPE.equals(BASE_DATA.get(0)) ){
-            optionMenu.findItem(R.id.weight_base).setTitle(R.string.ticked_weight_base_option);
-            optionMenu.findItem(R.id.plate_base).setTitle(R.string.plate_base_option);
-            getDataFragmentForWeightBase();
-            EditText inputForDirectionDistance = (EditText) findViewById(R.id.input_distance_of_direction_points);
-            inputForDirectionDistance.setText(BASE_DATA.get(7));
-            EditText inputForFootDistancePerpendicularly = (EditText) findViewById(R.id.input_foot_distance_perpendicularly);
-            inputForFootDistancePerpendicularly.setText(BASE_DATA.get(8));
-            EditText inputForFootDistanceParallel = (EditText) findViewById(R.id.input_foot_distance_parallel);
-            inputForFootDistanceParallel.setText(BASE_DATA.get(9));
-            EditText inputForHoleDistancePerpendicularly = (EditText) findViewById(R.id.input_hole_distance_perpendicularly);
-            inputForHoleDistancePerpendicularly.setText(BASE_DATA.get(10));
-            EditText inputForHoleDistanceParallel = (EditText) findViewById(R.id.input_hole_distance_parallel);
-            inputForHoleDistanceParallel.setText(BASE_DATA.get(11));
-            if( "0".equals(BASE_DATA.get(15))){
-                ((RadioButton) findViewById(R.id.radio_right)).setActivated(true);
-            }
-            else if( "1".equals(BASE_DATA.get(15))){
-                ((RadioButton) findViewById(R.id.radio_left)).setActivated(true);
-            }
-            EditText inputAngle = (EditText) findViewById(R.id.input_angle);
-            inputAngle.setText(BASE_DATA.get(12));
-            EditText inputMin = (EditText) findViewById(R.id.input_min);
-            inputMin.setText(BASE_DATA.get(13));
-            EditText inputSec = (EditText) findViewById(R.id.input_sec);
-            inputSec.setText(BASE_DATA.get(14));
-        }
-        else if( BASE_TYPE.equals(BASE_DATA.get(1)) ) {
-            optionMenu.findItem(R.id.weight_base).setTitle(R.string.weight_base_option);
-            optionMenu.findItem(R.id.plate_base).setTitle(R.string.ticked_plate_base_option);
-            getDataFragmentForPlateBase();
-            EditText inputForHoleDistancePerpendicularly = (EditText) findViewById(R.id.input_hole_distance_perpendicularly);
-            inputForHoleDistancePerpendicularly.setText(BASE_DATA.get(7));
-            EditText inputForHoleDistanceParallel = (EditText) findViewById(R.id.input_hole_distance_parallel);
-            inputForHoleDistanceParallel.setText(BASE_DATA.get(8));
-            EditText inputFromHoleDistancePerpendicularly = (EditText) findViewById(R.id.input_foot_distance_perpendicularly);
-            inputFromHoleDistancePerpendicularly.setText(BASE_DATA.get(9));
-            EditText inputFromHoleDistanceParallel = (EditText) findViewById(R.id.input_foot_distance_parallel);
-            inputFromHoleDistanceParallel.setText(BASE_DATA.get(10));
-            if( "0".equals(BASE_DATA.get(14))){
-                ((RadioButton) findViewById(R.id.radio_right)).setActivated(true);
-            }
-            else if( "1".equals(BASE_DATA.get(14))){
-                ((RadioButton) findViewById(R.id.radio_left)).setActivated(true);
-            }
-            EditText inputAngle = (EditText) findViewById(R.id.input_angle);
-            inputAngle.setText(BASE_DATA.get(11));
-            EditText inputMin = (EditText) findViewById(R.id.input_min);
-            inputMin.setText(BASE_DATA.get(12));
-            EditText inputSec = (EditText) findViewById(R.id.input_sec);
-            inputSec.setText(BASE_DATA.get(13));
-        }
     }
 
     private void exitDialog() {
@@ -345,14 +280,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void saveProjectFile() {
-        if( BASE_DATA == null ){
-            Toast.makeText(this, "Az adatok mentése sikertelen:\nNincs menthető adat.",
-                    Toast.LENGTH_SHORT).show();
-            return;
-        }
+        getDataFromFragmentData();
+        String fileName = ((TextView) findViewById(R.id.projectNameTitle)).getText().toString();
         File projectFile =
                 new File(Environment.getExternalStorageDirectory(),
-                        "/Documents/SavedData.txt");
+                        "/Documents/" + fileName + ".txt");
         try {
             BufferedWriter bw = new BufferedWriter(
                     new FileWriter(projectFile));
@@ -369,7 +301,48 @@ public class MainActivity extends AppCompatActivity {
                     "Projekt fájl mentve:\n"
                             + projectFile.getName() , Toast.LENGTH_SHORT).show();
         }
+    }
 
+    private void getDataFromFragmentData(){
+        BASE_DATA.set(1, ((EditText) findViewById(R.id.input_pillar_id)).getText().toString());
+        BASE_DATA.set(2, ((EditText) findViewById(R.id.input_y_coordinate)).getText().toString());
+        BASE_DATA.set(3, ((EditText) findViewById(R.id.input_x_coordinate)).getText().toString());
+        BASE_DATA.set(4, ((EditText) findViewById(R.id.input_next_prev_pillar_id)).getText().toString());
+        BASE_DATA.set(5, ((EditText) findViewById(R.id.input_next_prev_y_coordinate)).getText().toString());
+        BASE_DATA.set(6, ((EditText) findViewById(R.id.input_next_prev_x_coordinate)).getText().toString());
+        if( IS_WEIGHT_BASE ){
+            BASE_DATA.set(0, BASE_TYPE[0]);
+        BASE_DATA.set(7, ((EditText) findViewById(R.id.input_distance_of_direction_points)).getText().toString());
+        BASE_DATA.set(8, ((EditText) findViewById(R.id.input_foot_distance_perpendicularly)).getText().toString());
+        BASE_DATA.set(9, ((EditText) findViewById(R.id.input_foot_distance_parallel)).getText().toString());
+        BASE_DATA.set(10, ((EditText) findViewById(R.id.input_hole_distance_perpendicularly)).getText().toString());
+        BASE_DATA.set(11, ((EditText) findViewById(R.id.input_hole_distance_parallel)).getText().toString());
+        BASE_DATA.set(12, ((EditText) findViewById(R.id.input_angle)).getText().toString());
+        BASE_DATA.set(13, ((EditText) findViewById(R.id.input_min)).getText().toString());
+        BASE_DATA.set(14, ((EditText) findViewById(R.id.input_sec)).getText().toString());
+        if(((RadioButton) findViewById(R.id.radio_right)).isChecked()){
+            BASE_DATA.set(15, "0");
+        }
+        else if(((RadioButton) findViewById(R.id.radio_left)).isChecked()){
+            BASE_DATA.set(15, "1");
+        }
+   }
+        else{
+            BASE_DATA.set(0, BASE_TYPE[1]);
+            BASE_DATA.set(7, ((EditText) findViewById(R.id.input_foot_distance_perpendicularly)).getText().toString());
+            BASE_DATA.set(8, ((EditText) findViewById(R.id.input_foot_distance_parallel)).getText().toString());
+            BASE_DATA.set(9, ((EditText) findViewById(R.id.input_hole_distance_perpendicularly)).getText().toString());
+            BASE_DATA.set(10, ((EditText) findViewById(R.id.input_hole_distance_parallel)).getText().toString());
+            BASE_DATA.set(11, ((EditText) findViewById(R.id.input_angle)).getText().toString());
+            BASE_DATA.set(12, ((EditText) findViewById(R.id.input_min)).getText().toString());
+            BASE_DATA.set(13, ((EditText) findViewById(R.id.input_sec)).getText().toString());
+            if(((RadioButton) findViewById(R.id.radio_right)).isChecked()){
+                BASE_DATA.set(14, "0");
+            }
+            else if(((RadioButton) findViewById(R.id.radio_left)).isChecked()){
+                BASE_DATA.set(14, "1");
+            }
+        }
     }
 
     @Override
