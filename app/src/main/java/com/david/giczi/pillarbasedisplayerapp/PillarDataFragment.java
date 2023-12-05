@@ -115,7 +115,7 @@ public class PillarDataFragment extends Fragment {
             MainActivity.IS_WEIGHT_BASE = true;
             ((MainActivity) getActivity()).optionMenu.findItem(R.id.weight_base).setTitle(R.string.ticked_weight_base_option);
             ((MainActivity) getActivity()).optionMenu.findItem(R.id.plate_base).setTitle(R.string.plate_base_option);
-            ((MainActivity) getActivity()).getDataFragmentForWeightBase();
+            fragmentDataBinding.inputDistanceOfDirectionPoints.setVisibility(View.VISIBLE);
             fragmentDataBinding.inputDistanceOfDirectionPoints.setText(inputData.get(7));
             fragmentDataBinding.inputFootDistancePerpendicularly.setText(inputData.get(8));
             fragmentDataBinding.inputFootDistanceParallel.setText(inputData.get(9));
@@ -135,7 +135,7 @@ public class PillarDataFragment extends Fragment {
             MainActivity.IS_WEIGHT_BASE = false;
             ((MainActivity) getActivity()). optionMenu.findItem(R.id.weight_base).setTitle(R.string.weight_base_option);
             ((MainActivity) getActivity()).optionMenu.findItem(R.id.plate_base).setTitle(R.string.ticked_plate_base_option);
-            ((MainActivity) getActivity()).getDataFragmentForPlateBase();
+            fragmentDataBinding.inputDistanceOfDirectionPoints.setVisibility(View.INVISIBLE);
             fragmentDataBinding.inputHoleDistancePerpendicularly.setText(inputData.get(7));
             fragmentDataBinding.inputHoleDistanceParallel.setText(inputData.get(8));
             fragmentDataBinding.inputFootDistancePerpendicularly.setText(inputData.get(9));
@@ -147,8 +147,18 @@ public class PillarDataFragment extends Fragment {
                 fragmentDataBinding.radioLeft.setChecked(true);
             }
             fragmentDataBinding.inputAngle.setText(inputData.get(11));
-            fragmentDataBinding.inputMin.setText(inputData.get(12));
-            fragmentDataBinding.inputSec.setText(inputData.get(13));
+            if( inputData.get(12).contains(".") ){
+                fragmentDataBinding.inputMin.setText(inputData.get(12).substring(0, inputData.get(12).indexOf('.')));
+            }
+            else{
+                fragmentDataBinding.inputMin.setText(inputData.get(12));
+            }
+            if( inputData.get(13).contains(".") ) {
+                fragmentDataBinding.inputSec.setText(inputData.get(13).substring(0, inputData.get(13).indexOf('.')));
+            }
+            else{
+                fragmentDataBinding.inputSec.setText(inputData.get(13));
+            }
         }
     }
 

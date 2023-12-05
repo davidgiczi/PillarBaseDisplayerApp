@@ -29,6 +29,11 @@
             android:orderInCategory="100"
             android:title="@string/plate_base_option"
             app:showAsAction="never" />
+        <item
+            android:id="@+id/calc_foot_distance"
+            android:orderInCategory="100"
+            android:title="@string/calc_foot_distance_option"
+            app:showAsAction="never" />
     </group>
 
     <group android:id="@+id/exit">

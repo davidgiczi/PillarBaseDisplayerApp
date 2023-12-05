@@ -10,17 +10,25 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.MenuCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import com.david.giczi.pillarbasedisplayerapp.databinding.ActivityMainBinding;
 import android.os.Environment;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.PopupWindow;
 import android.widget.RadioButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -93,7 +101,22 @@ public class MainActivity extends AppCompatActivity {
             getDataFragmentForPlateBase();
             IS_WEIGHT_BASE = false;
         }
+        else if( id == R.id.calc_foot_distance){
+                popupPillarFootDistanceCalculator();
+        }
             return super.onOptionsItemSelected(item);
+    }
+
+    private void popupPillarFootDistanceCalculator(){
+        ViewGroup container = (ViewGroup) getLayoutInflater().inflate(R.layout.fragment_foot_calc, null);
+        PopupWindow footCalcWindow = new PopupWindow(container, 1000, 700, true);
+        footCalcWindow.showAtLocation(binding.getRoot(), Gravity.CENTER, 0, -400);
+        container.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
+            }
+        });
     }
 
     private void gotoNextFragment(){
@@ -270,6 +293,9 @@ public class MainActivity extends AppCompatActivity {
         switch (PAGE_COUNTER % 4){
             case 0 :
                 navController.navigate(R.id.action_StartFragment_to_DataFragment);
+                break;
+            case 1 :
+                navController.navigate(R.id.action_DataFragment_to_DataFragment);
                 break;
             case 2 :
                 navController.navigate(R.id.action_CoordsFragment_to_DataFragment);

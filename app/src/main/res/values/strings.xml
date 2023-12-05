@@ -27,4 +27,5 @@
     <string name="save_data_format">Koordináták fájlba mentése</string>
     <string name="format_of_TPS">TPS formátum</string>
     <string name="format_of_RTK">RTK formátum</string>
+    <string name="calc_foot_distance_option">Lábtávolság számítása</string>
 </resources>

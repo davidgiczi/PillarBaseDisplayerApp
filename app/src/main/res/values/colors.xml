@@ -3,5 +3,5 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="data_text">#708090</color>
-    <color name="light_gray">#bebebe</color>
+    <color name="light_gray">#BEBEBE</color>
 </resources>
