@@ -23,7 +23,6 @@ import java.util.List;
 public class PillarDataFragment extends Fragment {
 
     private FragmentDataBinding fragmentDataBinding;
-    private List<String> inputData;
 
     @Nullable
     @Override
@@ -31,7 +30,13 @@ public class PillarDataFragment extends Fragment {
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         fragmentDataBinding = FragmentDataBinding.inflate(inflater, container, false);
-        inputData = ((MainActivity) getActivity()).BASE_DATA;
+        if( !((MainActivity) getActivity()).IS_WEIGHT_BASE ){
+            fragmentDataBinding.inputDistanceOfDirectionPoints.setVisibility(View.INVISIBLE);
+            fragmentDataBinding.inputFootDistancePerpendicularly
+                    .setHint(R.string.distance_from_side_of_hole_of_base_perpendicularly);
+            fragmentDataBinding.inputFootDistanceParallel
+                    .setHint(R.string.distance_from_side_of_hole_of_base_parallel);
+        }
         displayInputData();
         return fragmentDataBinding.getRoot();
     }
@@ -101,6 +106,7 @@ public class PillarDataFragment extends Fragment {
         fragmentDataBinding = null;
     }
     private void displayInputData(){
+        List<String> inputData =  ((MainActivity) getActivity()).BASE_DATA;
         if( inputData == null || inputData.isEmpty() ){
             return;
         }

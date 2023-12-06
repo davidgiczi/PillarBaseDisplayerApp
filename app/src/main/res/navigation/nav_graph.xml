@@ -22,8 +22,8 @@
             android:id="@+id/action_DataFragment_to_CoordsFragment"
             app:destination="@id/CoordsFragment" />
         <action
-            android:id="@+id/action_DataFragment_to_DataFragment"
-            app:destination="@id/DataFragment" />
+            android:id="@+id/action_DataFragment_to_StartFragment"
+            app:destination="@id/StartFragment" />
     </fragment>
     <fragment
         android:id="@+id/CoordsFragment"

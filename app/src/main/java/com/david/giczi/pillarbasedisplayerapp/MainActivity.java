@@ -10,27 +10,25 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.MenuCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-import com.david.giczi.pillarbasedisplayerapp.databinding.ActivityMainBinding;
+
 import android.os.Environment;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.PopupWindow;
 import android.widget.RadioButton;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.david.giczi.pillarbasedisplayerapp.databinding.ActivityMainBinding;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -38,6 +36,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -111,13 +110,39 @@ public class MainActivity extends AppCompatActivity {
         ViewGroup container = (ViewGroup) getLayoutInflater().inflate(R.layout.fragment_foot_calc, null);
         PopupWindow footCalcWindow = new PopupWindow(container, 1000, 700, true);
         footCalcWindow.showAtLocation(binding.getRoot(), Gravity.CENTER, 0, -400);
-        container.setOnTouchListener(new View.OnTouchListener() {
+        Button calcButton = (Button) container.findViewById(R.id.btn_count);
+        calcButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return true;
+            public void onClick(View v) {
+                EditText inputFootDistance = (EditText) container.findViewById(R.id.input_value_of_foot_distance);
+                if( inputFootDistance.getText().toString().isEmpty() ){
+                    Toast.makeText(container.getContext(), "A lábtávolság értékének megadása szükséges.",
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
+                EditText inputIllesztesiSik = (EditText) container.findViewById(R.id.input_value_illesztesi_sik);
+                if( inputIllesztesiSik.getText().toString().isEmpty() ){
+                    Toast.makeText(container.getContext(), "Az illesztési sík értékének megadása szükséges.",
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
+                EditText inputSudarasodas = (EditText) container.findViewById(R.id.input_value_sudarasodas);
+                if( inputSudarasodas.getText().toString().isEmpty() ){
+                    Toast.makeText(container.getContext(), "A sudarasodás értékének megadása szükséges.",
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                double footDistance = Double.parseDouble(inputFootDistance.getText().toString()) / 1000.0 +
+                        (2 * Double.parseDouble(inputSudarasodas.getText().toString() )
+                                * Double.parseDouble(inputIllesztesiSik.getText().toString()) / 100.0) / 1000.0;
+              ((TextView) container.findViewById(R.id.text_calc_foot_distance)).setText(R.string.value_of_foot_distance);
+               TextView resultFootDistance = (TextView) container.findViewById(R.id.result_foot_distance);
+               resultFootDistance.setText(String.format("%.3fm", footDistance));
             }
         });
     }
+
 
     private void gotoNextFragment(){
         NavController navController =
@@ -293,18 +318,22 @@ public class MainActivity extends AppCompatActivity {
         switch (PAGE_COUNTER % 4){
             case 0 :
                 navController.navigate(R.id.action_StartFragment_to_DataFragment);
+                PAGE_COUNTER = 1;
                 break;
             case 1 :
-                navController.navigate(R.id.action_DataFragment_to_DataFragment);
+               navController.navigate(R.id.action_DataFragment_to_StartFragment);
+                PAGE_COUNTER = 0;
                 break;
             case 2 :
                 navController.navigate(R.id.action_CoordsFragment_to_DataFragment);
+                PAGE_COUNTER = 1;
                 break;
             case 3 :
                 navController.navigate(R.id.action_BaseFragment_to_DataFragment);
+                PAGE_COUNTER = 1;
                 break;
         }
-        PAGE_COUNTER = 1;
+
     }
 
     private void saveProjectFile() {
@@ -494,4 +523,5 @@ public class MainActivity extends AppCompatActivity {
         PAGE_COUNTER = 0;
         BASE_DATA = null;
     }
+
 }

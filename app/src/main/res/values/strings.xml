@@ -28,4 +28,11 @@
     <string name="format_of_TPS">TPS formátum</string>
     <string name="format_of_RTK">RTK formátum</string>
     <string name="calc_foot_distance_option">Lábtávolság számítása</string>
+    <string name="value_of_foot_distance">Lábtávolság értéke</string>
+    <string name="value_of_illesztesi_sik">Illesztési sík értéke</string>
+    <string name="value_of_sudarasodas">Sudarasodás értéke</string>
+    <string name="millimeter">mm</string>
+    <string name="centimeter">cm</string>
+    <string name="meter">m</string>
+    <string name="sudarasodas">mm/m</string>
 </resources>
