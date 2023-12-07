@@ -238,8 +238,11 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                navController.navigate(R.id.action_DataFragment_to_CoordsFragment);
-                PAGE_COUNTER++;
+                if( isValidInputData() ) {
+                    getDataFromDataFragment();
+                    navController.navigate(R.id.action_DataFragment_to_CoordsFragment);
+                    PAGE_COUNTER++;
+                }
                 dialog.dismiss();
             }
         });
