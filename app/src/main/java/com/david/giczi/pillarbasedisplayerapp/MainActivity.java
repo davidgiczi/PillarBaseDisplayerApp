@@ -321,7 +321,7 @@ public class MainActivity extends AppCompatActivity {
                 PAGE_COUNTER = 1;
                 break;
             case 1 :
-               navController.navigate(R.id.action_DataFragment_to_StartFragment);
+                navController.navigate(R.id.action_DataFragment_to_StartFragment);
                 PAGE_COUNTER = 0;
                 break;
             case 2 :

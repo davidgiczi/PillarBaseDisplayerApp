@@ -127,7 +127,14 @@ public class PillarDataFragment extends Fragment {
             fragmentDataBinding.inputFootDistanceParallel.setText(inputData.get(9));
             fragmentDataBinding.inputHoleDistancePerpendicularly.setText(inputData.get(10));
             fragmentDataBinding.inputHoleDistanceParallel.setText(inputData.get(11));
-            if( "0".equals(inputData.get(15))){
+
+            if( (Double.parseDouble(inputData.get(12)) +
+                    Double.parseDouble(inputData.get(13)) +
+                        Double.parseDouble(inputData.get(14))) == 180 ){
+                fragmentDataBinding.radioRight.setChecked(false);
+                fragmentDataBinding.radioLeft.setChecked(false);
+            }
+           else if( "0".equals(inputData.get(15))){
                 fragmentDataBinding.radioRight.setChecked(true);
             }
             else if( "1".equals(inputData.get(15))){
@@ -146,7 +153,13 @@ public class PillarDataFragment extends Fragment {
             fragmentDataBinding.inputHoleDistanceParallel.setText(inputData.get(8));
             fragmentDataBinding.inputFootDistancePerpendicularly.setText(inputData.get(9));
             fragmentDataBinding.inputFootDistanceParallel.setText(inputData.get(10));
-            if( "0".equals(inputData.get(14))){
+            if( (Double.parseDouble(inputData.get(11)) +
+                    Double.parseDouble(inputData.get(12)) +
+                    Double.parseDouble(inputData.get(13))) == 180 ){
+                fragmentDataBinding.radioRight.setChecked(false);
+                fragmentDataBinding.radioLeft.setChecked(false);
+            }
+           else if( "0".equals(inputData.get(14))){
                 fragmentDataBinding.radioRight.setChecked(true);
             }
             else if( "1".equals(inputData.get(14))){
