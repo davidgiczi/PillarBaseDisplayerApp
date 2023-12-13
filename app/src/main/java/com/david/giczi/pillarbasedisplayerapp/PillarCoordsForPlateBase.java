@@ -244,12 +244,15 @@ public class PillarCoordsForPlateBase {
 }
 
 	private void calculateMainLinePoints() {
-		
+		System.out.println("angle: " + angleValueBetweenMainPath);
+		System.out.println("min: " + angularMinuteValueBetweenMainPath);
+		System.out.println("sec: " + angularSecondValueBetweenMainPath);
+
 		if( angleValueBetweenMainPath == 180 &&
 				angularMinuteValueBetweenMainPath == 0 &&
-						angularSecondValueBetweenMainPath == 0 )
+						angularSecondValueBetweenMainPath == 0 ){
 			return;
-		
+		}
 			AzimuthAndDistance azimuth = new AzimuthAndDistance(pillarCenterPoint, axisDirectionPoint);
 			PolarPoint forwardPoint = 
 					new PolarPoint(pillarCenterPoint, 20d, azimuth.calcAzimuth(), pillarCenterPoint.getPointID() + "_9");

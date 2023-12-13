@@ -36,7 +36,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
     public static List<String> BASE_DATA;
     public static final String[] BASE_TYPE = {"#WeightBase", "#PlateBase"};
     public static boolean IS_WEIGHT_BASE = true;
-    private static int PAGE_COUNTER;
+    public static int PAGE_COUNTER;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+        PAGE_COUNTER = 0;
         BASE_DATA = new ArrayList<>();
     }
 
@@ -150,18 +150,15 @@ public class MainActivity extends AppCompatActivity {
             switch (PAGE_COUNTER % 4){
                 case 0 :
                     navController.navigate(R.id.action_StartFragment_to_DataFragment);
-                    PAGE_COUNTER++;
                     break;
                 case 1 :
                     saveDialog(navController);
                     break;
                 case 2 :
                     navController.navigate(R.id.action_CoordsFragment_to_BaseFragment);
-                    PAGE_COUNTER++;
                     break;
                 case 3 :
                     navController.navigate(R.id.action_BaseFragment_to_StartFragment);
-                    PAGE_COUNTER++;
                     break;
             }
     }
@@ -229,7 +226,6 @@ public class MainActivity extends AppCompatActivity {
                     getDataFromDataFragment();
                     saveProjectFile();
                     navController.navigate(R.id.action_DataFragment_to_CoordsFragment);
-                    PAGE_COUNTER++;
                 }
                 dialog.dismiss();
             }
@@ -241,7 +237,6 @@ public class MainActivity extends AppCompatActivity {
                 if( isValidInputData() ) {
                     getDataFromDataFragment();
                     navController.navigate(R.id.action_DataFragment_to_CoordsFragment);
-                    PAGE_COUNTER++;
                 }
                 dialog.dismiss();
             }
@@ -254,7 +249,6 @@ public class MainActivity extends AppCompatActivity {
    @Override
     public boolean onSupportNavigateUp() {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        PAGE_COUNTER--;
         return NavigationUI.navigateUp(navController, appBarConfiguration)|| super.onSupportNavigateUp();
     }
 
@@ -321,19 +315,15 @@ public class MainActivity extends AppCompatActivity {
         switch (PAGE_COUNTER % 4){
             case 0 :
                 navController.navigate(R.id.action_StartFragment_to_DataFragment);
-                PAGE_COUNTER = 1;
                 break;
             case 1 :
                 navController.navigate(R.id.action_DataFragment_to_StartFragment);
-                PAGE_COUNTER = 0;
                 break;
             case 2 :
                 navController.navigate(R.id.action_CoordsFragment_to_DataFragment);
-                PAGE_COUNTER = 1;
                 break;
             case 3 :
                 navController.navigate(R.id.action_BaseFragment_to_DataFragment);
-                PAGE_COUNTER = 1;
                 break;
         }
 
@@ -443,11 +433,12 @@ public class MainActivity extends AppCompatActivity {
                     Toast.LENGTH_LONG).show();
             return false;
         }
-        else if( !((RadioButton)findViewById(R.id.radio_left)).isChecked() &&
-                !((RadioButton)findViewById(R.id.radio_right)).isChecked() ){
-            Toast.makeText(this, "A nyomvonal által közbezárt szög bal/jobb helyének megadása szükséges.",
-                    Toast.LENGTH_LONG).show();
-            return false;
+        else if(!((RadioButton)findViewById(R.id.radio_left)).isChecked() &&
+                !((RadioButton)findViewById(R.id.radio_right)).isChecked()){
+            
+                Toast.makeText(this, "A nyomvonal által közbezárt szög bal/jobb helyének megadása szükséges.",
+                        Toast.LENGTH_LONG).show();
+                return false;
         }
         else if(((EditText) findViewById(R.id.input_angle)).getText().toString().isEmpty()){
             Toast.makeText(this, "A nyomvonal által közbezárt szög értékének megadása szükséges.",
@@ -514,17 +505,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        PAGE_COUNTER--;
-        }
-
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
-        PAGE_COUNTER = 0;
-        BASE_DATA = null;
+        System.exit(0);
     }
 
 }

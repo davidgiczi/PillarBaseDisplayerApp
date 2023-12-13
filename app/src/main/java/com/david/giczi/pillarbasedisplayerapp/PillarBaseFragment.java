@@ -23,6 +23,7 @@ public class PillarBaseFragment extends Fragment {
             Bundle savedInstanceState
     ) {
         fragmentBaseBinding = FragmentBaseBinding.inflate(inflater, container, false);
+        ((MainActivity) getActivity()).PAGE_COUNTER = 3;
         return fragmentBaseBinding.getRoot();
 
     }

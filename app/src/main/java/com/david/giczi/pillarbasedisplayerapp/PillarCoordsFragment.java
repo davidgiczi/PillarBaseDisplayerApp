@@ -24,6 +24,7 @@ public class PillarCoordsFragment extends Fragment {
         fragmentCoordsBinding = FragmentCoordsBinding.inflate(inflater, container, false);
         calcPillarBaseCoordinates();
         displayPillarBaseCoordinates();
+        ((MainActivity) getActivity()).PAGE_COUNTER = 2;
         return fragmentCoordsBinding.getRoot();
     }
 
@@ -77,6 +78,9 @@ public class PillarCoordsFragment extends Fragment {
             calculatorForPlateBase.setVerticalSizeOfHole(Double.parseDouble(inputData.get(8)));
             calculatorForPlateBase.setHorizontalDistanceFromTheSideOfHole(Double.parseDouble(inputData.get(9)));
             calculatorForPlateBase.setVerticalDistanceFromTheSideOfHole(Double.parseDouble(inputData.get(10)));
+            calculatorForPlateBase.setAngleValueBetweenMainPath(Double.parseDouble(inputData.get(11)));
+            calculatorForPlateBase.setAngularMinuteValueBetweenMainPath(Double.parseDouble(inputData.get(12)));
+            calculatorForPlateBase.setAngularSecondValueBetweenMainPath(Double.parseDouble(inputData.get(13)));
             if ("0".equals(inputData.get(14))) {
                 calculatorForPlateBase.setSideOfAngle(true);
             } else {

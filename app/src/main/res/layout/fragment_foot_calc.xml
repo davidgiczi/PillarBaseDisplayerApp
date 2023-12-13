@@ -43,6 +43,7 @@
         android:maxLength="8"
         android:textColor="@color/data_text"
         android:textSize="16sp"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/topDivider"
         tools:ignore="TouchTargetSizeCheck" />
@@ -76,6 +77,7 @@
         android:maxLength="8"
         android:textColor="@color/data_text"
         android:textSize="16sp"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/input_value_of_foot_distance"
         tools:ignore="TouchTargetSizeCheck" />
@@ -110,6 +112,7 @@
         android:maxLength="8"
         android:textColor="@color/data_text"
         android:textSize="16sp"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/input_value_illesztesi_sik"
         tools:ignore="TouchTargetSizeCheck" />

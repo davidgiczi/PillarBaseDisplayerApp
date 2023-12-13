@@ -289,9 +289,9 @@ public class PillarCoordsForWeightBase {
 		
 		if( angleValueBetweenMainPath == 180 &&
 				angularMinuteValueBetweenMainPath == 0 &&
-						angularSecondValueBetweenMainPath == 0 )
+						angularSecondValueBetweenMainPath == 0 ){
 			return;
-		
+		}
 			AzimuthAndDistance azimuth = new AzimuthAndDistance(pillarCenterPoint, axisDirectionPoint);
 			PolarPoint forwardPoint = 
 					new PolarPoint(pillarCenterPoint, 20d, azimuth.calcAzimuth(), pillarCenterPoint.getPointID() + "_25");
