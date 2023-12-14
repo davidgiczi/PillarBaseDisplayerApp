@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_StartFragment_to_DataFragment"
             app:destination="@id/DataFragment" />
+        <action
+            android:id="@+id/action_StartFragment_to_BaseFragment"
+            app:destination="@id/BaseFragment" />
     </fragment>
     <fragment
         android:id="@+id/DataFragment"

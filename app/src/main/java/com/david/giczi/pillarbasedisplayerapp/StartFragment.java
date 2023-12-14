@@ -23,7 +23,7 @@ public class StartFragment extends Fragment {
     ) {
         fragmentStartBinding = FragmentStartBinding.inflate(inflater, container,false);
         addBackgroundImage();
-        ((MainActivity) getActivity()).PAGE_COUNTER = 0;
+        MainActivity.PAGE_COUNTER = 0;
         return fragmentStartBinding.getRoot();
 
     }

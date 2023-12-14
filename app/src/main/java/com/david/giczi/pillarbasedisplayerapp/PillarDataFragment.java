@@ -6,18 +6,10 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.RadioButton;
-import android.widget.Spinner;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
 import com.david.giczi.pillarbasedisplayerapp.databinding.FragmentDataBinding;
-
-import java.util.Arrays;
 import java.util.List;
 
 public class PillarDataFragment extends Fragment {
@@ -30,7 +22,7 @@ public class PillarDataFragment extends Fragment {
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         fragmentDataBinding = FragmentDataBinding.inflate(inflater, container, false);
-        if( !((MainActivity) getActivity()).IS_WEIGHT_BASE ){
+        if( !MainActivity.IS_WEIGHT_BASE ){
             fragmentDataBinding.inputDistanceOfDirectionPoints.setVisibility(View.INVISIBLE);
             fragmentDataBinding.inputFootDistancePerpendicularly
                     .setHint(R.string.distance_from_side_of_hole_of_base_perpendicularly);
@@ -38,7 +30,7 @@ public class PillarDataFragment extends Fragment {
                     .setHint(R.string.distance_from_side_of_hole_of_base_parallel);
         }
         displayInputData();
-        ((MainActivity) getActivity()).PAGE_COUNTER = 1;
+        MainActivity.PAGE_COUNTER = 1;
         return fragmentDataBinding.getRoot();
     }
 
@@ -107,7 +99,7 @@ public class PillarDataFragment extends Fragment {
         fragmentDataBinding = null;
     }
     private void displayInputData(){
-        List<String> inputData =  ((MainActivity) getActivity()).BASE_DATA;
+        List<String> inputData =  MainActivity.BASE_DATA;
         if( inputData == null || inputData.isEmpty() ){
             return;
         }
@@ -118,10 +110,7 @@ public class PillarDataFragment extends Fragment {
         fragmentDataBinding.inputNextPrevYCoordinate.setText(inputData.get(5));
         fragmentDataBinding.inputNextPrevXCoordinate.setText(inputData.get(6));
 
-        if( ((MainActivity) getActivity()).BASE_TYPE[0].equals(inputData.get(0)) ){
-            MainActivity.IS_WEIGHT_BASE = true;
-            ((MainActivity) getActivity()).optionMenu.findItem(R.id.weight_base).setTitle(R.string.ticked_weight_base_option);
-            ((MainActivity) getActivity()).optionMenu.findItem(R.id.plate_base).setTitle(R.string.plate_base_option);
+        if( MainActivity.IS_WEIGHT_BASE ){
             fragmentDataBinding.inputDistanceOfDirectionPoints.setVisibility(View.VISIBLE);
             fragmentDataBinding.inputDistanceOfDirectionPoints.setText(inputData.get(7));
             fragmentDataBinding.inputFootDistancePerpendicularly.setText(inputData.get(8));
@@ -139,10 +128,7 @@ public class PillarDataFragment extends Fragment {
             fragmentDataBinding.inputMin.setText(inputData.get(13));
             fragmentDataBinding.inputSec.setText(inputData.get(14));
         }
-        else if( ((MainActivity) getActivity()).BASE_TYPE[1].equals(inputData.get(0)) ) {
-            MainActivity.IS_WEIGHT_BASE = false;
-            ((MainActivity) getActivity()). optionMenu.findItem(R.id.weight_base).setTitle(R.string.weight_base_option);
-            ((MainActivity) getActivity()).optionMenu.findItem(R.id.plate_base).setTitle(R.string.ticked_plate_base_option);
+        else {
             fragmentDataBinding.inputDistanceOfDirectionPoints.setVisibility(View.INVISIBLE);
             fragmentDataBinding.inputHoleDistancePerpendicularly.setText(inputData.get(7));
             fragmentDataBinding.inputHoleDistanceParallel.setText(inputData.get(8));

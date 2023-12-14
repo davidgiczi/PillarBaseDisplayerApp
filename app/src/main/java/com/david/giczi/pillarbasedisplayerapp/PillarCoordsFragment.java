@@ -6,15 +6,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.fragment.NavHostFragment;
 import com.david.giczi.pillarbasedisplayerapp.databinding.FragmentCoordsBinding;
-
 import java.util.List;
 
 public class PillarCoordsFragment extends Fragment {
 
     private FragmentCoordsBinding fragmentCoordsBinding;
-    private List<Point> pillarBaseCoordinates;
+
 
     @Override
     public View onCreateView(
@@ -24,7 +22,7 @@ public class PillarCoordsFragment extends Fragment {
         fragmentCoordsBinding = FragmentCoordsBinding.inflate(inflater, container, false);
         calcPillarBaseCoordinates();
         displayPillarBaseCoordinates();
-        ((MainActivity) getActivity()).PAGE_COUNTER = 2;
+        MainActivity.PAGE_COUNTER = 2;
         return fragmentCoordsBinding.getRoot();
     }
 
@@ -39,12 +37,14 @@ public class PillarCoordsFragment extends Fragment {
     }
 
     private void calcPillarBaseCoordinates(){
-
-        List<String> inputData =  ((MainActivity) getActivity()).BASE_DATA;
-        if( inputData == null || inputData.isEmpty() ){
+        List<String> inputData;
+        if( MainActivity.BASE_DATA == null ){
             return;
         }
-
+        else {
+          inputData = MainActivity.BASE_DATA;
+        }
+    inputData.forEach(d -> System.out.println(d));
         Point center = new Point(inputData.get(1),
                 Double.parseDouble(inputData.get(2)),
                 Double.parseDouble(inputData.get(3)));
@@ -52,7 +52,7 @@ public class PillarCoordsFragment extends Fragment {
                 Double.parseDouble(inputData.get(5)),
                 Double.parseDouble(inputData.get(6)));
 
-        if( ((MainActivity) getActivity()).IS_WEIGHT_BASE ){
+        if( MainActivity.IS_WEIGHT_BASE ){
         PillarCoordsForWeightBase calculatorForWeightBase =
                 new PillarCoordsForWeightBase(center, direction);
         calculatorForWeightBase.setDistanceOnTheAxis(Double.parseDouble(inputData.get(7)));
@@ -69,7 +69,7 @@ public class PillarCoordsFragment extends Fragment {
                 calculatorForWeightBase.setSideOfAngle(false);
             }
             calculatorForWeightBase.calculatePillarPoints();
-            pillarBaseCoordinates = calculatorForWeightBase.getPillarPoints();
+            MainActivity.PILLAR_BASE_COORDINATES = calculatorForWeightBase.getPillarPoints();
         }
         else{
             PillarCoordsForPlateBase calculatorForPlateBase =
@@ -87,23 +87,24 @@ public class PillarCoordsFragment extends Fragment {
                 calculatorForPlateBase.setSideOfAngle(false);
             }
             calculatorForPlateBase.calculatePillarPoints();
-            pillarBaseCoordinates = calculatorForPlateBase.getPillarPoints();
+            MainActivity.PILLAR_BASE_COORDINATES = calculatorForPlateBase.getPillarPoints();
+
         }
-        pillarBaseCoordinates.add(direction);
+        MainActivity.PILLAR_BASE_COORDINATES.add(direction);
     }
 
     private void displayPillarBaseCoordinates(){
 
         StringBuilder sb = new StringBuilder();
 
-        for (Point pillarBaseCoordinate : pillarBaseCoordinates) {
+        for (Point pillarBaseCoordinate : MainActivity.PILLAR_BASE_COORDINATES) {
             sb.append(pillarBaseCoordinate.getPointID())
             .append("\n")
             .append("\n");
         }
         fragmentCoordsBinding.pointId.setText(sb.toString());
         sb.delete(0, sb.length());
-        for (Point pillarBaseCoordinate : pillarBaseCoordinates) {
+        for (Point pillarBaseCoordinate : MainActivity.PILLAR_BASE_COORDINATES) {
             sb.append(pillarBaseCoordinate)
             .append("\n")
             .append("\n");

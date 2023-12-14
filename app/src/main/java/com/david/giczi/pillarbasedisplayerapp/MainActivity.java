@@ -47,8 +47,9 @@ public class MainActivity extends AppCompatActivity {
     public Menu optionMenu;
     public static List<String> BASE_DATA;
     public static final String[] BASE_TYPE = {"#WeightBase", "#PlateBase"};
-    public static boolean IS_WEIGHT_BASE = true;
+    public static boolean IS_WEIGHT_BASE;
     public static int PAGE_COUNTER;
+    public static List<Point> PILLAR_BASE_COORDINATES;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         PAGE_COUNTER = 0;
         BASE_DATA = new ArrayList<>();
+        //navController.navigate(R.id.action_StartFragment_to_BaseFragment);
     }
 
     @Override
@@ -286,9 +288,20 @@ public class MainActivity extends AppCompatActivity {
         }catch (IOException e){
             e.printStackTrace();
         }finally {
+
             if( !BASE_DATA.get(0).equals(BASE_TYPE[0])
                     && !BASE_DATA.get(0).equals(BASE_TYPE[1]) ){
                 BASE_DATA.clear();
+            }
+            else if( BASE_DATA.get(0).equals(BASE_TYPE[0]) ){
+                IS_WEIGHT_BASE = true;
+                optionMenu.findItem(R.id.weight_base).setTitle(R.string.ticked_weight_base_option);
+                optionMenu.findItem(R.id.plate_base).setTitle(R.string.plate_base_option);
+            }
+            else if( BASE_DATA.get(0).equals(BASE_TYPE[1]) ){
+                IS_WEIGHT_BASE = false;
+                optionMenu.findItem(R.id.weight_base).setTitle(R.string.weight_base_option);
+                optionMenu.findItem(R.id.plate_base).setTitle(R.string.ticked_plate_base_option);
             }
         }
         gotoDataFragment();

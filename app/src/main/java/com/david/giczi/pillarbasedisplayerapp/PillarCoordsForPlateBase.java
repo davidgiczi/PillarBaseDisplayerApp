@@ -244,9 +244,6 @@ public class PillarCoordsForPlateBase {
 }
 
 	private void calculateMainLinePoints() {
-		System.out.println("angle: " + angleValueBetweenMainPath);
-		System.out.println("min: " + angularMinuteValueBetweenMainPath);
-		System.out.println("sec: " + angularSecondValueBetweenMainPath);
 
 		if( angleValueBetweenMainPath == 180 &&
 				angularMinuteValueBetweenMainPath == 0 &&
