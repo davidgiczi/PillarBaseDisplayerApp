@@ -44,7 +44,7 @@ public class PillarCoordsFragment extends Fragment {
         else {
           inputData = MainActivity.BASE_DATA;
         }
-    inputData.forEach(d -> System.out.println(d));
+
         Point center = new Point(inputData.get(1),
                 Double.parseDouble(inputData.get(2)),
                 Double.parseDouble(inputData.get(3)));
@@ -71,7 +71,7 @@ public class PillarCoordsFragment extends Fragment {
             calculatorForWeightBase.calculatePillarPoints();
             MainActivity.PILLAR_BASE_COORDINATES = calculatorForWeightBase.getPillarPoints();
         }
-        else{
+        else {
             PillarCoordsForPlateBase calculatorForPlateBase =
                     new PillarCoordsForPlateBase(center, direction);
             calculatorForPlateBase.setHorizontalSizeOfHole(Double.parseDouble(inputData.get(7)));

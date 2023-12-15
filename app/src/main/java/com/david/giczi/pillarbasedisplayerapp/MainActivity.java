@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
     public Menu optionMenu;
     public static List<String> BASE_DATA;
     public static final String[] BASE_TYPE = {"#WeightBase", "#PlateBase"};
-    public static boolean IS_WEIGHT_BASE;
+    public static boolean IS_WEIGHT_BASE = true;
     public static int PAGE_COUNTER;
     public static List<Point> PILLAR_BASE_COORDINATES;
 
@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         PAGE_COUNTER = 0;
         BASE_DATA = new ArrayList<>();
-        //navController.navigate(R.id.action_StartFragment_to_BaseFragment);
+        navController.navigate(R.id.action_StartFragment_to_BaseFragment);
     }
 
     @Override
@@ -165,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
             }
     }
 
-    public void getDataFragmentForPlateBase(){
+    private void getDataFragmentForPlateBase(){
         EditText inputForDirectionDistance = (EditText) findViewById(R.id.input_distance_of_direction_points);
         if( inputForDirectionDistance == null){
             return;
@@ -177,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
         inputForParallelFootDistance.setHint(R.string.distance_from_side_of_hole_of_base_parallel);
     }
 
-    public void getDataFragmentForWeightBase(){
+    private void getDataFragmentForWeightBase(){
         EditText inputForDirectionDistance = (EditText) findViewById(R.id.input_distance_of_direction_points);
         if( inputForDirectionDistance == null){
             return;
@@ -501,10 +501,10 @@ public class MainActivity extends AppCompatActivity {
         BASE_DATA.add(((EditText) findViewById(R.id.input_sec)).getText().toString());
    }
         else {
-        BASE_DATA.add(((EditText) findViewById(R.id.input_foot_distance_perpendicularly)).getText().toString());
-        BASE_DATA.add(((EditText) findViewById(R.id.input_foot_distance_parallel)).getText().toString());
         BASE_DATA.add(((EditText) findViewById(R.id.input_hole_distance_perpendicularly)).getText().toString());
         BASE_DATA.add(((EditText) findViewById(R.id.input_hole_distance_parallel)).getText().toString());
+        BASE_DATA.add(((EditText) findViewById(R.id.input_foot_distance_perpendicularly)).getText().toString());
+        BASE_DATA.add(((EditText) findViewById(R.id.input_foot_distance_parallel)).getText().toString());
         BASE_DATA.add(((EditText) findViewById(R.id.input_angle)).getText().toString());
         BASE_DATA.add(((EditText) findViewById(R.id.input_min)).getText().toString());
         BASE_DATA.add(((EditText) findViewById(R.id.input_sec)).getText().toString());
