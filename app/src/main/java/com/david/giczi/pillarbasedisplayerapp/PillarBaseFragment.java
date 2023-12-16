@@ -17,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import com.david.giczi.pillarbasedisplayerapp.databinding.FragmentBaseBinding;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -29,8 +30,11 @@ public class PillarBaseFragment extends Fragment {
     private static float X_CENTER;
     private static float Y_CENTER;
     private static float MM;
-    private static final float SCALE = 400F;
+    private static float SCALE;
     private static List<Point> transformedPillarBasePoints;
+    private final List<String> LETTERS = Arrays.asList(
+            "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L",
+    "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z");
 
     @Override
     public View onCreateView(
@@ -51,6 +55,7 @@ public class PillarBaseFragment extends Fragment {
         fragmentBaseBinding.drawingBase.setImageBitmap(bitmap);
         MainActivity.PAGE_COUNTER = 3;
         if(MainActivity.PILLAR_BASE_COORDINATES != null ){
+            setScaleValue();
             transformPillarBasePoints();
             addNorthSign();
             drawCircleForPoints();
@@ -68,6 +73,46 @@ public class PillarBaseFragment extends Fragment {
             }
         }
         return fragmentBaseBinding.getRoot();
+    }
+
+    private void setScaleValue(){
+        if( MainActivity.IS_WEIGHT_BASE ){
+            if( Double.parseDouble(MainActivity.BASE_DATA.get(8)) < 5 ||
+                    Double.parseDouble(MainActivity.BASE_DATA.get(9)) < 5){
+                SCALE = 150F;
+            }
+            else if(Double.parseDouble(MainActivity.BASE_DATA.get(8)) >= 5 &&
+                    Double.parseDouble(MainActivity.BASE_DATA.get(8)) < 9){
+                SCALE = 400F;
+            }
+            else if(Double.parseDouble(MainActivity.BASE_DATA.get(9)) >= 5 &&
+                    Double.parseDouble(MainActivity.BASE_DATA.get(9)) < 9){
+                SCALE = 400F;
+            }
+            else if( Double.parseDouble(MainActivity.BASE_DATA.get(8)) >= 9 ||
+                    Double.parseDouble(MainActivity.BASE_DATA.get(9)) >= 9){
+                SCALE = 500F;
+            }
+        }
+        else {
+
+            if( Double.parseDouble(MainActivity.BASE_DATA.get(7)) < 5 ||
+                    Double.parseDouble(MainActivity.BASE_DATA.get(8)) < 5){
+                SCALE = 150F;
+            }
+            else if(Double.parseDouble(MainActivity.BASE_DATA.get(7)) >= 5 &&
+                    Double.parseDouble(MainActivity.BASE_DATA.get(7)) <= 10){
+                SCALE = 400F;
+            }
+            else if(Double.parseDouble(MainActivity.BASE_DATA.get(8)) >= 5 &&
+                    Double.parseDouble(MainActivity.BASE_DATA.get(8)) <= 10){
+                SCALE = 400F;
+            }
+            else if( Double.parseDouble(MainActivity.BASE_DATA.get(7)) > 10 ||
+                    Double.parseDouble(MainActivity.BASE_DATA.get(8)) >10){
+                SCALE = 500F;
+            }
+        }
     }
 
     private void addNorthSign(){
@@ -99,7 +144,9 @@ public class PillarBaseFragment extends Fragment {
         paint.setStyle(Paint.Style.FILL);
         paint.setTypeface(Typeface.DEFAULT_BOLD);
         paint.setTextSize(size);
-        canvas.drawText(pillarBasePoint.getPointID(), (float) pillarBasePoint.getX_coord(),
+        String[] idValues = pillarBasePoint.getPointID().split("\\s+");
+        canvas.drawText((idValues.length == 2 ? idValues[0] + idValues[1] :
+                        pillarBasePoint.getPointID()), (float) pillarBasePoint.getX_coord(),
                 (float) pillarBasePoint.getY_coord() - 2 * MM, paint);
     }
     private void drawTextsForPillarBase(){
@@ -111,37 +158,56 @@ public class PillarBaseFragment extends Fragment {
         paint.setStyle(Paint.Style.FILL);
         paint.setTypeface(Typeface.DEFAULT_BOLD);
         paint.setTextSize(40);
-        canvas.drawText("M= 1:400",
+        canvas.drawText("M= 1:" + (int) SCALE,
                 3 * MM, getResources().getDisplayMetrics().heightPixels - 8 * MM, paint);
-        canvas.drawText(centerPoint.getPointID() + ". és "
-                        + directionPoint.getPointID() + ". oszlopok távolsága: " +
+        String[] centerIdValues = centerPoint.getPointID().split("\\s+");
+        String[] directionIdValues = directionPoint.getPointID().split("\\s+");
+        canvas.drawText((centerIdValues.length == 2 ?
+                        centerIdValues[0] + centerIdValues[1] : centerPoint.getPointID() )+ ". és "
+                        + (directionIdValues.length == 2 ?
+                       directionIdValues[0] + directionIdValues[1] : directionPoint.getPointID())
+                        + ". oszlopok távolsága: " +
         String.format( "%.3fm", mainLineDistance.calcDistance()).replace(",", "."),
                3 * MM, getResources().getDisplayMetrics().heightPixels - 3 * MM, paint);
         paint.setColor(Color.LTGRAY);
         for(int i = 1; i < transformedPillarBasePoints.size() - 1; i++){
-            canvas.drawText(transformedPillarBasePoints.get(i).getPointID(),
+            String[] idValues = transformedPillarBasePoints.get(i).getPointID().split("\\s+");
+            canvas.drawText((idValues.length == 2 ? idValues[0] + idValues[1]  :
+                            transformedPillarBasePoints.get(i).getPointID()),
                     (float)  (transformedPillarBasePoints.get(i).getX_coord() - 2 * MM),
                     (float) (transformedPillarBasePoints.get(i).getY_coord() - 2 * MM), paint);
         }
     }
-    private void drawLegNameForPlateBase(){
-        int mainPillarID;
-        int directionPillarID;
-        try {
-            mainPillarID = Integer.parseInt(transformedPillarBasePoints.get(0).getPointID());
-            directionPillarID = Integer
-                    .parseInt(transformedPillarBasePoints
-                    .get(transformedPillarBasePoints.size() - 1).getPointID());
-            if( mainPillarID == directionPillarID ) {
-                return;
-            }
-        } catch (NumberFormatException n) {
-            return;
+    private boolean isPillarIdIncreased(){
+        String[] centerIdValues = transformedPillarBasePoints.get(0).getPointID().split("\\s+");
+        String[] directionIdValues = transformedPillarBasePoints
+                .get(transformedPillarBasePoints.size() - 1)
+                .getPointID().split("\\s+");
+        try{
+
+          if( Integer.parseInt(directionIdValues[0]) >= Integer.parseInt(centerIdValues[0]) ){
+              return true;
+          }
         }
+        catch (NumberFormatException e){
+        }
+        try{
+            if( centerIdValues.length == 2 && directionIdValues.length == 2 &&
+                    Integer.parseInt(directionIdValues[1]) > Integer.parseInt(centerIdValues[1])){
+                return true;
+            }
+        }
+        catch (NumberFormatException e){
+
+        }
+
+        return false;
+    }
+    private void drawLegNameForPlateBase(){
         paint.setColor(Color.RED);
         paint.setStyle(Paint.Style.FILL);
         paint.setTextSize(100);
-        if( mainPillarID < directionPillarID ){
+        if( isPillarIdIncreased() ){
             AzimuthAndDistance dataA =
                     new AzimuthAndDistance(transformedPillarBasePoints.get(0), transformedPillarBasePoints.get(1));
             PolarPoint posA = new PolarPoint(transformedPillarBasePoints.get(0),
@@ -196,23 +262,10 @@ public class PillarBaseFragment extends Fragment {
     }
 
     private void drawLegNameForWeightBase(){
-        int mainPillarID;
-        int directionPillarID;
-        try {
-            mainPillarID = Integer.parseInt(transformedPillarBasePoints.get(0).getPointID());
-            directionPillarID = Integer
-                    .parseInt(transformedPillarBasePoints
-                            .get(transformedPillarBasePoints.size() - 1).getPointID());
-            if( mainPillarID == directionPillarID ) {
-                return;
-            }
-        } catch (NumberFormatException n) {
-            return;
-        }
         paint.setColor(Color.RED);
         paint.setStyle(Paint.Style.FILL);
         paint.setTextSize(100);
-        if( mainPillarID < directionPillarID ){
+        if( isPillarIdIncreased() ){
             AzimuthAndDistance dataA =
                     new AzimuthAndDistance(transformedPillarBasePoints.get(9), transformedPillarBasePoints.get(11));
             PolarPoint posA = new PolarPoint(transformedPillarBasePoints.get(9),
@@ -407,24 +460,58 @@ public class PillarBaseFragment extends Fragment {
     }
 
     private String getBackwardDirectionPointId(){
+        String[] centerIdValues = transformedPillarBasePoints.get(0).getPointID().split("\\s+");
+        String[] directionIdValues = transformedPillarBasePoints
+                .get(transformedPillarBasePoints.size() - 1).getPointID().split("\\s+");
         int centerPointId = 0;
         int directionPointId = 1;
         try {
-            centerPointId = Integer.parseInt(transformedPillarBasePoints.get(0).getPointID());
-            directionPointId =
-                    Integer.parseInt(transformedPillarBasePoints.
-                            get(transformedPillarBasePoints.size() - 1).getPointID());
-        }catch (NumberFormatException e){
-           try {
-               centerPointId = Integer.
-               parseInt(transformedPillarBasePoints.get(0).getPointID().substring(1));
-               directionPointId = Integer.
-                       parseInt(transformedPillarBasePoints
-                       .get(transformedPillarBasePoints.size() - 1).getPointID().substring(1));
-           } catch (NumberFormatException f){
+            if( centerIdValues.length == 1 ){
+                centerPointId = Integer.parseInt(centerIdValues[0]);
+            }
+            if( directionIdValues.length == 1 ) {
+                directionPointId = Integer.parseInt(directionIdValues[0]);
+            }
+         } catch (NumberFormatException e){
+            return directionPointId >= centerPointId ?
+                    String.valueOf( centerPointId - 1) : String.valueOf( centerPointId + 1);
+    }
 
+        try {
+            if( centerIdValues.length == 2 ){
+                centerPointId = Integer.parseInt(centerIdValues[0]);
+            }
+            if( directionIdValues.length == 2){
+                directionPointId = Integer.parseInt(directionIdValues[0]);
+            }
+            if( LETTERS.indexOf(centerIdValues[1]) == 0 ){
+                return "-1";
+            }
+            if(LETTERS.indexOf(directionIdValues[1]) >= LETTERS.indexOf(centerIdValues[1])){
+               return centerIdValues[0] + " " + LETTERS.get(LETTERS.indexOf(centerIdValues[1]) - 1);
            }
+            else if(LETTERS.indexOf(directionIdValues[1]) < LETTERS.indexOf(centerIdValues[1]) &&
+                    LETTERS.indexOf(centerIdValues[1]) + 1 < LETTERS.size()) {
+                return centerIdValues[0] + " " + LETTERS.get(LETTERS.indexOf(centerIdValues[1]) + 1);
+            }
+        }catch (NumberFormatException e){
         }
+        try {
+            if (centerIdValues.length == 2) {
+                centerPointId = Integer.parseInt(centerIdValues[1]);
+            }
+            if (directionIdValues.length == 2) {
+                directionPointId = Integer.parseInt(directionIdValues[1]);
+            }
+            if( directionPointId >= centerPointId ){
+                return centerIdValues[0] + " " + (centerPointId - 1);
+            }
+            else{
+                return centerIdValues[0] + " " + (centerPointId + 1);
+            }
+        }catch (NumberFormatException e){
+        }
+
         return directionPointId >= centerPointId ?
                 String.valueOf( centerPointId - 1) : String.valueOf( centerPointId + 1);
     }

@@ -98,9 +98,18 @@ public class PillarCoordsFragment extends Fragment {
         StringBuilder sb = new StringBuilder();
 
         for (Point pillarBaseCoordinate : MainActivity.PILLAR_BASE_COORDINATES) {
-            sb.append(pillarBaseCoordinate.getPointID())
-            .append("\n")
-            .append("\n");
+            String[] idValues = pillarBaseCoordinate.getPointID().split("\\s+");
+            if( idValues.length == 2 ){
+               sb.append(idValues[0])
+                       .append(idValues[1])
+                       .append("\n")
+                       .append("\n");
+            }
+            else {
+                sb.append(pillarBaseCoordinate.getPointID())
+                        .append("\n")
+                        .append("\n");
+            }
         }
         fragmentCoordsBinding.pointId.setText(sb.toString());
         sb.delete(0, sb.length());

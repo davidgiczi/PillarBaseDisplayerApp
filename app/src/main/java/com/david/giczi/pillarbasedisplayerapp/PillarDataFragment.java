@@ -38,22 +38,6 @@ public class PillarDataFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        fragmentDataBinding.inputPillarId.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    fragmentDataBinding.inputNextPrevPillarId
-                            .setText(fragmentDataBinding.inputPillarId.getText().toString());
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
-
         fragmentDataBinding.inputYCoordinate.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -118,11 +102,14 @@ public class PillarDataFragment extends Fragment {
             fragmentDataBinding.inputHoleDistancePerpendicularly.setText(inputData.get(10));
             fragmentDataBinding.inputHoleDistanceParallel.setText(inputData.get(11));
 
-            if( "0".equals(inputData.get(15))){
+            if(inputData.size() == 15 && "1".equals(inputData.get(15))){
+                fragmentDataBinding.radioLeft.setChecked(true);
+            }
+            else if(inputData.size() == 15 && "0".equals(inputData.get(15))){
                 fragmentDataBinding.radioRight.setChecked(true);
             }
-            else if( "1".equals(inputData.get(15))){
-                fragmentDataBinding.radioLeft.setChecked(true);
+            else {
+                fragmentDataBinding.radioRight.setChecked(true);
             }
             fragmentDataBinding.inputAngle.setText(inputData.get(12));
             fragmentDataBinding.inputMin.setText(inputData.get(13));
@@ -135,11 +122,14 @@ public class PillarDataFragment extends Fragment {
             fragmentDataBinding.inputFootDistancePerpendicularly.setText(inputData.get(9));
             fragmentDataBinding.inputFootDistanceParallel.setText(inputData.get(10));
 
-            if( "0".equals(inputData.get(14))){
+            if(inputData.size() == 14 && "1".equals(inputData.get(14))){
+                fragmentDataBinding.radioLeft.setChecked(true);
+            }
+           else if(inputData.size() == 14 && "0".equals(inputData.get(14))){
                 fragmentDataBinding.radioRight.setChecked(true);
             }
-            else if( "1".equals(inputData.get(14))){
-                fragmentDataBinding.radioLeft.setChecked(true);
+            else {
+                fragmentDataBinding.radioRight.setChecked(true);
             }
             fragmentDataBinding.inputAngle.setText(inputData.get(11));
             if( inputData.get(12).contains(".") ){
