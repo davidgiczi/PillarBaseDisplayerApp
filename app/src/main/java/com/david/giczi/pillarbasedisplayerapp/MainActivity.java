@@ -62,7 +62,6 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         PAGE_COUNTER = 0;
         BASE_DATA = new ArrayList<>();
-        navController.navigate(R.id.action_StartFragment_to_BaseFragment);
     }
 
     @Override
@@ -465,6 +464,21 @@ public class MainActivity extends AppCompatActivity {
         }
         else if(((EditText) findViewById(R.id.input_sec)).getText().toString().isEmpty() ){
             Toast.makeText(this, "A nyomvonal által közbezárt szög másodperc értékének megadása szükséges.",
+                    Toast.LENGTH_LONG).show();
+            return false;
+        }
+        else if(Integer.parseInt(((EditText) findViewById(R.id.input_angle)).getText().toString()) > 359){
+            Toast.makeText(this, "A nyomvonal által közbezárt szög fok értéke 360-nál kisebb lehet.",
+                    Toast.LENGTH_LONG).show();
+            return false;
+        }
+        else if(Integer.parseInt(((EditText) findViewById(R.id.input_min)).getText().toString()) > 59){
+            Toast.makeText(this, "A nyomvonal által közbezárt szög perc értéke 60-nál kisebb lehet.",
+                    Toast.LENGTH_LONG).show();
+            return false;
+        }
+        else if(Integer.parseInt(((EditText) findViewById(R.id.input_sec)).getText().toString()) > 59 ) {
+            Toast.makeText(this, "A nyomvonal által közbezárt szög másodperc értéke 60-nál kisebb lehet.",
                     Toast.LENGTH_LONG).show();
             return false;
         }

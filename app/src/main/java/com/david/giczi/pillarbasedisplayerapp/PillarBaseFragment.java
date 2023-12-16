@@ -59,10 +59,12 @@ public class PillarBaseFragment extends Fragment {
             if( MainActivity.IS_WEIGHT_BASE ){
                 drawPillarBaseHoleForWeightBase();
                 drawPillarAxesForWeightBase();
+                drawLegNameForWeightBase();
             }
             else {
                 drawPillarBaseHoleForPlateBase();
                 drawPillarAxesForPlateBase();
+                drawLegNameForPlateBase();
             }
         }
         return fragmentBaseBinding.getRoot();
@@ -74,7 +76,7 @@ public class PillarBaseFragment extends Fragment {
         Bitmap northSignResource = BitmapFactory.decodeResource(getResources(), R.drawable.north);
         Bitmap northSign = Bitmap.createBitmap(northSignResource, 0, 0,
                 northSignResource.getWidth(), northSignResource.getHeight(), matrix, false);
-        canvas.drawBitmap(northSign, 5 * MM, 5 * MM, paint);
+        canvas.drawBitmap(northSign, (canvas.getWidth() - northSign.getWidth()) / 2, MM, paint);
     }
 
     private void drawCircleForPoints() {
@@ -85,10 +87,10 @@ public class PillarBaseFragment extends Fragment {
         drawPillarBasePointId(transformedPillarBasePoints.get(0), Color.RED, 40);
         paint.setColor(Color.MAGENTA);
         paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(6F);
-        for (int i = 1; i < transformedPillarBasePoints.size(); i++) {
+        paint.setStrokeWidth(4F);
+        for (int i = 1; i < transformedPillarBasePoints.size() - 1; i++) {
             canvas.drawCircle((float) transformedPillarBasePoints.get(i).getX_coord(),
-                    (float) transformedPillarBasePoints.get(i).getY_coord(), MM, paint);
+                    (float) transformedPillarBasePoints.get(i).getY_coord(), 0.75F * MM, paint);
         }
     }
 
@@ -110,15 +112,161 @@ public class PillarBaseFragment extends Fragment {
         paint.setTypeface(Typeface.DEFAULT_BOLD);
         paint.setTextSize(40);
         canvas.drawText("M= 1:400",
-                5 * MM, getResources().getDisplayMetrics().heightPixels - 10 * MM, paint);
+                3 * MM, getResources().getDisplayMetrics().heightPixels - 8 * MM, paint);
         canvas.drawText(centerPoint.getPointID() + ". és "
                         + directionPoint.getPointID() + ". oszlopok távolsága: " +
         String.format( "%.3fm", mainLineDistance.calcDistance()).replace(",", "."),
-               5 * MM, getResources().getDisplayMetrics().heightPixels - 5 * MM, paint);
+               3 * MM, getResources().getDisplayMetrics().heightPixels - 3 * MM, paint);
+        paint.setColor(Color.LTGRAY);
+        for(int i = 1; i < transformedPillarBasePoints.size() - 1; i++){
+            canvas.drawText(transformedPillarBasePoints.get(i).getPointID(),
+                    (float)  (transformedPillarBasePoints.get(i).getX_coord() - 2 * MM),
+                    (float) (transformedPillarBasePoints.get(i).getY_coord() - 2 * MM), paint);
+        }
+    }
+    private void drawLegNameForPlateBase(){
+        int mainPillarID;
+        int directionPillarID;
+        try {
+            mainPillarID = Integer.parseInt(transformedPillarBasePoints.get(0).getPointID());
+            directionPillarID = Integer
+                    .parseInt(transformedPillarBasePoints
+                    .get(transformedPillarBasePoints.size() - 1).getPointID());
+            if( mainPillarID == directionPillarID ) {
+                return;
+            }
+        } catch (NumberFormatException n) {
+            return;
+        }
+        paint.setColor(Color.RED);
+        paint.setStyle(Paint.Style.FILL);
+        paint.setTextSize(100);
+        if( mainPillarID < directionPillarID ){
+            AzimuthAndDistance dataA =
+                    new AzimuthAndDistance(transformedPillarBasePoints.get(0), transformedPillarBasePoints.get(1));
+            PolarPoint posA = new PolarPoint(transformedPillarBasePoints.get(0),
+                    dataA.calcDistance() / 2, dataA.calcAzimuth(), "A");
+            canvas.drawText("A", (float) posA.calcPolarPoint().getX_coord(),
+                    (float) posA.calcPolarPoint().getY_coord(), paint);
+            AzimuthAndDistance dataB =
+                    new AzimuthAndDistance(transformedPillarBasePoints.get(0), transformedPillarBasePoints.get(2));
+            PolarPoint posB = new PolarPoint(transformedPillarBasePoints.get(0),
+                    dataB.calcDistance() / 2, dataB.calcAzimuth(), "B");
+            canvas.drawText("B", (float) posB.calcPolarPoint().getX_coord(),
+                    (float) posB.calcPolarPoint().getY_coord(), paint);
+            AzimuthAndDistance dataC =
+                    new AzimuthAndDistance(transformedPillarBasePoints.get(0), transformedPillarBasePoints.get(3));
+            PolarPoint posC = new PolarPoint(transformedPillarBasePoints.get(0),
+                    dataC.calcDistance() / 2, dataC.calcAzimuth(), "C");
+            canvas.drawText("C", (float) posC.calcPolarPoint().getX_coord(),
+                    (float) posC.calcPolarPoint().getY_coord(), paint);
+            AzimuthAndDistance dataD =
+                    new AzimuthAndDistance(transformedPillarBasePoints.get(0), transformedPillarBasePoints.get(4));
+            PolarPoint posD = new PolarPoint(transformedPillarBasePoints.get(0),
+                    dataD.calcDistance() / 2, dataD.calcAzimuth(), "D");
+            canvas.drawText("D", (float) posD.calcPolarPoint().getX_coord(),
+                    (float) posD.calcPolarPoint().getY_coord(), paint);
+        }
+        else {
+            AzimuthAndDistance dataA =
+                    new AzimuthAndDistance(transformedPillarBasePoints.get(0), transformedPillarBasePoints.get(3));
+            PolarPoint posA = new PolarPoint(transformedPillarBasePoints.get(0),
+                    dataA.calcDistance() / 2, dataA.calcAzimuth(), "A");
+            canvas.drawText("A", (float) posA.calcPolarPoint().getX_coord(),
+                    (float) posA.calcPolarPoint().getY_coord(), paint);
+            AzimuthAndDistance dataB =
+                    new AzimuthAndDistance(transformedPillarBasePoints.get(0), transformedPillarBasePoints.get(4));
+            PolarPoint posB = new PolarPoint(transformedPillarBasePoints.get(0),
+                    dataB.calcDistance() / 2, dataB.calcAzimuth(), "B");
+            canvas.drawText("B", (float) posB.calcPolarPoint().getX_coord(),
+                    (float) posB.calcPolarPoint().getY_coord(), paint);
+            AzimuthAndDistance dataC =
+                    new AzimuthAndDistance(transformedPillarBasePoints.get(0), transformedPillarBasePoints.get(1));
+            PolarPoint posC = new PolarPoint(transformedPillarBasePoints.get(0),
+                    dataC.calcDistance() / 2, dataC.calcAzimuth(), "C");
+            canvas.drawText("C", (float) posC.calcPolarPoint().getX_coord(),
+                    (float) posC.calcPolarPoint().getY_coord(), paint);
+            AzimuthAndDistance dataD =
+                    new AzimuthAndDistance(transformedPillarBasePoints.get(0), transformedPillarBasePoints.get(2));
+            PolarPoint posD = new PolarPoint(transformedPillarBasePoints.get(0),
+                    dataD.calcDistance() / 2, dataD.calcAzimuth(), "D");
+            canvas.drawText("D", (float) posD.calcPolarPoint().getX_coord(),
+                    (float) posD.calcPolarPoint().getY_coord(), paint);
+        }
+    }
+
+    private void drawLegNameForWeightBase(){
+        int mainPillarID;
+        int directionPillarID;
+        try {
+            mainPillarID = Integer.parseInt(transformedPillarBasePoints.get(0).getPointID());
+            directionPillarID = Integer
+                    .parseInt(transformedPillarBasePoints
+                            .get(transformedPillarBasePoints.size() - 1).getPointID());
+            if( mainPillarID == directionPillarID ) {
+                return;
+            }
+        } catch (NumberFormatException n) {
+            return;
+        }
+        paint.setColor(Color.RED);
+        paint.setStyle(Paint.Style.FILL);
+        paint.setTextSize(100);
+        if( mainPillarID < directionPillarID ){
+            AzimuthAndDistance dataA =
+                    new AzimuthAndDistance(transformedPillarBasePoints.get(9), transformedPillarBasePoints.get(11));
+            PolarPoint posA = new PolarPoint(transformedPillarBasePoints.get(9),
+                    dataA.calcDistance() / 2, dataA.calcAzimuth(), "A");
+            canvas.drawText("A", (float) posA.calcPolarPoint().getX_coord(),
+                    (float) posA.calcPolarPoint().getY_coord(), paint);
+            AzimuthAndDistance dataB =
+                    new AzimuthAndDistance(transformedPillarBasePoints.get(23), transformedPillarBasePoints.get(21));
+            PolarPoint posB = new PolarPoint(transformedPillarBasePoints.get(23),
+                    dataB.calcDistance() / 2, dataB.calcAzimuth(), "B");
+            canvas.drawText("B", (float) posB.calcPolarPoint().getX_coord(),
+                    (float) posB.calcPolarPoint().getY_coord(), paint);
+            AzimuthAndDistance dataC =
+                    new AzimuthAndDistance(transformedPillarBasePoints.get(20), transformedPillarBasePoints.get(18));
+            PolarPoint posC = new PolarPoint(transformedPillarBasePoints.get(20),
+                    dataC.calcDistance() / 2, dataC.calcAzimuth(), "C");
+            canvas.drawText("C", (float) posC.calcPolarPoint().getX_coord(),
+                    (float) posC.calcPolarPoint().getY_coord(), paint);
+            AzimuthAndDistance dataD =
+                    new AzimuthAndDistance(transformedPillarBasePoints.get(13), transformedPillarBasePoints.get(15));
+            PolarPoint posD = new PolarPoint(transformedPillarBasePoints.get(13),
+                    dataD.calcDistance() / 2, dataD.calcAzimuth(), "D");
+            canvas.drawText("D", (float) posD.calcPolarPoint().getX_coord(),
+                    (float) posD.calcPolarPoint().getY_coord(), paint);
+        }
+        else {
+            AzimuthAndDistance dataA =
+                    new AzimuthAndDistance(transformedPillarBasePoints.get(20), transformedPillarBasePoints.get(18));
+            PolarPoint posA = new PolarPoint(transformedPillarBasePoints.get(20),
+                    dataA.calcDistance() / 2, dataA.calcAzimuth(), "A");
+            canvas.drawText("A", (float) posA.calcPolarPoint().getX_coord(),
+                    (float) posA.calcPolarPoint().getY_coord(), paint);
+            AzimuthAndDistance dataB =
+                    new AzimuthAndDistance(transformedPillarBasePoints.get(13), transformedPillarBasePoints.get(15));
+            PolarPoint posB = new PolarPoint(transformedPillarBasePoints.get(13),
+                    dataB.calcDistance() / 2, dataB.calcAzimuth(), "B");
+            canvas.drawText("B", (float) posB.calcPolarPoint().getX_coord(),
+                    (float) posB.calcPolarPoint().getY_coord(), paint);
+            AzimuthAndDistance dataC =
+                    new AzimuthAndDistance(transformedPillarBasePoints.get(9), transformedPillarBasePoints.get(11));
+            PolarPoint posC = new PolarPoint(transformedPillarBasePoints.get(9),
+                    dataC.calcDistance() / 2, dataC.calcAzimuth(), "C");
+            canvas.drawText("C", (float) posC.calcPolarPoint().getX_coord(),
+                    (float) posC.calcPolarPoint().getY_coord(), paint);
+            AzimuthAndDistance dataD =
+                    new AzimuthAndDistance(transformedPillarBasePoints.get(23), transformedPillarBasePoints.get(21));
+            PolarPoint posD = new PolarPoint(transformedPillarBasePoints.get(23),
+                    dataD.calcDistance() / 2, dataD.calcAzimuth(), "D");
+            canvas.drawText("D", (float) posD.calcPolarPoint().getX_coord(),
+                    (float) posD.calcPolarPoint().getY_coord(), paint);
+        }
     }
 
     private void drawMainLineDirections(){
-        paint.setColor(Color.MAGENTA);
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(5F);
        switch ( transformedPillarBasePoints.size() ){
@@ -138,6 +286,7 @@ public class PillarBaseFragment extends Fragment {
     }
 
     private void drawMainLineDirectionForNormalPlateBase(){
+        paint.setColor(Color.MAGENTA);
         AzimuthAndDistance mainLineData =
                 new AzimuthAndDistance(transformedPillarBasePoints.get(0),
                         transformedPillarBasePoints.get(6));
@@ -156,19 +305,62 @@ public class PillarBaseFragment extends Fragment {
     }
 
     private void drawMainLineDirectionForNormalWeightBase(){
-        drawArrow(transformedPillarBasePoints.get(0), transformedPillarBasePoints.get(1));
-        drawPillarBasePointId(transformedPillarBasePoints.get(1), Color.RED, 40);
+        paint.setColor(Color.MAGENTA);
+        AzimuthAndDistance mainLineData =
+                new AzimuthAndDistance(transformedPillarBasePoints.get(0),
+                        transformedPillarBasePoints.get(1));
+        PolarPoint startPoint = new PolarPoint(transformedPillarBasePoints.get(1),
+                1.5F * MM, mainLineData.calcAzimuth(), "startForwardDirection");
+        PolarPoint endPoint = new PolarPoint(startPoint.calcPolarPoint(),
+                10 * MM, mainLineData.calcAzimuth(),
+                transformedPillarBasePoints.get(transformedPillarBasePoints.size() - 1).getPointID());
+        canvas.drawLine(
+                (float) startPoint.calcPolarPoint().getX_coord(),
+                (float) startPoint.calcPolarPoint().getY_coord(),
+                (float) endPoint.calcPolarPoint().getX_coord(),
+                (float) endPoint.calcPolarPoint().getY_coord(), paint);
+        drawArrow(transformedPillarBasePoints.get(0), endPoint.calcPolarPoint());
+        drawPillarBasePointId(endPoint.calcPolarPoint(), Color.RED, 40);
     }
 
     private void drawMainLineDirectionForRotatedPlateBase(){
-
+        paint.setColor(Color.MAGENTA);
+        AzimuthAndDistance mainLineData = new AzimuthAndDistance(transformedPillarBasePoints.get(0),
+                transformedPillarBasePoints.get(transformedPillarBasePoints.size() - 3));
+        PolarPoint startPoint = new PolarPoint(transformedPillarBasePoints.get(0), 1.5 * MM,
+                mainLineData.calcAzimuth(), "startForwardDirectionPoint");
+        PolarPoint endPoint = new PolarPoint(startPoint.calcPolarPoint(), 30 * MM,
+                mainLineData.calcAzimuth(),
+                transformedPillarBasePoints.get(transformedPillarBasePoints.size() - 1).getPointID());
+        canvas.drawLine(
+                (float) startPoint.calcPolarPoint().getX_coord(),
+                (float) startPoint.calcPolarPoint().getY_coord(),
+                (float) endPoint.calcPolarPoint().getX_coord(),
+                (float) endPoint.calcPolarPoint().getY_coord(), paint);
+        drawArrow(transformedPillarBasePoints.get(0), endPoint.calcPolarPoint());
+        drawPillarBasePointId(endPoint.calcPolarPoint(), Color.RED, 40);
+        paint.setColor(Color.MAGENTA);
+        mainLineData = new AzimuthAndDistance(transformedPillarBasePoints.get(0),
+                transformedPillarBasePoints.get(transformedPillarBasePoints.size() - 2));
+        startPoint = new PolarPoint(transformedPillarBasePoints.get(0), 1.5 * MM,
+                mainLineData.calcAzimuth(), "startBackwardDirectionPoint");
+        endPoint = new PolarPoint(startPoint.calcPolarPoint(), 30 * MM,
+                mainLineData.calcAzimuth(), getBackwardDirectionPointId());
+        canvas.drawLine(
+                (float) startPoint.calcPolarPoint().getX_coord(),
+                (float) startPoint.calcPolarPoint().getY_coord(),
+                (float) endPoint.calcPolarPoint().getX_coord(),
+                (float) endPoint.calcPolarPoint().getY_coord(), paint);
+        drawArrow(transformedPillarBasePoints.get(0), endPoint.calcPolarPoint());
+        drawPillarBasePointId(endPoint.calcPolarPoint(), Color.RED, 40);
     }
 
     private void drawMainLineDirectionForRotatedWeightBase(){
+    paint.setColor(Color.MAGENTA);
     AzimuthAndDistance mainLineData = new AzimuthAndDistance(transformedPillarBasePoints.get(0),
-            transformedPillarBasePoints.get(transformedPillarBasePoints.size() - 1));
+            transformedPillarBasePoints.get(transformedPillarBasePoints.size() - 3));
     PolarPoint startPoint = new PolarPoint(transformedPillarBasePoints.get(0), 1.5 * MM,
-            mainLineData.calcAzimuth(), "startDirectionPoint");
+            mainLineData.calcAzimuth(), "startForwardDirectionPoint");
     PolarPoint endPoint = new PolarPoint(startPoint.calcPolarPoint(), 30 * MM,
                 mainLineData.calcAzimuth(),
             transformedPillarBasePoints.get(transformedPillarBasePoints.size() - 1).getPointID());
@@ -179,9 +371,24 @@ public class PillarBaseFragment extends Fragment {
             (float) endPoint.calcPolarPoint().getY_coord(), paint);
     drawArrow(transformedPillarBasePoints.get(0), endPoint.calcPolarPoint());
     drawPillarBasePointId(endPoint.calcPolarPoint(), Color.RED, 40);
+        paint.setColor(Color.MAGENTA);
+        mainLineData = new AzimuthAndDistance(transformedPillarBasePoints.get(0),
+                transformedPillarBasePoints.get(transformedPillarBasePoints.size() - 2));
+        startPoint = new PolarPoint(transformedPillarBasePoints.get(0), 1.5 * MM,
+                mainLineData.calcAzimuth(), "startBackwardDirectionPoint");
+        endPoint = new PolarPoint(startPoint.calcPolarPoint(), 30 * MM,
+                mainLineData.calcAzimuth(), getBackwardDirectionPointId());
+        canvas.drawLine(
+                (float) startPoint.calcPolarPoint().getX_coord(),
+                (float) startPoint.calcPolarPoint().getY_coord(),
+                (float) endPoint.calcPolarPoint().getX_coord(),
+                (float) endPoint.calcPolarPoint().getY_coord(), paint);
+        drawArrow(transformedPillarBasePoints.get(0), endPoint.calcPolarPoint());
+        drawPillarBasePointId(endPoint.calcPolarPoint(), Color.RED, 40);
     }
 
     private void drawArrow(Point directionPoint, Point arrowLocationPoint){
+        paint.setColor(Color.MAGENTA);
         AzimuthAndDistance directionLineData = new AzimuthAndDistance(arrowLocationPoint, directionPoint);
         PolarPoint slavePoint1 = new PolarPoint(arrowLocationPoint, 2 * MM,
                 directionLineData.calcAzimuth() + Math.PI / 6, "arrow1");
@@ -197,6 +404,29 @@ public class PillarBaseFragment extends Fragment {
                 (float) arrowLocationPoint.getY_coord(),
                 (float) slavePoint2.calcPolarPoint().getX_coord(),
                 (float) slavePoint2.calcPolarPoint().getY_coord(), paint);
+    }
+
+    private String getBackwardDirectionPointId(){
+        int centerPointId = 0;
+        int directionPointId = 1;
+        try {
+            centerPointId = Integer.parseInt(transformedPillarBasePoints.get(0).getPointID());
+            directionPointId =
+                    Integer.parseInt(transformedPillarBasePoints.
+                            get(transformedPillarBasePoints.size() - 1).getPointID());
+        }catch (NumberFormatException e){
+           try {
+               centerPointId = Integer.
+               parseInt(transformedPillarBasePoints.get(0).getPointID().substring(1));
+               directionPointId = Integer.
+                       parseInt(transformedPillarBasePoints
+                       .get(transformedPillarBasePoints.size() - 1).getPointID().substring(1));
+           } catch (NumberFormatException f){
+
+           }
+        }
+        return directionPointId >= centerPointId ?
+                String.valueOf( centerPointId - 1) : String.valueOf( centerPointId + 1);
     }
 
     private void transformPillarBasePoints(){
