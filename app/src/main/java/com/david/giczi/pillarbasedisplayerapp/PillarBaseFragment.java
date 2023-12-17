@@ -185,7 +185,8 @@ public class PillarBaseFragment extends Fragment {
                 .getPointID().split("\\s+");
         try{
 
-          if( Integer.parseInt(directionIdValues[0]) >= Integer.parseInt(centerIdValues[0]) ){
+          if(centerIdValues.length == 1 && directionIdValues.length == 1 &&
+                  Integer.parseInt(directionIdValues[0]) >= Integer.parseInt(centerIdValues[0]) ){
               return true;
           }
         }
@@ -193,7 +194,7 @@ public class PillarBaseFragment extends Fragment {
         }
         try{
             if( centerIdValues.length == 2 && directionIdValues.length == 2 &&
-                    Integer.parseInt(directionIdValues[1]) > Integer.parseInt(centerIdValues[1])){
+                    Integer.parseInt(directionIdValues[1]) >= Integer.parseInt(centerIdValues[1])){
                 return true;
             }
         }
@@ -484,13 +485,15 @@ public class PillarBaseFragment extends Fragment {
             if( directionIdValues.length == 2){
                 directionPointId = Integer.parseInt(directionIdValues[0]);
             }
-            if( LETTERS.indexOf(centerIdValues[1]) == 0 ){
+            if( centerIdValues.length == 2 && LETTERS.indexOf(centerIdValues[1]) == 0 ){
                 return "-1";
             }
-            if(LETTERS.indexOf(directionIdValues[1]) >= LETTERS.indexOf(centerIdValues[1])){
+            if(centerIdValues.length == 2 && directionIdValues.length == 2 &&
+                    LETTERS.indexOf(directionIdValues[1]) >= LETTERS.indexOf(centerIdValues[1])){
                return centerIdValues[0] + " " + LETTERS.get(LETTERS.indexOf(centerIdValues[1]) - 1);
            }
-            else if(LETTERS.indexOf(directionIdValues[1]) < LETTERS.indexOf(centerIdValues[1]) &&
+            else if(centerIdValues.length == 2 && directionIdValues.length == 2 &&
+                    LETTERS.indexOf(directionIdValues[1]) < LETTERS.indexOf(centerIdValues[1]) &&
                     LETTERS.indexOf(centerIdValues[1]) + 1 < LETTERS.size()) {
                 return centerIdValues[0] + " " + LETTERS.get(LETTERS.indexOf(centerIdValues[1]) + 1);
             }
@@ -503,10 +506,12 @@ public class PillarBaseFragment extends Fragment {
             if (directionIdValues.length == 2) {
                 directionPointId = Integer.parseInt(directionIdValues[1]);
             }
-            if( directionPointId >= centerPointId ){
+            if(centerIdValues.length == 2 && directionIdValues.length == 2 &&
+                    directionPointId >= centerPointId ){
                 return centerIdValues[0] + " " + (centerPointId - 1);
             }
-            else{
+            else if(centerIdValues.length == 2 && directionIdValues.length == 2 &&
+                    directionPointId < centerPointId){
                 return centerIdValues[0] + " " + (centerPointId + 1);
             }
         }catch (NumberFormatException e){

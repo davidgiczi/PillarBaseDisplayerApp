@@ -102,18 +102,28 @@ public class PillarDataFragment extends Fragment {
             fragmentDataBinding.inputHoleDistancePerpendicularly.setText(inputData.get(10));
             fragmentDataBinding.inputHoleDistanceParallel.setText(inputData.get(11));
 
-            if(inputData.size() == 15 && "1".equals(inputData.get(15))){
+            if(inputData.size() == 16 && "1".equals(inputData.get(15))){
                 fragmentDataBinding.radioLeft.setChecked(true);
             }
-            else if(inputData.size() == 15 && "0".equals(inputData.get(15))){
+            else if(inputData.size() == 16 && "0".equals(inputData.get(15))){
                 fragmentDataBinding.radioRight.setChecked(true);
             }
             else {
                 fragmentDataBinding.radioRight.setChecked(true);
             }
             fragmentDataBinding.inputAngle.setText(inputData.get(12));
-            fragmentDataBinding.inputMin.setText(inputData.get(13));
-            fragmentDataBinding.inputSec.setText(inputData.get(14));
+            if( inputData.get(13).contains(".") ){
+                fragmentDataBinding.inputMin.setText(inputData.get(13).substring(0, inputData.get(13).indexOf('.')));
+            }
+            else{
+                fragmentDataBinding.inputMin.setText(inputData.get(13));
+            }
+            if( inputData.get(13).contains(".") ) {
+                fragmentDataBinding.inputSec.setText(inputData.get(14).substring(0, inputData.get(14).indexOf('.')));
+            }
+            else{
+                fragmentDataBinding.inputSec.setText(inputData.get(14));
+            }
         }
         else {
             fragmentDataBinding.inputDistanceOfDirectionPoints.setVisibility(View.INVISIBLE);
@@ -122,10 +132,10 @@ public class PillarDataFragment extends Fragment {
             fragmentDataBinding.inputFootDistancePerpendicularly.setText(inputData.get(9));
             fragmentDataBinding.inputFootDistanceParallel.setText(inputData.get(10));
 
-            if(inputData.size() == 14 && "1".equals(inputData.get(14))){
+            if(inputData.size() == 15 && "1".equals(inputData.get(14))){
                 fragmentDataBinding.radioLeft.setChecked(true);
             }
-           else if(inputData.size() == 14 && "0".equals(inputData.get(14))){
+           else if(inputData.size() == 15 && "0".equals(inputData.get(14))){
                 fragmentDataBinding.radioRight.setChecked(true);
             }
             else {
