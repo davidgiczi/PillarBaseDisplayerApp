@@ -1,9 +1,15 @@
 package com.david.giczi.pillarbasedisplayerapp;
 
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import com.david.giczi.pillarbasedisplayerapp.databinding.FragmentCoordsBinding;
@@ -94,31 +100,43 @@ public class PillarCoordsFragment extends Fragment {
     }
 
     private void displayPillarBaseCoordinates(){
-
-        StringBuilder sb = new StringBuilder();
-
         for (Point pillarBaseCoordinate : MainActivity.PILLAR_BASE_COORDINATES) {
             String[] idValues = pillarBaseCoordinate.getPointID().split("\\s+");
+            LinearLayout row = new LinearLayout(getContext());
+            row.setOrientation(LinearLayout.HORIZONTAL);
+            row.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT));
+            TextView pointId = new TextView(getContext());
+            pointId.setTextColor(Color.BLACK);
+            pointId.setTextSize(20F);
+            pointId.setTypeface(Typeface.create("sans-serif-light", Typeface.BOLD));
+            pointId.setMinWidth(300);
+            pointId.setId(MainActivity.PILLAR_BASE_COORDINATES.indexOf(pillarBaseCoordinate));
+            pointId.setPadding(80, 20, 10, 20 );
+            pointId.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(getContext(), "My id is: " +pointId.getId(), Toast.LENGTH_LONG).show();
+                }
+            });
             if( idValues.length == 2 ){
-               sb.append(idValues[0])
-                       .append(idValues[1])
-                       .append("\n")
-                       .append("\n");
+               pointId.setText(idValues[0] + idValues[1]);
             }
             else {
-                sb.append(pillarBaseCoordinate.getPointID())
-                        .append("\n")
-                        .append("\n");
+                pointId.setText(pillarBaseCoordinate.getPointID());
             }
+            TextView pointCoordinates = new TextView(getContext());
+            pointCoordinates.setTextColor(Color.RED);
+            pointCoordinates.setTextSize(20F);
+            pointCoordinates.setTypeface(Typeface.create("sans-serif-light", Typeface.BOLD));
+            pointCoordinates.setText(pillarBaseCoordinate.toString());
+            pointCoordinates.setPadding(30, 20, 10, 10 );
+            pointCoordinates.setMinWidth(500);
+            pointCoordinates.setSelected(true);
+            row.addView(pointId);
+            row.addView(pointCoordinates);
+            fragmentCoordsBinding.dataStore.addView(row);
         }
-        fragmentCoordsBinding.pointId.setText(sb.toString());
-        sb.delete(0, sb.length());
-        for (Point pillarBaseCoordinate : MainActivity.PILLAR_BASE_COORDINATES) {
-            sb.append(pillarBaseCoordinate)
-            .append("\n")
-            .append("\n");
-        }
-        fragmentCoordsBinding.pointCoordinates.setText(sb.toString());
     }
 
 }
