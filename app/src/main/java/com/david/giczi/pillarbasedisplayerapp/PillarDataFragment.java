@@ -111,7 +111,12 @@ public class PillarDataFragment extends Fragment {
             else {
                 fragmentDataBinding.radioRight.setChecked(true);
             }
-            fragmentDataBinding.inputAngle.setText(inputData.get(12));
+            if( inputData.get(12).contains(".") ){
+                fragmentDataBinding.inputAngle.setText(inputData.get(12).substring(0, inputData.get(12).indexOf('.')));
+            }
+            else{
+                fragmentDataBinding.inputAngle.setText(inputData.get(12));
+            }
             if( inputData.get(13).contains(".") ){
                 fragmentDataBinding.inputMin.setText(inputData.get(13).substring(0, inputData.get(13).indexOf('.')));
             }
@@ -141,7 +146,12 @@ public class PillarDataFragment extends Fragment {
             else {
                 fragmentDataBinding.radioRight.setChecked(true);
             }
-            fragmentDataBinding.inputAngle.setText(inputData.get(11));
+            if( inputData.get(11).contains(".") ){
+                fragmentDataBinding.inputAngle.setText(inputData.get(11).substring(0, inputData.get(11).indexOf('.')));
+            }
+            else{
+                fragmentDataBinding.inputAngle.setText(inputData.get(12));
+            }
             if( inputData.get(12).contains(".") ){
                 fragmentDataBinding.inputMin.setText(inputData.get(12).substring(0, inputData.get(12).indexOf('.')));
             }

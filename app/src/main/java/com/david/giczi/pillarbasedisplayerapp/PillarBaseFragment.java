@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -183,6 +184,7 @@ public class PillarBaseFragment extends Fragment {
         String[] directionIdValues = transformedPillarBasePoints
                 .get(transformedPillarBasePoints.size() - 1)
                 .getPointID().split("\\s+");
+
         try{
 
           if(centerIdValues.length == 1 && directionIdValues.length == 1 &&
@@ -193,8 +195,9 @@ public class PillarBaseFragment extends Fragment {
         catch (NumberFormatException e){
         }
         try{
+
             if( centerIdValues.length == 2 && directionIdValues.length == 2 &&
-                    Integer.parseInt(directionIdValues[1]) >= Integer.parseInt(centerIdValues[1])){
+                    directionIdValues[1].charAt(0) >= centerIdValues[1].charAt(0)){
                 return true;
             }
         }
