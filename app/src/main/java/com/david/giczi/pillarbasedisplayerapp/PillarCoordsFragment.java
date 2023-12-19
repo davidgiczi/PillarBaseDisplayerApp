@@ -3,22 +3,29 @@ package com.david.giczi.pillarbasedisplayerapp;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Handler;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import com.david.giczi.pillarbasedisplayerapp.databinding.FragmentCoordsBinding;
+
+
+import org.w3c.dom.Text;
+
 import java.util.List;
 
 public class PillarCoordsFragment extends Fragment {
 
     private FragmentCoordsBinding fragmentCoordsBinding;
-
+    private Point startPoint;
+    private Point endPoint;
 
     @Override
     public View onCreateView(
@@ -29,6 +36,8 @@ public class PillarCoordsFragment extends Fragment {
         calcPillarBaseCoordinates();
         displayPillarBaseCoordinates();
         MainActivity.PAGE_COUNTER = 2;
+        MainActivity.MENU.findItem(R.id.weight_base).setEnabled(false);
+        MainActivity.MENU.findItem(R.id.plate_base).setEnabled(false);
         return fragmentCoordsBinding.getRoot();
     }
 
@@ -114,9 +123,22 @@ public class PillarCoordsFragment extends Fragment {
             pointId.setId(MainActivity.PILLAR_BASE_COORDINATES.indexOf(pillarBaseCoordinate));
             pointId.setPadding(80, 20, 10, 20 );
             pointId.setOnClickListener(new View.OnClickListener() {
+
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(getContext(), "My id is: " +pointId.getId(), Toast.LENGTH_LONG).show();
+
+                    if( startPoint == null ){
+                        startPoint = MainActivity.PILLAR_BASE_COORDINATES.get(pointId.getId());
+                     TextView startPointView = ((MainActivity) getActivity()).findViewById(pointId.getId());
+                            startPointView.setTextSize(30F);
+                            startPointView.setTextColor(Color.parseColor("#fe7e0f"));
+                        return;
+                    }
+                  endPoint = MainActivity.PILLAR_BASE_COORDINATES.get(pointId.getId());
+                    TextView endPointView = ((MainActivity) getActivity()).findViewById(pointId.getId());
+                        endPointView.setTextSize(30F);
+                        endPointView.setTextColor(Color.parseColor("#fe7e0f"));
+                  popupDistanceBetweenPoints();
                 }
             });
             if( idValues.length == 2 ){
@@ -131,12 +153,47 @@ public class PillarCoordsFragment extends Fragment {
             pointCoordinates.setTypeface(Typeface.create("sans-serif-light", Typeface.BOLD));
             pointCoordinates.setText(pillarBaseCoordinate.toString());
             pointCoordinates.setPadding(30, 20, 10, 10 );
+            pointCoordinates.setTextIsSelectable(true);
             pointCoordinates.setMinWidth(500);
-            pointCoordinates.setSelected(true);
             row.addView(pointId);
             row.addView(pointCoordinates);
             fragmentCoordsBinding.dataStore.addView(row);
         }
+    }
+
+    private void popupDistanceBetweenPoints() {
+        ViewGroup container = (ViewGroup) getLayoutInflater()
+                .inflate(R.layout.fragment_distance_between_points, null);
+        PopupWindow distanceWindow = new PopupWindow(container, 1000, 100, true);
+        distanceWindow.showAtLocation(fragmentCoordsBinding.getRoot(), Gravity.CENTER, 0, 0);
+        AzimuthAndDistance distance = new AzimuthAndDistance(startPoint, endPoint);
+        String[] startPointIdValues = startPoint.getPointID().split("\\s+");
+        ((TextView) container.findViewById(R.id.start_point_id))
+                .setText(startPointIdValues.length == 2 ?
+                        startPointIdValues[0] + startPointIdValues[1] + "." :
+                        startPoint.getPointID() + ".");
+        String[] endPointIdValues = endPoint.getPointID().split("\\s+");
+        ((TextView) container.findViewById(R.id.end_point_id))
+                .setText(endPointIdValues.length == 2 ?
+                        endPointIdValues[0] + endPointIdValues[1] + "."  :
+                        endPoint.getPointID() + ".");
+        ((TextView) container.findViewById(R.id.distance_between_points))
+                .setText(String.format("%.3fm", distance.calcDistance()));
+
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                for (int i = 0; i < MainActivity.PILLAR_BASE_COORDINATES.size(); i++){
+                TextView pointId = (TextView)((MainActivity) getActivity()).findViewById(i);
+                pointId.setTextColor(Color.BLACK);
+                pointId.setTextSize(20F);
+                }
+                startPoint = null;
+                distanceWindow.dismiss();
+            }
+        }, 3000);
     }
 
 }

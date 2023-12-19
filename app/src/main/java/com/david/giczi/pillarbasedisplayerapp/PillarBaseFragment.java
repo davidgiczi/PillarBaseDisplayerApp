@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -33,7 +32,7 @@ public class PillarBaseFragment extends Fragment {
     private static float MM;
     private static float SCALE;
     private static List<Point> transformedPillarBasePoints;
-    private final List<String> LETTERS = Arrays.asList(
+    private static final List<String> LETTERS = Arrays.asList(
             "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L",
     "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z");
 
@@ -43,6 +42,8 @@ public class PillarBaseFragment extends Fragment {
             Bundle savedInstanceState
     ) {
         fragmentBaseBinding = FragmentBaseBinding.inflate(inflater, container, false);
+        MainActivity.MENU.findItem(R.id.weight_base).setEnabled(false);
+        MainActivity.MENU.findItem(R.id.plate_base).setEnabled(false);
         PillarBaseFragment.X_CENTER = getResources().getDisplayMetrics().widthPixels / 2F;
         PillarBaseFragment.Y_CENTER = getResources().getDisplayMetrics().heightPixels / 2F;
         PillarBaseFragment.MM = (float) (Math.sqrt(Math.pow(getResources().getDisplayMetrics().widthPixels, 2) +

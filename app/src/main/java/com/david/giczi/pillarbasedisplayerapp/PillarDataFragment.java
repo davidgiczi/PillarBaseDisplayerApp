@@ -31,6 +31,8 @@ public class PillarDataFragment extends Fragment {
         }
         displayInputData();
         MainActivity.PAGE_COUNTER = 1;
+        MainActivity.MENU.findItem(R.id.weight_base).setEnabled(true);
+        MainActivity.MENU.findItem(R.id.plate_base).setEnabled(true);
         return fragmentDataBinding.getRoot();
     }
 
@@ -123,7 +125,7 @@ public class PillarDataFragment extends Fragment {
             else{
                 fragmentDataBinding.inputMin.setText(inputData.get(13));
             }
-            if( inputData.get(13).contains(".") ) {
+            if( inputData.get(14).contains(".") ) {
                 fragmentDataBinding.inputSec.setText(inputData.get(14).substring(0, inputData.get(14).indexOf('.')));
             }
             else{
@@ -150,7 +152,7 @@ public class PillarDataFragment extends Fragment {
                 fragmentDataBinding.inputAngle.setText(inputData.get(11).substring(0, inputData.get(11).indexOf('.')));
             }
             else{
-                fragmentDataBinding.inputAngle.setText(inputData.get(12));
+                fragmentDataBinding.inputAngle.setText(inputData.get(11));
             }
             if( inputData.get(12).contains(".") ){
                 fragmentDataBinding.inputMin.setText(inputData.get(12).substring(0, inputData.get(12).indexOf('.')));

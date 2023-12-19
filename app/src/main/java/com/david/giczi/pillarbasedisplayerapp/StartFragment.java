@@ -25,7 +25,6 @@ public class StartFragment extends Fragment {
         addBackgroundImage();
         MainActivity.PAGE_COUNTER = 0;
         return fragmentStartBinding.getRoot();
-
     }
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {

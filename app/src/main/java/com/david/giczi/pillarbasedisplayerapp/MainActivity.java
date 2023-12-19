@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration appBarConfiguration;
     private ActivityMainBinding binding;
-    public Menu optionMenu;
+    public static Menu MENU;
     public static List<String> BASE_DATA;
     public static final String[] BASE_TYPE = {"#WeightBase", "#PlateBase"};
     public static boolean IS_WEIGHT_BASE = true;
@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         MenuCompat.setGroupDividerEnabled(menu, true);
-        optionMenu = menu;
+        MENU = menu;
         return true;
     }
 
@@ -90,14 +90,14 @@ public class MainActivity extends AppCompatActivity {
         else if( id == R.id.weight_base
                 && item.getTitle().toString().equals(getString(R.string.weight_base_option))){
             item.setTitle(R.string.ticked_weight_base_option);
-            optionMenu.findItem(R.id.plate_base).setTitle(R.string.plate_base_option);
+            MENU.findItem(R.id.plate_base).setTitle(R.string.plate_base_option);
             getDataFragmentForWeightBase();
             IS_WEIGHT_BASE = true;
         }
         else if( id == R.id.plate_base
                 && item.getTitle().toString().equals(getString(R.string.plate_base_option))){
             item.setTitle(R.string.ticked_plate_base_option);
-            optionMenu.findItem(R.id.weight_base).setTitle(R.string.weight_base_option);
+            MENU.findItem(R.id.weight_base).setTitle(R.string.weight_base_option);
             getDataFragmentForPlateBase();
             IS_WEIGHT_BASE = false;
         }
@@ -294,13 +294,13 @@ public class MainActivity extends AppCompatActivity {
             }
             else if( BASE_DATA.get(0).equals(BASE_TYPE[0]) ){
                 IS_WEIGHT_BASE = true;
-                optionMenu.findItem(R.id.weight_base).setTitle(R.string.ticked_weight_base_option);
-                optionMenu.findItem(R.id.plate_base).setTitle(R.string.plate_base_option);
+                MENU.findItem(R.id.weight_base).setTitle(R.string.ticked_weight_base_option);
+                MENU.findItem(R.id.plate_base).setTitle(R.string.plate_base_option);
             }
             else if( BASE_DATA.get(0).equals(BASE_TYPE[1]) ){
                 IS_WEIGHT_BASE = false;
-                optionMenu.findItem(R.id.weight_base).setTitle(R.string.weight_base_option);
-                optionMenu.findItem(R.id.plate_base).setTitle(R.string.ticked_plate_base_option);
+                MENU.findItem(R.id.weight_base).setTitle(R.string.weight_base_option);
+                MENU.findItem(R.id.plate_base).setTitle(R.string.ticked_plate_base_option);
             }
         }
         gotoDataFragment();
