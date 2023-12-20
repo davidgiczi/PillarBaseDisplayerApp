@@ -387,7 +387,7 @@
             app:layout_constraintTop_toBottomOf="@+id/input_sec" />
 
         <CheckBox
-            android:id="@+id/format_rtk"
+            android:id="@+id/save_rtk_format"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="52dp"
@@ -396,13 +396,13 @@
             android:textColor="@color/steel_gray"
             android:textSize="17sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@+id/format_tps"
+            app:layout_constraintEnd_toStartOf="@+id/save_tps_format"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/text_save_format" />
 
         <CheckBox
-            android:id="@+id/format_tps"
+            android:id="@+id/save_tps_format"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="52dp"

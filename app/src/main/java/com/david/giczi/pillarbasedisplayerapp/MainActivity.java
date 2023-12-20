@@ -22,6 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.PopupWindow;
 import android.widget.RadioButton;
@@ -50,6 +51,9 @@ public class MainActivity extends AppCompatActivity {
     public static boolean IS_WEIGHT_BASE = true;
     public static int PAGE_COUNTER;
     public static List<Point> PILLAR_BASE_COORDINATES;
+    public static boolean IS_SAVE_RTK_FILE;
+    public static boolean IS_SAVE_TPS_FILE;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -206,7 +210,6 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                // Do nothing
                 dialog.dismiss();
             }
         });
@@ -237,6 +240,12 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 if( isValidInputData() ) {
                     getDataFromDataFragment();
+                    if( IS_SAVE_RTK_FILE ){
+                        IS_SAVE_RTK_FILE = false;
+                    }
+                    if( IS_SAVE_TPS_FILE ){
+                        IS_SAVE_TPS_FILE = false;
+                    }
                     navController.navigate(R.id.action_DataFragment_to_CoordsFragment);
                 }
                 dialog.dismiss();
@@ -356,12 +365,12 @@ public class MainActivity extends AppCompatActivity {
             bw.close();
         } catch (IOException e) {
             Toast.makeText(this, projectFile.getName() +
-                    " Projekt fájl mentése sikertelen.", Toast.LENGTH_SHORT).show();
-        }finally {
+                    "\nprojekt fájl mentése sikertelen.", Toast.LENGTH_SHORT).show();
+            return;
+        }
             Toast.makeText(this,
                     "Projekt fájl mentve:\n"
                             + projectFile.getName() , Toast.LENGTH_SHORT).show();
-        }
     }
 
     private boolean isValidInputData(){
@@ -529,6 +538,20 @@ public class MainActivity extends AppCompatActivity {
         else if(((RadioButton) findViewById(R.id.radio_left)).isChecked()){
             BASE_DATA.add("1");
         }
+
+        if( ((CheckBox) findViewById(R.id.save_rtk_format)).isChecked()){
+            IS_SAVE_RTK_FILE = true;
+        }
+        else {
+            IS_SAVE_RTK_FILE = false;
+        }
+        if( ((CheckBox) findViewById(R.id.save_tps_format)).isChecked()){
+            IS_SAVE_TPS_FILE = true;
+        }
+        else {
+            IS_SAVE_TPS_FILE = false;
+        }
+
     }
 
     @Override

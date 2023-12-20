@@ -3,22 +3,26 @@ package com.david.giczi.pillarbasedisplayerapp;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import com.david.giczi.pillarbasedisplayerapp.databinding.FragmentCoordsBinding;
 
 
-import org.w3c.dom.Text;
-
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 
 public class PillarCoordsFragment extends Fragment {
@@ -38,6 +42,12 @@ public class PillarCoordsFragment extends Fragment {
         MainActivity.PAGE_COUNTER = 2;
         MainActivity.MENU.findItem(R.id.weight_base).setEnabled(false);
         MainActivity.MENU.findItem(R.id.plate_base).setEnabled(false);
+       if( MainActivity.IS_SAVE_RTK_FILE ){
+           saveProjectFileForRTK();
+       }
+        if( MainActivity.IS_SAVE_TPS_FILE ){
+            saveProjectFileForTPS();
+        }
         return fragmentCoordsBinding.getRoot();
     }
 
@@ -132,6 +142,7 @@ public class PillarCoordsFragment extends Fragment {
                      TextView startPointView = ((MainActivity) getActivity()).findViewById(pointId.getId());
                             startPointView.setTextSize(30F);
                             startPointView.setTextColor(Color.parseColor("#fe7e0f"));
+                            MainActivity.MENU.findItem(R.id.goto_next_fragment).setEnabled(false);
                         return;
                     }
                   endPoint = MainActivity.PILLAR_BASE_COORDINATES.get(pointId.getId());
@@ -192,8 +203,68 @@ public class PillarCoordsFragment extends Fragment {
                 }
                 startPoint = null;
                 distanceWindow.dismiss();
+                MainActivity.MENU.findItem(R.id.goto_next_fragment).setEnabled(true);
             }
         }, 3000);
     }
+
+    private void saveProjectFileForRTK() {
+        String fileName = ((TextView)
+                (((MainActivity)
+                        getActivity()).findViewById(R.id.projectNameTitle))).getText().toString();
+        File projectFile =
+                new File(Environment.getExternalStorageDirectory(),
+                        "/Documents/" + fileName + "_RTK.txt");
+        try {
+            BufferedWriter bw = new BufferedWriter(
+                    new FileWriter(projectFile, true));
+            for (Point point : MainActivity.PILLAR_BASE_COORDINATES) {
+                String[] idValues = point.getPointID().split("\\s+");
+                if( idValues.length ==  2 ){
+                    point.setPointID(idValues[0] + idValues[1]);
+                }
+                bw.write(point.writePointForRTK());
+                bw.newLine();
+            }
+            bw.close();
+        } catch (IOException e) {
+            Toast.makeText(getContext(), projectFile.getName() +
+                    "\nkoordináta fájl mentése sikertelen.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+            Toast.makeText(getContext(),
+                    "Koordináta fájl mentve:\n"
+                            + projectFile.getName() , Toast.LENGTH_SHORT).show();
+    }
+
+    private void saveProjectFileForTPS() {
+        String fileName = ((TextView)
+                (((MainActivity)
+                        getActivity()).findViewById(R.id.projectNameTitle))).getText().toString();
+        File projectFile =
+                new File(Environment.getExternalStorageDirectory(),
+                        "/Documents/" + fileName + "_TPS.txt");
+        try {
+            BufferedWriter bw = new BufferedWriter(
+                    new FileWriter(projectFile, true));
+            for (Point point : MainActivity.PILLAR_BASE_COORDINATES) {
+                String[] idValues = point.getPointID().split("\\s+");
+                if( idValues.length ==  2 ){
+                    point.setPointID(idValues[0] + idValues[1]);
+                }
+                bw.write(point.writePointForTPS());
+                bw.newLine();
+            }
+            bw.close();
+        } catch (IOException e) {
+            Toast.makeText(getContext(), projectFile.getName() +
+                    "\nkoordináta fájl mentése sikertelen.", Toast.LENGTH_SHORT).show();
+        }finally {
+            Toast.makeText(getContext(),
+                    "Koordináta fájl mentve:\n"
+                            + projectFile.getName() , Toast.LENGTH_SHORT).show();
+        }
+    }
+
 
 }

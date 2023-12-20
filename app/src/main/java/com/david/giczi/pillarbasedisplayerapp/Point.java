@@ -18,11 +18,13 @@ public class Point {
 		this.y_coord = y_coord;
 	}
 
-
 	public String getPointID() {
 		return pointID;
 	}
 
+	public void setPointID(String pointID) {
+		this.pointID = pointID;
+	}
 
 	public double getX_coord() {
 		return x_coord;
