@@ -175,7 +175,7 @@ public class PillarCoordsFragment extends Fragment {
     private void popupDistanceBetweenPoints() {
         ViewGroup container = (ViewGroup) getLayoutInflater()
                 .inflate(R.layout.fragment_distance_between_points, null);
-        PopupWindow distanceWindow = new PopupWindow(container, 1000, 100, true);
+        PopupWindow distanceWindow = new PopupWindow(container, 1050, 100, true);
         distanceWindow.showAtLocation(fragmentCoordsBinding.getRoot(), Gravity.CENTER, 0, 0);
         AzimuthAndDistance distance = new AzimuthAndDistance(startPoint, endPoint);
         String[] startPointIdValues = startPoint.getPointID().split("\\s+");
