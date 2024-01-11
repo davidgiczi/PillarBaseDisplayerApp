@@ -492,8 +492,10 @@ public class PillarBaseFragment extends Fragment {
             if( centerIdValues.length == 2 && LETTERS.indexOf(centerIdValues[1]) == 0 ){
                 return "-1";
             }
-            if( LETTERS.indexOf(directionIdValues[1].toUpperCase()) == -1 ||
-                    LETTERS.indexOf(centerIdValues[1].toUpperCase()) == -1 ){
+            if( centerIdValues.length == 2 && LETTERS.indexOf(centerIdValues[1].toUpperCase()) == -1 ){
+                throw new NumberFormatException();
+            }
+            if( directionIdValues.length == 2 && LETTERS.indexOf(directionIdValues[1].toUpperCase()) == -1 ){
                 throw new NumberFormatException();
             }
             if(centerIdValues.length == 2 && directionIdValues.length == 2 &&
