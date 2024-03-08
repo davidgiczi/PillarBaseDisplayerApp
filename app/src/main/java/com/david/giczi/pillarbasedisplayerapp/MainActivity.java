@@ -3,11 +3,18 @@ package com.david.giczi.pillarbasedisplayerapp;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,6 +27,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import android.os.Environment;
+import android.provider.Settings;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -34,6 +42,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.david.giczi.pillarbasedisplayerapp.databinding.ActivityMainBinding;
+import com.david.giczi.pillarbasedisplayerapp.utils.EOV;
+import com.david.giczi.pillarbasedisplayerapp.utils.WGS84;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -48,6 +58,10 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration appBarConfiguration;
+    private LocationManager locationManager;
+    private LocationListener locationListener;
+    private static final int REQUEST_LOCATION = 1;
+    private ViewGroup gpsDataContainer;
     private ActivityMainBinding binding;
     public static Menu MENU;
     public static List<String> BASE_DATA;
@@ -73,9 +87,66 @@ public class MainActivity extends AppCompatActivity {
         if( ContextCompat
                 .checkSelfPermission(MainActivity.this, Manifest.permission.MANAGE_EXTERNAL_STORAGE) !=
                 PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat
-           .requestPermissions(MainActivity.this, new String[]{Manifest.permission.MANAGE_EXTERNAL_STORAGE}, 1);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                ActivityCompat
+               .requestPermissions(MainActivity.this, new String[]{Manifest.permission.MANAGE_EXTERNAL_STORAGE}, 1);
+            }
         }
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+    }
+
+    private void startMeasure(){
+        locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(@NonNull Location location) {
+
+                double X_WGS = Double.parseDouble(WGS84.getX(location.getLatitude(),
+                        location.getLongitude(),
+                        location.getAltitude()).substring(0, WGS84.getX(location.getLatitude(),
+                        location.getLongitude(),
+                        location.getAltitude()).indexOf("m")));
+                double Y_WGS = Double.parseDouble(WGS84.getY(location.getLatitude(),
+                        location.getLongitude(),
+                        location.getAltitude()).substring(0, WGS84.getY(location.getLatitude(),
+                        location.getLongitude(),
+                        location.getAltitude()).indexOf("m")));
+                double Z_WGS = Double.parseDouble(WGS84.getZ(location.getLatitude(),
+                        location.getLongitude(),
+                        location.getAltitude()).substring(0, WGS84.getZ(location.getLatitude(),
+                        location.getLongitude(),
+                        location.getAltitude()).indexOf("m")));
+                EOV eov = new EOV(X_WGS, Y_WGS, Z_WGS);
+                if( gpsDataContainer == null ){
+                    popupGPSData();
+                }
+                else {
+                    TextView gpsDataView = (TextView) gpsDataContainer.findViewById(R.id.gps_data);
+                    gpsDataView.setText(eov.toString());
+                }
+            }
+            @Override
+            public void onProviderDisabled(@NonNull String provider) {
+                LocationListener.super.onProviderDisabled(provider);
+                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                startActivity(intent);
+            }
+        };
+
+        if (ActivityCompat.checkSelfPermission(MainActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(MainActivity.this, android.Manifest.permission.ACCESS_COARSE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions();
+            return;
+        }
+        MainActivity.this.locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+                1000, 0, locationListener);
+    }
+
+    private void requestPermissions(){
+        ActivityCompat.requestPermissions(MainActivity.this,
+                new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION,
+                        Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
     }
 
     @Override
@@ -118,7 +189,18 @@ public class MainActivity extends AppCompatActivity {
         else if( id == R.id.calc_foot_distance){
                 popupPillarFootDistanceCalculator();
         }
+        else if( id == R.id.start_gps ){
+            startMeasure();
+            Toast.makeText(MainActivity.this, "GPS elindítva.", Toast.LENGTH_SHORT).show();
+        }
+
             return super.onOptionsItemSelected(item);
+    }
+
+    private void popupGPSData(){
+        gpsDataContainer = (ViewGroup) getLayoutInflater().inflate(R.layout.fragment_gps_data, null);
+        PopupWindow gpsDataWindow = new PopupWindow(gpsDataContainer, 700, 500, true);
+        gpsDataWindow.showAtLocation(binding.getRoot(), Gravity.CENTER, 0, 800);
     }
 
     private void popupPillarFootDistanceCalculator(){
@@ -509,7 +591,7 @@ public class MainActivity extends AppCompatActivity {
         if( BASE_DATA == null ){
             BASE_DATA = new ArrayList<>();
         }
-       else if( BASE_DATA != null && !BASE_DATA.isEmpty() ){
+        else if( !BASE_DATA.isEmpty() ){
             BASE_DATA.clear();
         }
         if( IS_WEIGHT_BASE ){

@@ -89,6 +89,8 @@ public class PillarDataFragment extends Fragment {
         if( inputData == null || inputData.isEmpty() ){
             return;
         }
+        MainActivity.MENU.findItem(R.id.start_gps).setEnabled(true);
+        MainActivity.MENU.findItem(R.id.save_direction_point).setEnabled(true);
         fragmentDataBinding.inputPillarId.setText(inputData.get(1));
         fragmentDataBinding.inputYCoordinate.setText(inputData.get(2));
         fragmentDataBinding.inputXCoordinate.setText(inputData.get(3));

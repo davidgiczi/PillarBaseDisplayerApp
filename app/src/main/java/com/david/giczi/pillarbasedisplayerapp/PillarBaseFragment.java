@@ -1,5 +1,8 @@
 package com.david.giczi.pillarbasedisplayerapp;
 
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -8,17 +11,25 @@ import android.graphics.DashPathEffect;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
+import android.widget.Toast;
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import com.david.giczi.pillarbasedisplayerapp.databinding.FragmentBaseBinding;
+import com.david.giczi.pillarbasedisplayerapp.utils.EOV;
+import com.david.giczi.pillarbasedisplayerapp.utils.WGS84;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 
 
 public class PillarBaseFragment extends Fragment {
@@ -77,6 +88,11 @@ public class PillarBaseFragment extends Fragment {
         return fragmentBaseBinding.getRoot();
     }
 
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+    }
+
+
     private void setScaleValue(){
         if( MainActivity.IS_WEIGHT_BASE ){
             if( Double.parseDouble(MainActivity.BASE_DATA.get(8)) < 5 ||
@@ -115,6 +131,15 @@ public class PillarBaseFragment extends Fragment {
                 SCALE = 500F;
             }
         }
+    }
+
+
+    private void addEOVData(String data){;
+        paint.setColor(Color.BLACK);
+        paint.setStyle(Paint.Style.FILL);
+        paint.setTypeface(Typeface.DEFAULT_BOLD);
+        paint.setTextSize(40);
+        canvas.drawText(data, 3 * MM, getResources().getDisplayMetrics().heightPixels - 12 * MM, paint);
     }
 
     private void addNorthSign(){
@@ -671,10 +696,6 @@ public class PillarBaseFragment extends Fragment {
                 (float) transformedPillarBasePoints.get(13).getX_coord(),
                 (float) transformedPillarBasePoints.get(13).getY_coord(), paint);
         fragmentBaseBinding.drawingBase.setImageBitmap(bitmap);
-    }
-
-    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override
