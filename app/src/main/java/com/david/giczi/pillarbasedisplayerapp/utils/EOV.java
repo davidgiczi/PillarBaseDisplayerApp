@@ -44,7 +44,7 @@ public class EOV {
         this.wgsY = wgsY;
         this.wgsZ = wgsZ;
     }
-    private List<Double> getCoordinatesForEOV(){
+    public List<Double> getCoordinatesForEOV(){
 
         List<Double> geoIUGG67 = getGeographicalCoordinatesForIUGG67();
         double sphereFi = 2 * Math.toDegrees(Math.atan(
@@ -119,6 +119,6 @@ public class EOV {
     @Override
     public String toString() {
         List<Double> eovData = getCoordinatesForEOV();
-        return  eovData.get(0) + "," + eovData.get(1) + "," + eovData.get(2);
+        return "Y: " +  eovData.get(0) + "m\tX: " + eovData.get(1) + "m\th: " + eovData.get(2) + "m";
     }
 }

@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -60,8 +62,9 @@ public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration appBarConfiguration;
     private LocationManager locationManager;
     private LocationListener locationListener;
-    private static final int REQUEST_LOCATION = 1;
     private ViewGroup gpsDataContainer;
+    private  PopupWindow gpsDataWindow;
+    private static final int REQUEST_LOCATION = 1;
     private ActivityMainBinding binding;
     public static Menu MENU;
     public static List<String> BASE_DATA;
@@ -71,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
     public static List<Point> PILLAR_BASE_COORDINATES;
     public static boolean IS_SAVE_RTK_FILE;
     public static boolean IS_SAVE_TPS_FILE;
-
+    public static boolean IS_GPS_RUNNING;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,7 +98,18 @@ public class MainActivity extends AppCompatActivity {
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
     }
 
+    private void stopMeasure(){
+        if( !IS_GPS_RUNNING ){
+            return;
+        }
+        gpsDataWindow.dismiss();
+        gpsDataContainer = null;
+        MainActivity.this.locationManager.removeUpdates(locationListener);
+        Toast.makeText(MainActivity.this, "GPS leállítva.", Toast.LENGTH_SHORT).show();
+    }
+
     private void startMeasure(){
+
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(@NonNull Location location) {
@@ -116,14 +130,10 @@ public class MainActivity extends AppCompatActivity {
                         location.getLongitude(),
                         location.getAltitude()).indexOf("m")));
                 EOV eov = new EOV(X_WGS, Y_WGS, Z_WGS);
-                if( gpsDataContainer == null ){
-                    popupGPSData();
-                }
-                else {
-                    TextView gpsDataView = (TextView) gpsDataContainer.findViewById(R.id.gps_data);
-                    gpsDataView.setText(eov.toString());
-                }
+                popupGPSData();
+                showPillarDistanceAndDirection(eov);
             }
+
             @Override
             public void onProviderDisabled(@NonNull String provider) {
                 LocationListener.super.onProviderDisabled(provider);
@@ -139,14 +149,38 @@ public class MainActivity extends AppCompatActivity {
             requestPermissions();
             return;
         }
+
         MainActivity.this.locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
                 1000, 0, locationListener);
+
+        Toast.makeText(MainActivity.this, "GPS elindítva.", Toast.LENGTH_SHORT).show();
     }
 
     private void requestPermissions(){
         ActivityCompat.requestPermissions(MainActivity.this,
                 new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION,
                         Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
+    }
+
+    private void popupGPSData() {
+        if ( gpsDataContainer == null ) {
+            gpsDataContainer = (ViewGroup) getLayoutInflater().inflate(R.layout.fragment_gps_data, null);
+            gpsDataWindow = new PopupWindow(gpsDataContainer, 1000, 500, false);
+            gpsDataWindow.showAtLocation(binding.getRoot(), Gravity.CENTER, 0, 800);
+        }
+    }
+
+    private void showPillarDistanceAndDirection(EOV eov){
+        TextView gpsDataView = (TextView) gpsDataContainer.findViewById(R.id.actual_position);
+        gpsDataView.setText(eov.toString());
+        AzimuthAndDistance pillarData = new AzimuthAndDistance(
+                new Point("position", eov.getCoordinatesForEOV().get(0),
+                        eov.getCoordinatesForEOV().get(1)),
+                new Point("center", Double.parseDouble(BASE_DATA.get(2)), Double.parseDouble(BASE_DATA.get(3))));
+        String pillarDirectionAndDistance = "Irány: "  + String.format("%3.0f°", pillarData.calcAzimuth()) +
+          "\tTávolság: " + String.format("%3.0fm", pillarData.calcDistance());
+        TextView pillarDataView = (TextView) gpsDataContainer.findViewById(R.id.pillar_direction_and_distance);
+        pillarDataView.setText(pillarDirectionAndDistance);
     }
 
     @Override
@@ -189,19 +223,21 @@ public class MainActivity extends AppCompatActivity {
         else if( id == R.id.calc_foot_distance){
                 popupPillarFootDistanceCalculator();
         }
-        else if( id == R.id.start_gps ){
-            startMeasure();
-            Toast.makeText(MainActivity.this, "GPS elindítva.", Toast.LENGTH_SHORT).show();
-        }
+        else if( id == R.id.start_stop_gps ){
 
+            if( IS_GPS_RUNNING ){
+                stopMeasure();
+                MENU.findItem(R.id.start_stop_gps).setTitle(R.string.start_gps);
+            }
+            else {
+                startMeasure();
+                MENU.findItem(R.id.start_stop_gps).setTitle(R.string.stop_gps);
+            }
+            IS_GPS_RUNNING = !IS_GPS_RUNNING;
+        }
             return super.onOptionsItemSelected(item);
     }
 
-    private void popupGPSData(){
-        gpsDataContainer = (ViewGroup) getLayoutInflater().inflate(R.layout.fragment_gps_data, null);
-        PopupWindow gpsDataWindow = new PopupWindow(gpsDataContainer, 700, 500, true);
-        gpsDataWindow.showAtLocation(binding.getRoot(), Gravity.CENTER, 0, 800);
-    }
 
     private void popupPillarFootDistanceCalculator(){
         ViewGroup container = (ViewGroup) getLayoutInflater().inflate(R.layout.fragment_foot_calc, null);

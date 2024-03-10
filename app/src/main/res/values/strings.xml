@@ -6,8 +6,8 @@
     <string name="plate_base_option">Lemezalap</string>
     <string name="ticked_weight_base_option">Súlyalap ✔️</string>
     <string name="ticked_plate_base_option">Lemezalap ✔️</string>
-    <string name="start_gps">GPS indítása</string>
-    <string name="save_direction_point">Iránypont mentése</string>
+    <string name="start_gps">GPS start</string>
+    <string name="stop_gps">GPS stop</string>
     <string name="exit_option">Kilépés</string>
     <!-- Strings used for fragments for navigation -->
     <string name="project_file_name_label"></string>

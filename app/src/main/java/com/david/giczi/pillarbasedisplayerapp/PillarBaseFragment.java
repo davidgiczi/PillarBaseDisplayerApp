@@ -133,15 +133,6 @@ public class PillarBaseFragment extends Fragment {
         }
     }
 
-
-    private void addEOVData(String data){;
-        paint.setColor(Color.BLACK);
-        paint.setStyle(Paint.Style.FILL);
-        paint.setTypeface(Typeface.DEFAULT_BOLD);
-        paint.setTextSize(40);
-        canvas.drawText(data, 3 * MM, getResources().getDisplayMetrics().heightPixels - 12 * MM, paint);
-    }
-
     private void addNorthSign(){
         Matrix matrix = new Matrix();
         matrix.postScale(0.25F, 0.25F);
