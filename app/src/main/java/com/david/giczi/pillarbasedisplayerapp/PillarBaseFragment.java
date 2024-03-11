@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import com.david.giczi.pillarbasedisplayerapp.databinding.FragmentBaseBinding;
 import com.david.giczi.pillarbasedisplayerapp.utils.EOV;

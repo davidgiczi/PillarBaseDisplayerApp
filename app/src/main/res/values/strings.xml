@@ -8,6 +8,7 @@
     <string name="ticked_plate_base_option">Lemezalap ✔️</string>
     <string name="start_gps">GPS start</string>
     <string name="stop_gps">GPS stop</string>
+    <string name="north_pole">North Pole Arrow</string>
     <string name="exit_option">Kilépés</string>
     <!-- Strings used for fragments for navigation -->
     <string name="project_file_name_label"></string>

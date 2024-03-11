@@ -8,6 +8,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -38,6 +40,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.RadioButton;
 import android.widget.TextView;
@@ -57,13 +60,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
     private AppBarConfiguration appBarConfiguration;
     private LocationManager locationManager;
     private LocationListener locationListener;
     private ViewGroup gpsDataContainer;
     private  PopupWindow gpsDataWindow;
+    private SensorManager sensorManager;
     private static final int REQUEST_LOCATION = 1;
     private ActivityMainBinding binding;
     public static Menu MENU;
@@ -75,6 +79,12 @@ public class MainActivity extends AppCompatActivity {
     public static boolean IS_SAVE_RTK_FILE;
     public static boolean IS_SAVE_TPS_FILE;
     public static boolean IS_GPS_RUNNING;
+    private double previousPillarDistance;
+
+    private double northDirectionValue;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
     }
 
     private void stopMeasure(){
@@ -105,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
         gpsDataWindow.dismiss();
         gpsDataContainer = null;
         MainActivity.this.locationManager.removeUpdates(locationListener);
+        sensorManager.unregisterListener(this);
         Toast.makeText(MainActivity.this, "GPS leállítva.", Toast.LENGTH_SHORT).show();
     }
 
@@ -150,6 +162,9 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
+        sensorManager.registerListener(this,
+                sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
+                SensorManager.SENSOR_DELAY_UI);
         MainActivity.this.locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
                 1000, 0, locationListener);
 
@@ -177,10 +192,26 @@ public class MainActivity extends AppCompatActivity {
                 new Point("position", eov.getCoordinatesForEOV().get(0),
                         eov.getCoordinatesForEOV().get(1)),
                 new Point("center", Double.parseDouble(BASE_DATA.get(2)), Double.parseDouble(BASE_DATA.get(3))));
-        String pillarDirectionAndDistance = "Irány: "  + String.format("%3.0f°", pillarData.calcAzimuth()) +
-          "\tTávolság: " + String.format("%3.0fm", pillarData.calcDistance());
+        double direction = 0 > Math.toDegrees(pillarData.calcAzimuth()) - northDirectionValue ?
+                Math.toDegrees(pillarData.calcAzimuth()) - northDirectionValue + 360 :
+                Math.toDegrees(pillarData.calcAzimuth()) - northDirectionValue;
+        String pillarDirectionAndDistance = "Irány: "  + String.format("%5.1f°", direction) +
+          "\t\tTávolság: " + String.format("%5.0fm", pillarData.calcDistance());
         TextView pillarDataView = (TextView) gpsDataContainer.findViewById(R.id.pillar_direction_and_distance);
         pillarDataView.setText(pillarDirectionAndDistance);
+        addPillarDirectionArrowImage((float) direction, (int) pillarData.calcDistance());
+    }
+
+    private void addPillarDirectionArrowImage(float rotation, int distance){
+        ImageView pillarArrowImageView = (ImageView) gpsDataContainer.findViewById(R.id.pillar_direction_arrow_image);
+        if( distance > previousPillarDistance  ){
+            pillarArrowImageView.setImageResource(R.drawable.red_arrow_up);
+        }
+        else{
+            pillarArrowImageView.setImageResource(R.drawable.green_arrow_up);
+        }
+        pillarArrowImageView.setRotation(rotation);
+        previousPillarDistance = distance;
     }
 
     @Override
@@ -688,4 +719,13 @@ public class MainActivity extends AppCompatActivity {
         System.exit(0);
     }
 
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        northDirectionValue = event.values[0];
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
 }
