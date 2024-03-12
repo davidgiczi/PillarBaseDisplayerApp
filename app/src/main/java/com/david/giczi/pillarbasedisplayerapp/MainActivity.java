@@ -4,7 +4,6 @@ package com.david.giczi.pillarbasedisplayerapp;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
@@ -17,19 +16,6 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.view.MenuCompat;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
-
 import android.os.Environment;
 import android.provider.Settings;
 import android.view.Gravity;
@@ -45,6 +31,18 @@ import android.widget.PopupWindow;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.MenuCompat;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
 
 import com.david.giczi.pillarbasedisplayerapp.databinding.ActivityMainBinding;
 import com.david.giczi.pillarbasedisplayerapp.utils.EOV;
@@ -68,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private ViewGroup gpsDataContainer;
     private  PopupWindow gpsDataWindow;
     private SensorManager sensorManager;
+    private Sensor sensor;
     private static final int REQUEST_LOCATION = 1;
     private ActivityMainBinding binding;
     public static Menu MENU;
@@ -79,11 +78,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public static boolean IS_SAVE_RTK_FILE;
     public static boolean IS_SAVE_TPS_FILE;
     public static boolean IS_GPS_RUNNING;
-    private double previousPillarDistance;
-
-    private double northDirectionValue;
-
-
+    private int previousPillarDistance;
+    private float northDirectionValue;
 
 
     @Override
@@ -107,6 +103,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
     }
 
     private void stopMeasure(){
@@ -162,11 +159,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             return;
         }
 
-        sensorManager.registerListener(this,
-                sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
-                SensorManager.SENSOR_DELAY_UI);
+        sensorManager.registerListener(this, sensor,
+                SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_UI);
         MainActivity.this.locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                1000, 0, locationListener);
+                100, 0, locationListener);
 
         Toast.makeText(MainActivity.this, "GPS elindítva.", Toast.LENGTH_SHORT).show();
     }
@@ -192,14 +188,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 new Point("position", eov.getCoordinatesForEOV().get(0),
                         eov.getCoordinatesForEOV().get(1)),
                 new Point("center", Double.parseDouble(BASE_DATA.get(2)), Double.parseDouble(BASE_DATA.get(3))));
+
         double direction = 0 > Math.toDegrees(pillarData.calcAzimuth()) - northDirectionValue ?
                 Math.toDegrees(pillarData.calcAzimuth()) - northDirectionValue + 360 :
                 Math.toDegrees(pillarData.calcAzimuth()) - northDirectionValue;
+        addPillarDirectionArrowImage((float) direction, (int) Math.round(pillarData.calcDistance()) );
         String pillarDirectionAndDistance = "Irány: "  + String.format("%5.1f°", direction) +
           "\t\tTávolság: " + String.format("%5.0fm", pillarData.calcDistance());
         TextView pillarDataView = (TextView) gpsDataContainer.findViewById(R.id.pillar_direction_and_distance);
         pillarDataView.setText(pillarDirectionAndDistance);
-        addPillarDirectionArrowImage((float) direction, (int) pillarData.calcDistance());
     }
 
     private void addPillarDirectionArrowImage(float rotation, int distance){
@@ -275,35 +272,32 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         PopupWindow footCalcWindow = new PopupWindow(container, 1000, 700, true);
         footCalcWindow.showAtLocation(binding.getRoot(), Gravity.CENTER, 0, -400);
         Button calcButton = (Button) container.findViewById(R.id.btn_count);
-        calcButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                EditText inputFootDistance = (EditText) container.findViewById(R.id.input_value_of_foot_distance);
-                if( inputFootDistance.getText().toString().isEmpty() ){
-                    Toast.makeText(container.getContext(), "A lábtávolság értékének megadása szükséges.",
-                            Toast.LENGTH_LONG).show();
-                    return;
-                }
-                EditText inputIllesztesiSik = (EditText) container.findViewById(R.id.input_value_illesztesi_sik);
-                if( inputIllesztesiSik.getText().toString().isEmpty() ){
-                    Toast.makeText(container.getContext(), "Az illesztési sík értékének megadása szükséges.",
-                            Toast.LENGTH_LONG).show();
-                    return;
-                }
-                EditText inputSudarasodas = (EditText) container.findViewById(R.id.input_value_sudarasodas);
-                if( inputSudarasodas.getText().toString().isEmpty() ){
-                    Toast.makeText(container.getContext(), "A sudarasodás értékének megadása szükséges.",
-                            Toast.LENGTH_LONG).show();
-                    return;
-                }
-
-                double footDistance = Double.parseDouble(inputFootDistance.getText().toString()) / 1000.0 +
-                        (2 * Double.parseDouble(inputSudarasodas.getText().toString() )
-                                * Double.parseDouble(inputIllesztesiSik.getText().toString()) / 100.0) / 1000.0;
-              ((TextView) container.findViewById(R.id.text_calc_foot_distance)).setText(R.string.value_of_foot_distance);
-               TextView resultFootDistance = (TextView) container.findViewById(R.id.result_foot_distance);
-               resultFootDistance.setText(String.format("%.3fm", footDistance));
+        calcButton.setOnClickListener(v -> {
+            EditText inputFootDistance = (EditText) container.findViewById(R.id.input_value_of_foot_distance);
+            if( inputFootDistance.getText().toString().isEmpty() ){
+                Toast.makeText(container.getContext(), "A lábtávolság értékének megadása szükséges.",
+                        Toast.LENGTH_LONG).show();
+                return;
             }
+            EditText inputIllesztesiSik = (EditText) container.findViewById(R.id.input_value_illesztesi_sik);
+            if( inputIllesztesiSik.getText().toString().isEmpty() ){
+                Toast.makeText(container.getContext(), "Az illesztési sík értékének megadása szükséges.",
+                        Toast.LENGTH_LONG).show();
+                return;
+            }
+            EditText inputSudarasodas = (EditText) container.findViewById(R.id.input_value_sudarasodas);
+            if( inputSudarasodas.getText().toString().isEmpty() ){
+                Toast.makeText(container.getContext(), "A sudarasodás értékének megadása szükséges.",
+                        Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            double footDistance = Double.parseDouble(inputFootDistance.getText().toString()) / 1000.0 +
+                    (2 * Double.parseDouble(inputSudarasodas.getText().toString() )
+                            * Double.parseDouble(inputIllesztesiSik.getText().toString()) / 100.0) / 1000.0;
+          ((TextView) container.findViewById(R.id.text_calc_foot_distance)).setText(R.string.value_of_foot_distance);
+           TextView resultFootDistance = (TextView) container.findViewById(R.id.result_foot_distance);
+           resultFootDistance.setText(String.format("%.3fm", footDistance));
         });
     }
 
@@ -357,21 +351,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         builder.setTitle("Alkalmazás bezárása");
         builder.setMessage("Biztos, hogy ki akarsz lépni az alkalmazásból?\n\nA nem mentett adatok elvesznek.");
 
-        builder.setPositiveButton("Igen", new DialogInterface.OnClickListener() {
-
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-               System.exit(0);
-            }
+        builder.setPositiveButton("Igen", (dialog, which) -> {
+            dialog.dismiss();
+           System.exit(0);
         });
 
-        builder.setNegativeButton("Nem", new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
+        builder.setNegativeButton("Nem", (dialog, which) -> dialog.dismiss());
 
         AlertDialog alert = builder.create();
         alert.show();
@@ -382,33 +367,26 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         builder.setTitle("Adatok mentése");
         builder.setMessage("Kivánja menteni az adatokat?");
 
-        builder.setPositiveButton("Igen", new DialogInterface.OnClickListener() {
-
-            public void onClick(DialogInterface dialog, int which) {
-                if( isValidInputData() ){
-                    getDataFromDataFragment();
-                    saveProjectFile();
-                    navController.navigate(R.id.action_DataFragment_to_CoordsFragment);
-                }
-                dialog.dismiss();
+        builder.setPositiveButton("Igen", (dialog, which) -> {
+            if( isValidInputData() ){
+                getDataFromDataFragment();
+                saveProjectFile();
+                navController.navigate(R.id.action_DataFragment_to_CoordsFragment);
             }
+            dialog.dismiss();
         });
-        builder.setNegativeButton("Nem", new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if( isValidInputData() ) {
-                    getDataFromDataFragment();
-                    if( IS_SAVE_RTK_FILE ){
-                        IS_SAVE_RTK_FILE = false;
-                    }
-                    if( IS_SAVE_TPS_FILE ){
-                        IS_SAVE_TPS_FILE = false;
-                    }
-                    navController.navigate(R.id.action_DataFragment_to_CoordsFragment);
+        builder.setNegativeButton("Nem", (dialog, which) -> {
+            if( isValidInputData() ) {
+                getDataFromDataFragment();
+                if( IS_SAVE_RTK_FILE ){
+                    IS_SAVE_RTK_FILE = false;
                 }
-                dialog.dismiss();
+                if( IS_SAVE_TPS_FILE ){
+                    IS_SAVE_TPS_FILE = false;
+                }
+                navController.navigate(R.id.action_DataFragment_to_CoordsFragment);
             }
+            dialog.dismiss();
         });
 
         AlertDialog alert = builder.create();
@@ -721,9 +699,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        northDirectionValue = event.values[0];
+       northDirectionValue = event.values[0];
     }
-
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
