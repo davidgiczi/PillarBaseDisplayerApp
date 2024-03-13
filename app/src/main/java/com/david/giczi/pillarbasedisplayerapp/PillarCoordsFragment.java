@@ -33,7 +33,7 @@ public class PillarCoordsFragment extends Fragment {
 
     @Override
     public View onCreateView(
-            LayoutInflater inflater, ViewGroup container,
+            @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState
     ) {
         fragmentCoordsBinding = FragmentCoordsBinding.inflate(inflater, container, false);
@@ -42,11 +42,17 @@ public class PillarCoordsFragment extends Fragment {
         MainActivity.PAGE_COUNTER = 2;
         MainActivity.MENU.findItem(R.id.weight_base).setEnabled(false);
         MainActivity.MENU.findItem(R.id.plate_base).setEnabled(false);
-       if( MainActivity.IS_SAVE_RTK_FILE ){
+        if( MainActivity.IS_SAVE_RTK_FILE ){
            saveProjectFileForRTK();
-       }
+        }
         if( MainActivity.IS_SAVE_TPS_FILE ){
             saveProjectFileForTPS();
+        }
+        if( MainActivity.northPoleWindow != null ){
+            MainActivity.northPoleWindow.dismiss();
+        }
+        if( MainActivity.gpsDataWindow != null ){
+            MainActivity.gpsDataWindow.dismiss();
         }
         return fragmentCoordsBinding.getRoot();
     }
@@ -88,11 +94,7 @@ public class PillarCoordsFragment extends Fragment {
         calculatorForWeightBase.setAngleValueBetweenMainPath(Double.parseDouble(inputData.get(12)));
         calculatorForWeightBase.setAngularMinuteValueBetweenMainPath(Double.parseDouble(inputData.get(13)));
         calculatorForWeightBase.setAngularSecondValueBetweenMainPath(Double.parseDouble(inputData.get(14)));
-            if ("0".equals(inputData.get(15))) {
-                calculatorForWeightBase.setSideOfAngle(true);
-            } else {
-                calculatorForWeightBase.setSideOfAngle(false);
-            }
+            calculatorForWeightBase.setSideOfAngle("0".equals(inputData.get(15)));
             calculatorForWeightBase.calculatePillarPoints();
             MainActivity.PILLAR_BASE_COORDINATES = calculatorForWeightBase.getPillarPoints();
         }
@@ -106,11 +108,7 @@ public class PillarCoordsFragment extends Fragment {
             calculatorForPlateBase.setAngleValueBetweenMainPath(Double.parseDouble(inputData.get(11)));
             calculatorForPlateBase.setAngularMinuteValueBetweenMainPath(Double.parseDouble(inputData.get(12)));
             calculatorForPlateBase.setAngularSecondValueBetweenMainPath(Double.parseDouble(inputData.get(13)));
-            if ("0".equals(inputData.get(14))) {
-                calculatorForPlateBase.setSideOfAngle(true);
-            } else {
-                calculatorForPlateBase.setSideOfAngle(false);
-            }
+            calculatorForPlateBase.setSideOfAngle("0".equals(inputData.get(14)));
             calculatorForPlateBase.calculatePillarPoints();
             MainActivity.PILLAR_BASE_COORDINATES = calculatorForPlateBase.getPillarPoints();
 
@@ -132,25 +130,21 @@ public class PillarCoordsFragment extends Fragment {
             pointId.setMinWidth(300);
             pointId.setId(MainActivity.PILLAR_BASE_COORDINATES.indexOf(pillarBaseCoordinate));
             pointId.setPadding(80, 20, 10, 20 );
-            pointId.setOnClickListener(new View.OnClickListener() {
+            pointId.setOnClickListener(v -> {
 
-                @Override
-                public void onClick(View v) {
-
-                    if( startPoint == null ){
-                        startPoint = MainActivity.PILLAR_BASE_COORDINATES.get(pointId.getId());
-                     TextView startPointView = ((MainActivity) getActivity()).findViewById(pointId.getId());
-                            startPointView.setTextSize(30F);
-                            startPointView.setTextColor(Color.parseColor("#fe7e0f"));
-                            MainActivity.MENU.findItem(R.id.goto_next_fragment).setEnabled(false);
-                        return;
-                    }
-                  endPoint = MainActivity.PILLAR_BASE_COORDINATES.get(pointId.getId());
-                    TextView endPointView = ((MainActivity) getActivity()).findViewById(pointId.getId());
-                        endPointView.setTextSize(30F);
-                        endPointView.setTextColor(Color.parseColor("#fe7e0f"));
-                  popupDistanceBetweenPoints();
+                if( startPoint == null ){
+                    startPoint = MainActivity.PILLAR_BASE_COORDINATES.get(pointId.getId());
+                 TextView startPointView = getActivity().findViewById(pointId.getId());
+                        startPointView.setTextSize(30F);
+                        startPointView.setTextColor(Color.parseColor("#fe7e0f"));
+                        MainActivity.MENU.findItem(R.id.goto_next_fragment).setEnabled(false);
+                    return;
                 }
+              endPoint = MainActivity.PILLAR_BASE_COORDINATES.get(pointId.getId());
+                TextView endPointView = ((MainActivity) getActivity()).findViewById(pointId.getId());
+                    endPointView.setTextSize(30F);
+                    endPointView.setTextColor(Color.parseColor("#fe7e0f"));
+              popupDistanceBetweenPoints();
             });
             if( idValues.length == 2 ){
                pointId.setText(idValues[0] + idValues[1]);
@@ -192,19 +186,15 @@ public class PillarCoordsFragment extends Fragment {
                 .setText(String.format("%.3fm", distance.calcDistance()));
 
         Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-
-            @Override
-            public void run() {
-                for (int i = 0; i < MainActivity.PILLAR_BASE_COORDINATES.size(); i++){
-                TextView pointId = (TextView)((MainActivity) getActivity()).findViewById(i);
-                pointId.setTextColor(Color.BLACK);
-                pointId.setTextSize(20F);
-                }
-                startPoint = null;
-                distanceWindow.dismiss();
-                MainActivity.MENU.findItem(R.id.goto_next_fragment).setEnabled(true);
+        handler.postDelayed(() -> {
+            for (int i = 0; i < MainActivity.PILLAR_BASE_COORDINATES.size(); i++){
+            TextView pointId = (TextView)((MainActivity) getActivity()).findViewById(i);
+            pointId.setTextColor(Color.BLACK);
+            pointId.setTextSize(20F);
             }
+            startPoint = null;
+            distanceWindow.dismiss();
+            MainActivity.MENU.findItem(R.id.goto_next_fragment).setEnabled(true);
         }, 3000);
     }
 

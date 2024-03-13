@@ -1,5 +1,7 @@
 package com.david.giczi.pillarbasedisplayerapp.utils;
 
+import androidx.annotation.NonNull;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -116,6 +118,7 @@ public class EOV {
     return Arrays.asList(x, y, z);
     }
 
+    @NonNull
     @Override
     public String toString() {
         List<Double> eovData = getCoordinatesForEOV();

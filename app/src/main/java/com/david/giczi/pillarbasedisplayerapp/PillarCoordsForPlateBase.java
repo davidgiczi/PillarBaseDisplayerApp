@@ -18,7 +18,7 @@ public class PillarCoordsForPlateBase {
 	private double angularSecondValueBetweenMainPath = 0;
 	private double radRotation;
 	private List<Point> pillarPoints;
-	private double azimuth;
+	private final double azimuth;
 	private boolean sideOfAngle;
 	
 	
@@ -27,7 +27,7 @@ public class PillarCoordsForPlateBase {
 		this.axisDirectionPoint = axisDirectionPoint;
 		AzimuthAndDistance azimuthAndDistance = new AzimuthAndDistance(pillarCenterPoint, axisDirectionPoint);
 		this.azimuth = azimuthAndDistance.calcAzimuth();
-		if(azimuth == Double.NaN) {
+		if(Double.isNaN(azimuth)) {
 			throw new InvalidParameterException();
 		}
 	}

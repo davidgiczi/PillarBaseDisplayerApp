@@ -18,12 +18,18 @@ public class StartFragment extends Fragment {
 
     @Override
     public View onCreateView(
-            LayoutInflater inflater, ViewGroup container,
+            @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState
     ) {
         fragmentStartBinding = FragmentStartBinding.inflate(inflater, container,false);
         addBackgroundImage();
         MainActivity.PAGE_COUNTER = 0;
+        if( MainActivity.northPoleWindow != null ){
+            MainActivity.northPoleWindow.dismiss();
+        }
+        if( MainActivity.gpsDataWindow != null ){
+            MainActivity.gpsDataWindow.dismiss();
+        }
         return fragmentStartBinding.getRoot();
     }
 

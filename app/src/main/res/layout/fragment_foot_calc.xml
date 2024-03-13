@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/foot_calc_popup_style">
+    android:background="@drawable/popup_style">
 
     <TextView
         android:id="@+id/text_calc_foot_distance"

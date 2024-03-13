@@ -33,6 +33,12 @@ public class PillarDataFragment extends Fragment {
         MainActivity.PAGE_COUNTER = 1;
         MainActivity.MENU.findItem(R.id.weight_base).setEnabled(true);
         MainActivity.MENU.findItem(R.id.plate_base).setEnabled(true);
+        if( MainActivity.northPoleWindow != null ){
+            MainActivity.northPoleWindow.dismiss();
+        }
+        if( MainActivity.gpsDataWindow != null ){
+            MainActivity.gpsDataWindow.dismiss();
+        }
         return fragmentDataBinding.getRoot();
     }
 

@@ -3,8 +3,8 @@ package com.david.giczi.pillarbasedisplayerapp;
 
 public class AzimuthAndDistance {
 	
-	private Point pointA;
-	private Point pointB;
+	private final Point pointA;
+	private final Point pointB;
 	
 	public AzimuthAndDistance(Point pointA, Point pointB) {	
 		this.pointA = pointA;
@@ -28,10 +28,10 @@ public class AzimuthAndDistance {
 		else if( 0 >= deltaX && deltaY > 0 ) {
 			return 2 * Math.PI - Math.atan(Math.abs(deltaX) / deltaY);
 		}
-		else if( deltaX > 0 && deltaY == 0 ) {
+		else if(deltaX > 0) {
 			return Math.PI / 2;
 		}
-		else if( 0 > deltaX && deltaY == 0 ) {
+		else if(0 > deltaX) {
 			return 3 * Math.PI / 2;
 		}
 		

@@ -1,8 +1,5 @@
 package com.david.giczi.pillarbasedisplayerapp;
 
-import android.Manifest;
-import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -11,22 +8,17 @@ import android.graphics.DashPathEffect;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Typeface;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
-import android.provider.Settings;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+
 import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+
 import com.david.giczi.pillarbasedisplayerapp.databinding.FragmentBaseBinding;
-import com.david.giczi.pillarbasedisplayerapp.utils.EOV;
-import com.david.giczi.pillarbasedisplayerapp.utils.WGS84;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -44,13 +36,14 @@ public class PillarBaseFragment extends Fragment {
     private static float MM;
     private static float SCALE;
     private static List<Point> transformedPillarBasePoints;
+
     private static final List<String> LETTERS = Arrays.asList(
             "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L",
     "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z");
 
     @Override
     public View onCreateView(
-            LayoutInflater inflater, ViewGroup container,
+            @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState
     ) {
         fragmentBaseBinding = FragmentBaseBinding.inflate(inflater, container, false);
@@ -62,12 +55,13 @@ public class PillarBaseFragment extends Fragment {
                 Math.pow(getResources().getDisplayMetrics().heightPixels, 2)) / 140F);
         this.bitmap = Bitmap.createBitmap(getResources().getDisplayMetrics().widthPixels,
                 getResources().getDisplayMetrics().heightPixels, Bitmap.Config.ARGB_8888);
-        this.canvas = new Canvas(bitmap);
+        canvas = new Canvas(bitmap);
         this.paint = new Paint();
         paint.setAntiAlias(true);
         canvas.drawColor(Color.WHITE);
         fragmentBaseBinding.drawingBase.setImageBitmap(bitmap);
         MainActivity.PAGE_COUNTER = 3;
+
         if(MainActivity.PILLAR_BASE_COORDINATES != null ){
             setScaleValue();
             transformPillarBasePoints();
@@ -86,13 +80,20 @@ public class PillarBaseFragment extends Fragment {
                 drawLegNameForPlateBase();
             }
         }
+        if( MainActivity.northPoleWindow != null ){
+            MainActivity
+            .northPoleWindow.showAtLocation(((MainActivity) getActivity()).binding.getRoot(), Gravity.CENTER, 0, - 630 );
+        }
+        if( MainActivity.gpsDataWindow != null ){
+            MainActivity.gpsDataWindow
+            .showAtLocation(((MainActivity) getActivity()).binding.getRoot(), Gravity.CENTER, 0, 800);
+        }
         return fragmentBaseBinding.getRoot();
     }
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
     }
-
 
     private void setScaleValue(){
         if( MainActivity.IS_WEIGHT_BASE ){
@@ -135,12 +136,12 @@ public class PillarBaseFragment extends Fragment {
     }
 
     private void addNorthSign(){
+        Bitmap northSignResource = BitmapFactory.decodeResource(getResources(), R.drawable.north);
         Matrix matrix = new Matrix();
         matrix.postScale(0.25F, 0.25F);
-        Bitmap northSignResource = BitmapFactory.decodeResource(getResources(), R.drawable.north);
         Bitmap northSign = Bitmap.createBitmap(northSignResource, 0, 0,
                 northSignResource.getWidth(), northSignResource.getHeight(), matrix, false);
-        canvas.drawBitmap(northSign, (canvas.getWidth() - northSign.getWidth()) / 2, MM, paint);
+        canvas.drawBitmap(northSign, (canvas.getWidth() - northSign.getWidth()) / 2f, 6 * MM, paint);
     }
 
     private void drawCircleForPoints() {
@@ -210,7 +211,7 @@ public class PillarBaseFragment extends Fragment {
               return true;
           }
         }
-        catch (NumberFormatException e){
+        catch (NumberFormatException ignored){
         }
         try{
 
@@ -219,7 +220,7 @@ public class PillarBaseFragment extends Fragment {
                 return true;
             }
         }
-        catch (NumberFormatException e){
+        catch (NumberFormatException ignored){
 
         }
 
@@ -509,10 +510,10 @@ public class PillarBaseFragment extends Fragment {
             if( centerIdValues.length == 2 && LETTERS.indexOf(centerIdValues[1]) == 0 ){
                 return "-1";
             }
-            if( centerIdValues.length == 2 && LETTERS.indexOf(centerIdValues[1].toUpperCase()) == -1 ){
+            if( centerIdValues.length == 2 && !LETTERS.contains(centerIdValues[1].toUpperCase())){
                 throw new NumberFormatException();
             }
-            if( directionIdValues.length == 2 && LETTERS.indexOf(directionIdValues[1].toUpperCase()) == -1 ){
+            if( directionIdValues.length == 2 && !LETTERS.contains(directionIdValues[1].toUpperCase())){
                 throw new NumberFormatException();
             }
             if(centerIdValues.length == 2 && directionIdValues.length == 2 &&
@@ -524,7 +525,7 @@ public class PillarBaseFragment extends Fragment {
                     LETTERS.indexOf(centerIdValues[1].toUpperCase()) + 1 < LETTERS.size()) {
                 return centerIdValues[0] + " " + LETTERS.get(LETTERS.indexOf(centerIdValues[1].toUpperCase()) + 1);
             }
-        }catch (NumberFormatException e){
+        }catch (NumberFormatException ignored){
         }
         try {
             if (centerIdValues.length == 2) {
@@ -537,11 +538,10 @@ public class PillarBaseFragment extends Fragment {
                     directionPointId >= centerPointId ){
                 return centerIdValues[0] + " " + (centerPointId - 1);
             }
-            else if(centerIdValues.length == 2 && directionIdValues.length == 2 &&
-                    directionPointId < centerPointId){
+            else if(centerIdValues.length == 2 && directionIdValues.length == 2){
                 return centerIdValues[0] + " " + (centerPointId + 1);
             }
-        }catch (NumberFormatException e){
+        }catch (NumberFormatException ignored){
         }
 
         return directionPointId >= centerPointId ?

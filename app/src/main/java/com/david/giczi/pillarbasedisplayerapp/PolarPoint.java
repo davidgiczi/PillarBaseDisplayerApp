@@ -3,10 +3,10 @@ package com.david.giczi.pillarbasedisplayerapp;
 
 public class PolarPoint {
 
-	private Point pointA;
-	private double distance;
-	private double azimuth;
-	private String newPointID;
+	private final Point pointA;
+	private final double distance;
+	private final double azimuth;
+	private final String newPointID;
 	
 	
 	public PolarPoint(Point pointA, double distance, double azimuth, String newPointID) {

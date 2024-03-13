@@ -19,7 +19,7 @@ public class PillarCoordsForWeightBase {
 	private double angularSecondValueBetweenMainPath = 0;
 	private double radRotation = 0;
 	private List<Point> pillarPoints;
-	private double azimuth;
+	private final double azimuth;
 	private boolean sideOfAngle;
 	
 	public PillarCoordsForWeightBase(Point pillarCenterPoint, Point axisDirectonPoint) throws InvalidParameterException {
@@ -27,7 +27,7 @@ public class PillarCoordsForWeightBase {
 		this.axisDirectionPoint = axisDirectonPoint;
 		AzimuthAndDistance azimuthAndDistance = new AzimuthAndDistance(pillarCenterPoint, axisDirectionPoint);
 		this.azimuth = azimuthAndDistance.calcAzimuth();
-		if(azimuth == Double.NaN) {
+		if(Double.isNaN(azimuth)) {
 			throw new InvalidParameterException();
 		}
 	}
