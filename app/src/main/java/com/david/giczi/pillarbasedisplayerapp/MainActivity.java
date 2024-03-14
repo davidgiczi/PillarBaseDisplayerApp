@@ -109,13 +109,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     private void stopMeasure(){
-        if( !IS_GPS_RUNNING ){
-            return;
+        if( gpsDataWindow != null ){
+            gpsDataWindow.dismiss();
         }
-        gpsDataWindow.dismiss();
         gpsDataWindow = null;
         gpsDataContainer = null;
-        northPoleWindow.dismiss();
+        if( northPoleWindow != null ){
+            northPoleWindow.dismiss();
+        }
         northPoleWindow = null;
         northPoleContainer = null;
         MainActivity.this.locationManager.removeUpdates(locationListener);
@@ -169,7 +170,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         MainActivity.this.locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
                 100, 0, locationListener);
 
-        Toast.makeText(MainActivity.this, "GPS elindítva.", Toast.LENGTH_SHORT).show();
+      Toast.makeText(MainActivity.this, "GPS elindítva.", Toast.LENGTH_SHORT).show();
     }
 
     private void requestPermissions(){
@@ -273,8 +274,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             }
             else {
                 startMeasure();
-                MENU.findItem(R.id.start_stop_gps).setTitle(R.string.stop_gps);
+                 MENU.findItem(R.id.start_stop_gps).setTitle(R.string.stop_gps);
             }
+
             IS_GPS_RUNNING = !IS_GPS_RUNNING;
         }
             return super.onOptionsItemSelected(item);
@@ -698,6 +700,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        stopMeasure();
         System.exit(0);
     }
 
