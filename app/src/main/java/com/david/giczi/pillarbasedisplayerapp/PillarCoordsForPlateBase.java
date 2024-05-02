@@ -32,59 +32,16 @@ public class PillarCoordsForPlateBase {
 		}
 	}
 
-
-	public Point getPillarCenterPoint() {
-		return pillarCenterPoint;
-	}
-
-
-	public void setPillarCenterPoint(Point pillarCenterPoint) {
-		this.pillarCenterPoint = pillarCenterPoint;
-	}
-
-
-	public Point getAxisDirectionPoint() {
-		return axisDirectionPoint;
-	}
-
-
-	public void setAxisDirectionPoint(Point axisDirectionPoint) {
-		this.axisDirectionPoint = axisDirectionPoint;
-	}
-
-
-	public double getHorizontalSizeOfHole() {
-		return horizontalSizeOfHole;
-	}
-
-
 	public void setHorizontalSizeOfHole(double horizontalSizeOfHole) {
 		this.horizontalSizeOfHole = horizontalSizeOfHole;
 	}
-
-
-	public double getVerticalSizeOfHole() {
-		return verticalSizeOfHole;
-	}
-
 
 	public void setVerticalSizeOfHole(double verticalSizeOfHole) {
 		this.verticalSizeOfHole = verticalSizeOfHole;
 	}
 
-
-	public double getHorizontalDistanceFromTheSideOfHole() {
-		return horizontalDistanceFromTheSideOfHole;
-	}
-
-
 	public void setHorizontalDistanceFromTheSideOfHole(double horizontalDistanceFromTheSideOfHole) {
 		this.horizontalDistanceFromTheSideOfHole = horizontalDistanceFromTheSideOfHole;
-	}
-
-
-	public double getVerticalDistanceFromTheSideOfHole() {
-		return verticalDistanceFromTheSideOfHole;
 	}
 
 
@@ -92,41 +49,13 @@ public class PillarCoordsForPlateBase {
 		this.verticalDistanceFromTheSideOfHole = verticalDistanceFromTheSideOfHole;
 	}
 
-
-	public double getRotation() {
-		return rotation;
-	}
-
-
-	public void setRotation(double rotation) {
-		this.rotation = rotation;
-	}
-
-
-	public double getAngleValueBetweenMainPath() {
-		return angleValueBetweenMainPath;
-	}
-
-
 	public void setAngleValueBetweenMainPath(double angleValueBetweenMainPath) {
 		this.angleValueBetweenMainPath = angleValueBetweenMainPath;
 	}
 
-
-	public double getAngularMinuteValueBetweenMainPath() {
-		return angularMinuteValueBetweenMainPath;
-	}
-
-
 	public void setAngularMinuteValueBetweenMainPath(double angularMinuteValueBetweenMainPath) {
 		this.angularMinuteValueBetweenMainPath = angularMinuteValueBetweenMainPath;
 	}
-
-
-	public double getAngularSecondValueBetweenMainPath() {
-		return angularSecondValueBetweenMainPath;
-	}
-
 
 	public void setAngularSecondValueBetweenMainPath(double angularSecondValueBetweenMainPath) {
 		this.angularSecondValueBetweenMainPath = angularSecondValueBetweenMainPath;
@@ -135,22 +64,10 @@ public class PillarCoordsForPlateBase {
 	public List<Point> getPillarPoints() {
 		return pillarPoints;
 	}
-	
 
-	public double getRadRotation() {
-		return radRotation;
-	}
-	
-	
 	public void setSideOfAngle(boolean sideOfAngle) {
 		this.sideOfAngle = sideOfAngle;
 	}
-	
-	
-	public boolean isSideOfAngle() {
-		return sideOfAngle;
-	}
-
 
 	public void calculatePillarPoints() {
 		this.pillarPoints = new ArrayList<>();
@@ -221,11 +138,11 @@ public class PillarCoordsForPlateBase {
 					360 - (angleValueBetweenMainPath + 
 					angularMinuteValueBetweenMainPath / 60 + 
 					angularSecondValueBetweenMainPath / 3600);
-			
-			rotation =  ( angleValueBetweenMainPath == 180 && 
+
+			rotation =  ( angleValueBetweenMainPath == 180 &&
 						angularMinuteValueBetweenMainPath == 0 &&
 						angularSecondValueBetweenMainPath == 0 ) ? 0 : rotationValue;
-		
+
 	}
 }
 	

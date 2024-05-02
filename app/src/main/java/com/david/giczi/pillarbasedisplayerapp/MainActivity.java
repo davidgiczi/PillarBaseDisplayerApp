@@ -56,6 +56,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 
@@ -203,8 +204,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 Math.toDegrees(pillarData.calcAzimuth()) - northPoleDirection + 360 :
                 Math.toDegrees(pillarData.calcAzimuth()) - northPoleDirection;
         addPillarDirectionArrowImage((float) direction, (int) Math.round(pillarData.calcDistance()) );
-        String pillarDirectionAndDistance = "Irány: "  + String.format("%5.1f°", direction) +
-          "\t\tTávolság: " + String.format("%5.0fm", pillarData.calcDistance());
+        String pillarDirectionAndDistance = "Irány: "  + String.format(Locale.getDefault(),"%5.1f°", direction) +
+          "\t\tTávolság: " + String.format(Locale.getDefault(),"%5.0fm", pillarData.calcDistance());
         TextView pillarDataView = gpsDataContainer.findViewById(R.id.pillar_direction_and_distance);
         pillarDataView.setText(pillarDirectionAndDistance);
     }
@@ -313,7 +314,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                             * Double.parseDouble(inputIllesztesiSik.getText().toString()) / 100.0) / 1000.0;
           ((TextView) container.findViewById(R.id.text_calc_foot_distance)).setText(R.string.value_of_foot_distance);
            TextView resultFootDistance = container.findViewById(R.id.result_foot_distance);
-           resultFootDistance.setText(String.format("%.3fm", footDistance));
+           resultFootDistance.setText(String.format(Locale.getDefault(), "%.3fm", footDistance));
         });
     }
 

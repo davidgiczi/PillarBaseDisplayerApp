@@ -43,13 +43,4 @@ public class AzimuthAndDistance {
 				+ Math.pow(pointA.getY_coord() - pointB.getY_coord(), 2));
 	}
 
-	public Point getPointA() {
-		return pointA;
-	}
-
-	public Point getPointB() {
-		return pointB;
-	}
-	
-	
 }

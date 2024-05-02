@@ -54,15 +54,6 @@ public class Point {
 	public String writePointForTPS() {
 		return this.pointID + ";" + this.x_coord + ";" + this.y_coord + ";0;;";
 	}
-	
-	public String writePointForKML() {
-		return this.pointID + " " + this.x_coord + " " + this.y_coord + " 0";
-	}
-	
-	public String writePointForMS() {
-		return this.pointID + " " + this.x_coord + " " + this.y_coord + " 0";
-	}
-
 
 	@Override
 	public int hashCode() {

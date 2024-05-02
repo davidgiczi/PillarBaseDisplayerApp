@@ -16,14 +16,15 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import com.david.giczi.pillarbasedisplayerapp.databinding.FragmentCoordsBinding;
 
+import com.david.giczi.pillarbasedisplayerapp.databinding.FragmentCoordsBinding;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 
 public class PillarCoordsFragment extends Fragment {
 
@@ -134,20 +135,21 @@ public class PillarCoordsFragment extends Fragment {
 
                 if( startPoint == null ){
                     startPoint = MainActivity.PILLAR_BASE_COORDINATES.get(pointId.getId());
-                 TextView startPointView = getActivity().findViewById(pointId.getId());
+                 TextView startPointView = requireActivity().findViewById(pointId.getId());
                         startPointView.setTextSize(30F);
                         startPointView.setTextColor(Color.parseColor("#fe7e0f"));
                         MainActivity.MENU.findItem(R.id.goto_next_fragment).setEnabled(false);
                     return;
                 }
               endPoint = MainActivity.PILLAR_BASE_COORDINATES.get(pointId.getId());
-                TextView endPointView = ((MainActivity) getActivity()).findViewById(pointId.getId());
+                TextView endPointView = ((MainActivity) requireActivity()).findViewById(pointId.getId());
                     endPointView.setTextSize(30F);
                     endPointView.setTextColor(Color.parseColor("#fe7e0f"));
               popupDistanceBetweenPoints();
             });
             if( idValues.length == 2 ){
-               pointId.setText(idValues[0] + idValues[1]);
+                String id = idValues[0] + idValues[1];
+               pointId.setText(id);
             }
             else {
                 pointId.setText(pillarBaseCoordinate.getPointID());
@@ -183,12 +185,12 @@ public class PillarCoordsFragment extends Fragment {
                         endPointIdValues[0] + endPointIdValues[1] + "."  :
                         endPoint.getPointID() + ".");
         ((TextView) container.findViewById(R.id.distance_between_points))
-                .setText(String.format("%.3fm", distance.calcDistance()));
+                .setText(String.format(Locale.getDefault(),"%.3fm", distance.calcDistance()));
 
         Handler handler = new Handler();
         handler.postDelayed(() -> {
             for (int i = 0; i < MainActivity.PILLAR_BASE_COORDINATES.size(); i++){
-            TextView pointId = (TextView)((MainActivity) getActivity()).findViewById(i);
+            TextView pointId = (TextView)((MainActivity) requireActivity()).findViewById(i);
             pointId.setTextColor(Color.BLACK);
             pointId.setTextSize(20F);
             }
@@ -201,7 +203,7 @@ public class PillarCoordsFragment extends Fragment {
     private void saveProjectFileForRTK() {
         String fileName = ((TextView)
                 (((MainActivity)
-                        getActivity()).findViewById(R.id.projectNameTitle))).getText().toString();
+                        requireActivity()).findViewById(R.id.projectNameTitle))).getText().toString();
         File projectFile =
                 new File(Environment.getExternalStorageDirectory(),
                         "/Documents/" + fileName + "_RTK.txt");
@@ -230,7 +232,7 @@ public class PillarCoordsFragment extends Fragment {
     private void saveProjectFileForTPS() {
         String fileName = ((TextView)
                 (((MainActivity)
-                        getActivity()).findViewById(R.id.projectNameTitle))).getText().toString();
+                        requireActivity()).findViewById(R.id.projectNameTitle))).getText().toString();
         File projectFile =
                 new File(Environment.getExternalStorageDirectory(),
                         "/Documents/" + fileName + "_TPS.txt");

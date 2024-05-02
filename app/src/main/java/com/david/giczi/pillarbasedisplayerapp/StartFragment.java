@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
@@ -50,13 +51,13 @@ public class StartFragment extends Fragment {
         Drawable backgroundImage;
         switch ((int) (Math.random() * 3) + 1){
             case 1 :
-                backgroundImage  = ((MainActivity) getActivity()).getDrawable(R.drawable.pillars1);
+                backgroundImage  = ((MainActivity) requireActivity()).getDrawable(R.drawable.pillars1);
                 break;
             case 2 :
-                backgroundImage  = ((MainActivity) getActivity()).getDrawable(R.drawable.pillars2);
+                backgroundImage  = ((MainActivity) requireActivity()).getDrawable(R.drawable.pillars2);
                 break;
             default:
-                backgroundImage  =((MainActivity) getActivity()).getDrawable(R.drawable.pillars3);
+                backgroundImage  =((MainActivity) requireActivity()).getDrawable(R.drawable.pillars3);
         }
         fragmentStartBinding.startPage.setBackground(backgroundImage);
     }

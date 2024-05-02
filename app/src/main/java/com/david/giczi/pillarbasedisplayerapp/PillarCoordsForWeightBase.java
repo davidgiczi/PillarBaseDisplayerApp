@@ -31,91 +31,44 @@ public class PillarCoordsForWeightBase {
 			throw new InvalidParameterException();
 		}
 	}
-	
-	public Point getPillarCenterPoint() {
-		return pillarCenterPoint;
-	}
-	public void setPillarCenterPoint(Point pillarCenterPoint) {
-		this.pillarCenterPoint = pillarCenterPoint;
-	}
-	public Point getAxisDirectionPoint() {
-		return axisDirectionPoint;
-	}
-	public void setAxisDirectionPoint(Point axisDirectionPoint) {
-		this.axisDirectionPoint = axisDirectionPoint;
-	}
-	public double getHorizontalDistanceBetweenPillarLegs() {
-		return horizontalDistanceBetweenPillarLegs;
-	}
+
 	public void setHorizontalDistanceBetweenPillarLegs(double horizontalDistanceBetweenPillarLegs) {
 		this.horizontalDistanceBetweenPillarLegs = horizontalDistanceBetweenPillarLegs;
 	}
-	public double getVerticalDistanceBetweenPillarLegs() {
-		return verticalDistanceBetweenPillarLegs;
-	}
+
 	public void setVerticalDistanceBetweenPillarLegs(double verticalDistanceBetweenPillarLegs) {
 		this.verticalDistanceBetweenPillarLegs = verticalDistanceBetweenPillarLegs;
-	}
-	public double getHorizontalSizeOfHoleOfPillarLeg() {
-		return horizontalSizeOfHoleOfPillarLeg;
 	}
 	public void setHorizontalSizeOfHoleOfPillarLeg(double horizontalSizeOfHoleOfPillarLeg) {
 		this.horizontalSizeOfHoleOfPillarLeg = horizontalSizeOfHoleOfPillarLeg;
 	}
-	public double getVerticalSizeOfHoleOfPillarLeg() {
-		return verticalSizeOfHoleOfPillarLeg;
-	}
+
 	public void setVerticalSizeOfHoleOfPillarLeg(double verticalSizeOfHoleOfPillarLeg) {
 		this.verticalSizeOfHoleOfPillarLeg = verticalSizeOfHoleOfPillarLeg;
 	}
-	
-	public double getDistanceOnTheAxis() {
-		return distanceOnTheAxis;
-	}
+
 	public void setDistanceOnTheAxis(double distanceOnTheAxis) {
 		this.distanceOnTheAxis = distanceOnTheAxis;
 	}
-	
-	public double getRotation() {
-		return rotation;
-	}
 
-	public void setRotation(double rotation) {
-		this.rotation = rotation;
-	}
-	
 	public List<Point> getPillarPoints() {
 		return pillarPoints;
 	}
-	
-	public double getAngleValueBetweenMainPath() {
-		return angleValueBetweenMainPath;
-	}
+
 
 	public void setAngleValueBetweenMainPath(double angleValueBetweenMainPath) {
 		this.angleValueBetweenMainPath = angleValueBetweenMainPath;
-	}
-
-	public double getAngularMinuteValueBetweenMainPath() {
-		return angularMinuteValueBetweenMainPath;
 	}
 
 	public void setAngularMinuteValueBetweenMainPath(double angularMinuteValueBetweenMainPath) {
 		this.angularMinuteValueBetweenMainPath = angularMinuteValueBetweenMainPath;
 	}
 
-	public double getAngularSecondValueBetweenMainPath() {
-		return angularSecondValueBetweenMainPath;
-	}
 
 	public void setAngularSecondValueBetweenMainPath(double angularSecondValueBetweenMainPath) {
 		this.angularSecondValueBetweenMainPath = angularSecondValueBetweenMainPath;
 	}
-	
-	public double getRadRotation() {
-		return radRotation;
-	}
-	
+
 	public void setSideOfAngle(boolean sideOfAngle) {
 		this.sideOfAngle = sideOfAngle;
 	}

@@ -22,7 +22,7 @@ import com.david.giczi.pillarbasedisplayerapp.databinding.FragmentBaseBinding;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
+import java.util.Locale;
 
 
 public class PillarBaseFragment extends Fragment {
@@ -55,7 +55,7 @@ public class PillarBaseFragment extends Fragment {
                 Math.pow(getResources().getDisplayMetrics().heightPixels, 2)) / 140F);
         this.bitmap = Bitmap.createBitmap(getResources().getDisplayMetrics().widthPixels,
                 getResources().getDisplayMetrics().heightPixels, Bitmap.Config.ARGB_8888);
-        canvas = new Canvas(bitmap);
+        this.canvas = new Canvas(bitmap);
         this.paint = new Paint();
         paint.setAntiAlias(true);
         canvas.drawColor(Color.WHITE);
@@ -82,11 +82,11 @@ public class PillarBaseFragment extends Fragment {
         }
         if( MainActivity.northPoleWindow != null ){
             MainActivity
-            .northPoleWindow.showAtLocation(((MainActivity) getActivity()).binding.getRoot(), Gravity.CENTER, 0, - 630 );
+            .northPoleWindow.showAtLocation(((MainActivity) requireActivity()).binding.getRoot(), Gravity.CENTER, 0, - 630 );
         }
         if( MainActivity.gpsDataWindow != null ){
             MainActivity.gpsDataWindow
-            .showAtLocation(((MainActivity) getActivity()).binding.getRoot(), Gravity.CENTER, 0, 800);
+            .showAtLocation(((MainActivity) requireActivity()).binding.getRoot(), Gravity.CENTER, 0, 800);
         }
         return fragmentBaseBinding.getRoot();
     }
@@ -149,7 +149,7 @@ public class PillarBaseFragment extends Fragment {
         paint.setStyle(Paint.Style.FILL);
         canvas.drawCircle((float) transformedPillarBasePoints.get(0).getX_coord(),
                 (float) transformedPillarBasePoints.get(0).getY_coord(), 1.2F * MM, paint);
-        drawPillarBasePointId(transformedPillarBasePoints.get(0), Color.RED, 40);
+        drawPillarBasePointId(transformedPillarBasePoints.get(0));
         paint.setColor(Color.MAGENTA);
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(4F);
@@ -159,11 +159,11 @@ public class PillarBaseFragment extends Fragment {
         }
     }
 
-    private void drawPillarBasePointId(Point pillarBasePoint, int colorValue, int size){
-        paint.setColor(colorValue);
+    private void drawPillarBasePointId(Point pillarBasePoint){
+        paint.setColor(Color.RED);
         paint.setStyle(Paint.Style.FILL);
         paint.setTypeface(Typeface.DEFAULT_BOLD);
-        paint.setTextSize(size);
+        paint.setTextSize(40);
         String[] idValues = pillarBasePoint.getPointID().split("\\s+");
         canvas.drawText((idValues.length == 2 ? idValues[0] + idValues[1] :
                         pillarBasePoint.getPointID()), (float) pillarBasePoint.getX_coord(),
@@ -187,7 +187,7 @@ public class PillarBaseFragment extends Fragment {
                         + (directionIdValues.length == 2 ?
                        directionIdValues[0] + directionIdValues[1] : directionPoint.getPointID())
                         + ". oszlopok távolsága: " +
-        String.format( "%.3fm", mainLineDistance.calcDistance()).replace(",", "."),
+        String.format(Locale.getDefault(), "%.3fm", mainLineDistance.calcDistance()).replace(",", "."),
                3 * MM, getResources().getDisplayMetrics().heightPixels - 3 * MM, paint);
         paint.setColor(Color.LTGRAY);
         for(int i = 1; i < transformedPillarBasePoints.size() - 1; i++){
@@ -377,7 +377,7 @@ public class PillarBaseFragment extends Fragment {
                 (float) endPoint.calcPolarPoint().getX_coord(),
                 (float) endPoint.calcPolarPoint().getY_coord(), paint);
         drawArrow(transformedPillarBasePoints.get(0), endPoint.calcPolarPoint());
-        drawPillarBasePointId(endPoint.calcPolarPoint(), Color.RED, 40);
+        drawPillarBasePointId(endPoint.calcPolarPoint());
     }
 
     private void drawMainLineDirectionForNormalWeightBase(){
@@ -396,7 +396,7 @@ public class PillarBaseFragment extends Fragment {
                 (float) endPoint.calcPolarPoint().getX_coord(),
                 (float) endPoint.calcPolarPoint().getY_coord(), paint);
         drawArrow(transformedPillarBasePoints.get(0), endPoint.calcPolarPoint());
-        drawPillarBasePointId(endPoint.calcPolarPoint(), Color.RED, 40);
+        drawPillarBasePointId(endPoint.calcPolarPoint());
     }
 
     private void drawMainLineDirectionForRotatedPlateBase(){
@@ -414,7 +414,7 @@ public class PillarBaseFragment extends Fragment {
                 (float) endPoint.calcPolarPoint().getX_coord(),
                 (float) endPoint.calcPolarPoint().getY_coord(), paint);
         drawArrow(transformedPillarBasePoints.get(0), endPoint.calcPolarPoint());
-        drawPillarBasePointId(endPoint.calcPolarPoint(), Color.RED, 40);
+        drawPillarBasePointId(endPoint.calcPolarPoint());
         paint.setColor(Color.MAGENTA);
         mainLineData = new AzimuthAndDistance(transformedPillarBasePoints.get(0),
                 transformedPillarBasePoints.get(transformedPillarBasePoints.size() - 2));
@@ -428,7 +428,7 @@ public class PillarBaseFragment extends Fragment {
                 (float) endPoint.calcPolarPoint().getX_coord(),
                 (float) endPoint.calcPolarPoint().getY_coord(), paint);
         drawArrow(transformedPillarBasePoints.get(0), endPoint.calcPolarPoint());
-        drawPillarBasePointId(endPoint.calcPolarPoint(), Color.RED, 40);
+        drawPillarBasePointId(endPoint.calcPolarPoint());
     }
 
     private void drawMainLineDirectionForRotatedWeightBase(){
@@ -446,7 +446,7 @@ public class PillarBaseFragment extends Fragment {
             (float) endPoint.calcPolarPoint().getX_coord(),
             (float) endPoint.calcPolarPoint().getY_coord(), paint);
     drawArrow(transformedPillarBasePoints.get(0), endPoint.calcPolarPoint());
-    drawPillarBasePointId(endPoint.calcPolarPoint(), Color.RED, 40);
+    drawPillarBasePointId(endPoint.calcPolarPoint());
         paint.setColor(Color.MAGENTA);
         mainLineData = new AzimuthAndDistance(transformedPillarBasePoints.get(0),
                 transformedPillarBasePoints.get(transformedPillarBasePoints.size() - 2));
@@ -460,7 +460,7 @@ public class PillarBaseFragment extends Fragment {
                 (float) endPoint.calcPolarPoint().getX_coord(),
                 (float) endPoint.calcPolarPoint().getY_coord(), paint);
         drawArrow(transformedPillarBasePoints.get(0), endPoint.calcPolarPoint());
-        drawPillarBasePointId(endPoint.calcPolarPoint(), Color.RED, 40);
+        drawPillarBasePointId(endPoint.calcPolarPoint());
     }
 
     private void drawArrow(Point directionPoint, Point arrowLocationPoint){

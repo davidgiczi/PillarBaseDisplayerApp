@@ -23,20 +23,6 @@ public class PolarPoint {
 		return new Point(newPointID, newPointX, newPointY);
 	}
 
-	public Point getPointA() {
-		return pointA;
-	}
-
-
-	public double getDistance() {
-		return distance;
-	}
-
-
-	public double getAzimuth() {
-		return azimuth;
-	}
-
 	public String getNewPointID() {
 		return newPointID;
 	}
