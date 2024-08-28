@@ -11,9 +11,25 @@
         android:label="@string/project_file_name_label"
         tools:layout="@layout/fragment_start">
         <action
+            android:id="@+id/action_StartFragment_to_MeasDataFragment"
+            app:destination="@id/MeasDataFragment" />
+        <action
             android:id="@+id/action_StartFragment_to_DataFragment"
             app:destination="@id/DataFragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/MeasDataFragment"
+        android:name="com.david.giczi.pillarbasedisplayerapp.PillarMeasDataFragment"
+        android:label="@string/project_file_name_label"
+        tools:layout="@layout/fragment_meas_data">
+        <action
+            android:id="@+id/action_MeasDataFragment_to_DataFragment"
+            app:destination="@id/DataFragment" />
+    </fragment>
+
+
+
     <fragment
         android:id="@+id/DataFragment"
         android:name="com.david.giczi.pillarbasedisplayerapp.PillarDataFragment"

@@ -40,7 +40,7 @@ public class PillarCoordsFragment extends Fragment {
         fragmentCoordsBinding = FragmentCoordsBinding.inflate(inflater, container, false);
         calcPillarBaseCoordinates();
         displayPillarBaseCoordinates();
-        MainActivity.PAGE_COUNTER = 2;
+        MainActivity.PAGE_COUNTER = 3;
         MainActivity.MENU.findItem(R.id.weight_base).setEnabled(false);
         MainActivity.MENU.findItem(R.id.plate_base).setEnabled(false);
         if( MainActivity.IS_SAVE_RTK_FILE ){

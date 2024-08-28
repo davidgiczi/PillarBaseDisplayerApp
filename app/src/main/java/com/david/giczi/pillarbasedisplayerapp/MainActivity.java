@@ -322,17 +322,20 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private void gotoNextFragment(){
         NavController navController =
                 Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-            switch (PAGE_COUNTER % 4){
+            switch (PAGE_COUNTER % 5){
                 case 0 :
-                    navController.navigate(R.id.action_StartFragment_to_DataFragment);
+                    navController.navigate(R.id.action_StartFragment_to_MeasDataFragment);
                     break;
                 case 1 :
-                    saveDialog(navController);
+                    navController.navigate(R.id.action_MeasDataFragment_to_DataFragment);
                     break;
                 case 2 :
-                    navController.navigate(R.id.action_CoordsFragment_to_BaseFragment);
+                    saveDialog(navController);
                     break;
                 case 3 :
+                    navController.navigate(R.id.action_CoordsFragment_to_BaseFragment);
+                    break;
+                case 4 :
                     navController.navigate(R.id.action_BaseFragment_to_StartFragment);
                     break;
             }
@@ -487,17 +490,20 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private void gotoDataFragment(){
         NavController navController =
                 Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        switch (PAGE_COUNTER % 4){
+        switch (PAGE_COUNTER % 5){
             case 0 :
                 navController.navigate(R.id.action_StartFragment_to_DataFragment);
                 break;
             case 1 :
-                navController.navigate(R.id.action_DataFragment_to_StartFragment);
+                navController.navigate(R.id.action_MeasDataFragment_to_DataFragment);
                 break;
             case 2 :
-                navController.navigate(R.id.action_CoordsFragment_to_DataFragment);
+                navController.navigate(R.id.action_DataFragment_to_StartFragment);
                 break;
             case 3 :
+                navController.navigate(R.id.action_CoordsFragment_to_DataFragment);
+                break;
+            case 4 :
                 navController.navigate(R.id.action_BaseFragment_to_DataFragment);
                 break;
         }

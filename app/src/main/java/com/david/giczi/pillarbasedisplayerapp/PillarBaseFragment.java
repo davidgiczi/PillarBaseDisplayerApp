@@ -60,7 +60,7 @@ public class PillarBaseFragment extends Fragment {
         paint.setAntiAlias(true);
         canvas.drawColor(Color.WHITE);
         fragmentBaseBinding.drawingBase.setImageBitmap(bitmap);
-        MainActivity.PAGE_COUNTER = 3;
+        MainActivity.PAGE_COUNTER = 4;
 
         if(MainActivity.PILLAR_BASE_COORDINATES != null ){
             setScaleValue();

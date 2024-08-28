@@ -30,7 +30,7 @@ public class PillarDataFragment extends Fragment {
                     .setHint(R.string.distance_from_side_of_hole_of_base_parallel);
         }
         displayInputData();
-        MainActivity.PAGE_COUNTER = 1;
+        MainActivity.PAGE_COUNTER = 2;
         MainActivity.MENU.findItem(R.id.weight_base).setEnabled(true);
         MainActivity.MENU.findItem(R.id.plate_base).setEnabled(true);
         if( MainActivity.northPoleWindow != null ){
