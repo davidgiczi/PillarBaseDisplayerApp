@@ -1,4 +1,4 @@
-package com.david.giczi.pillarbasedisplayerapp;
+package com.david.giczi.pillarbasedisplayerapp.service;
 
 import androidx.annotation.NonNull;
 

@@ -1,4 +1,4 @@
-package com.david.giczi.pillarbasedisplayerapp;
+package com.david.giczi.pillarbasedisplayerapp.fragments;
 
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -17,6 +17,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.david.giczi.pillarbasedisplayerapp.service.AzimuthAndDistance;
+import com.david.giczi.pillarbasedisplayerapp.MainActivity;
+import com.david.giczi.pillarbasedisplayerapp.service.PillarCoordsForPlateBase;
+import com.david.giczi.pillarbasedisplayerapp.service.PillarCoordsForWeightBase;
+import com.david.giczi.pillarbasedisplayerapp.service.Point;
+import com.david.giczi.pillarbasedisplayerapp.R;
 import com.david.giczi.pillarbasedisplayerapp.databinding.FragmentCoordsBinding;
 
 import java.io.BufferedWriter;

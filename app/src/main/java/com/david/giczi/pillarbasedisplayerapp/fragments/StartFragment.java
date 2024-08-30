@@ -1,4 +1,4 @@
-package com.david.giczi.pillarbasedisplayerapp;
+package com.david.giczi.pillarbasedisplayerapp.fragments;
 
 
 import android.graphics.drawable.Drawable;
@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.david.giczi.pillarbasedisplayerapp.MainActivity;
+import com.david.giczi.pillarbasedisplayerapp.R;
 import com.david.giczi.pillarbasedisplayerapp.databinding.FragmentStartBinding;
 
 

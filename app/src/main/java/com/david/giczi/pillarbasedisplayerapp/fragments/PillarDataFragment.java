@@ -1,4 +1,4 @@
-package com.david.giczi.pillarbasedisplayerapp;
+package com.david.giczi.pillarbasedisplayerapp.fragments;
 
 import android.os.Bundle;
 import android.text.Editable;
@@ -9,8 +9,12 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import com.david.giczi.pillarbasedisplayerapp.MainActivity;
+import com.david.giczi.pillarbasedisplayerapp.R;
 import com.david.giczi.pillarbasedisplayerapp.databinding.FragmentDataBinding;
 import java.util.List;
+import java.util.Objects;
 
 public class PillarDataFragment extends Fragment {
 
@@ -22,6 +26,7 @@ public class PillarDataFragment extends Fragment {
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         fragmentDataBinding = FragmentDataBinding.inflate(inflater, container, false);
+        displayPillarLocationData();
         if( !MainActivity.IS_WEIGHT_BASE ){
             fragmentDataBinding.inputDistanceOfDirectionPoints.setVisibility(View.INVISIBLE);
             fragmentDataBinding.inputFootDistancePerpendicularly
@@ -40,6 +45,16 @@ public class PillarDataFragment extends Fragment {
             MainActivity.gpsDataWindow.dismiss();
         }
         return fragmentDataBinding.getRoot();
+    }
+
+
+    private void displayPillarLocationData(){
+        getParentFragmentManager().setFragmentResultListener("results", this, (requestKey, result) -> {
+            fragmentDataBinding.inputYCoordinate.setText(Objects.requireNonNull(result.get("centerX")).toString());
+            fragmentDataBinding.inputXCoordinate.setText(Objects.requireNonNull(result.get("centerY")).toString());
+            fragmentDataBinding.inputNextPrevYCoordinate.setText(Objects.requireNonNull(result.get("directionX")).toString());
+            fragmentDataBinding.inputNextPrevXCoordinate.setText(Objects.requireNonNull(result.get("directionY")).toString());
+        });
     }
 
     @Override

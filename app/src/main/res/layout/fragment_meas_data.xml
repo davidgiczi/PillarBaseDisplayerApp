@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".PillarMeasDataFragment">
+    tools:context=".fragments.PillarMeasDataFragment">
 
 
     <TextView
@@ -36,7 +36,7 @@
         app:layout_constraintTop_toBottomOf="@+id/text_start_pillar_data" />
 
     <EditText
-        android:id="@+id/foot1_y_coordinate"
+        android:id="@+id/center_foot1_y_coordinate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
@@ -45,7 +45,7 @@
         android:ems="8"
         android:gravity="center"
         android:hint="@string/y_coordinate"
-        android:inputType="numberDecimal"
+        android:inputType="numberDecimal|numberSigned"
         android:maxLength="10"
         android:minHeight="10dp"
         android:textColor="@color/steel_gray"
@@ -54,7 +54,7 @@
         app:layout_constraintTop_toBottomOf="@+id/text_start_pillar_data" />
 
     <EditText
-        android:id="@+id/foot1_x_coordinate"
+        android:id="@+id/center_foot1_x_coordinate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
@@ -63,13 +63,13 @@
         android:ems="8"
         android:gravity="center"
         android:hint="@string/x_coordinate"
-        android:inputType="numberDecimal"
+        android:inputType="numberDecimal|numberSigned"
         android:maxLength="10"
         android:minHeight="10dp"
         android:textColor="@color/steel_gray"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/foot1_y_coordinate"
+        app:layout_constraintStart_toEndOf="@+id/center_foot1_y_coordinate"
         app:layout_constraintTop_toBottomOf="@+id/text_start_pillar_data" />
 
     <TextView
@@ -86,7 +86,7 @@
         app:layout_constraintTop_toBottomOf="@+id/foot1_text" />
 
     <EditText
-        android:id="@+id/foot2_y_coordinate"
+        android:id="@+id/center_foot2_y_coordinate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
@@ -95,16 +95,16 @@
         android:ems="8"
         android:gravity="center"
         android:hint="@string/y_coordinate"
-        android:inputType="numberDecimal"
+        android:inputType="numberDecimal|numberSigned"
         android:maxLength="10"
         android:minHeight="10dp"
         android:textColor="@color/steel_gray"
         android:textSize="16sp"
         app:layout_constraintStart_toEndOf="@+id/foot2_text"
-        app:layout_constraintTop_toBottomOf="@+id/foot1_y_coordinate" />
+        app:layout_constraintTop_toBottomOf="@+id/center_foot1_y_coordinate" />
 
     <EditText
-        android:id="@+id/foot2_x_coordinate"
+        android:id="@+id/center_foot2_x_coordinate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
@@ -113,14 +113,14 @@
         android:ems="8"
         android:gravity="center"
         android:hint="@string/x_coordinate"
-        android:inputType="numberDecimal"
+        android:inputType="numberDecimal|numberSigned"
         android:maxLength="10"
         android:minHeight="10dp"
         android:textColor="@color/steel_gray"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/foot2_y_coordinate"
-        app:layout_constraintTop_toBottomOf="@+id/foot1_x_coordinate" />
+        app:layout_constraintStart_toEndOf="@+id/center_foot2_y_coordinate"
+        app:layout_constraintTop_toBottomOf="@+id/center_foot1_x_coordinate" />
 
     <TextView
         android:id="@+id/foot3_text"
@@ -136,7 +136,7 @@
         app:layout_constraintTop_toBottomOf="@+id/foot2_text" />
 
     <EditText
-        android:id="@+id/foot3_y_coordinate"
+        android:id="@+id/center_foot3_y_coordinate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
@@ -145,16 +145,16 @@
         android:ems="8"
         android:gravity="center"
         android:hint="@string/y_coordinate"
-        android:inputType="numberDecimal"
+        android:inputType="numberDecimal|numberSigned"
         android:maxLength="10"
         android:minHeight="10dp"
         android:textColor="@color/steel_gray"
         android:textSize="16sp"
         app:layout_constraintStart_toEndOf="@+id/foot3_text"
-        app:layout_constraintTop_toBottomOf="@+id/foot2_y_coordinate" />
+        app:layout_constraintTop_toBottomOf="@+id/center_foot2_y_coordinate" />
 
     <EditText
-        android:id="@+id/foot3_x_coordinate"
+        android:id="@+id/center_foot3_x_coordinate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
@@ -163,14 +163,14 @@
         android:ems="8"
         android:gravity="center"
         android:hint="@string/x_coordinate"
-        android:inputType="numberDecimal"
+        android:inputType="numberDecimal|numberSigned"
         android:maxLength="10"
         android:minHeight="10dp"
         android:textColor="@color/steel_gray"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/foot3_y_coordinate"
-        app:layout_constraintTop_toBottomOf="@+id/foot2_x_coordinate" />
+        app:layout_constraintStart_toEndOf="@+id/center_foot3_y_coordinate"
+        app:layout_constraintTop_toBottomOf="@+id/center_foot2_x_coordinate" />
 
     <TextView
         android:id="@+id/foot4_text"
@@ -186,7 +186,7 @@
         app:layout_constraintTop_toBottomOf="@+id/foot3_text" />
 
     <EditText
-        android:id="@+id/foot4_y_coordinate"
+        android:id="@+id/center_foot4_y_coordinate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
@@ -195,16 +195,16 @@
         android:ems="8"
         android:gravity="center"
         android:hint="@string/y_coordinate"
-        android:inputType="numberDecimal"
+        android:inputType="numberDecimal|numberSigned"
         android:maxLength="10"
         android:minHeight="10dp"
         android:textColor="@color/steel_gray"
         android:textSize="16sp"
         app:layout_constraintStart_toEndOf="@+id/foot4_text"
-        app:layout_constraintTop_toBottomOf="@+id/foot3_y_coordinate" />
+        app:layout_constraintTop_toBottomOf="@+id/center_foot3_y_coordinate" />
 
     <EditText
-        android:id="@+id/foot4_x_coordinate"
+        android:id="@+id/center_foot4_x_coordinate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
@@ -213,14 +213,14 @@
         android:ems="8"
         android:gravity="center"
         android:hint="@string/x_coordinate"
-        android:inputType="numberDecimal"
+        android:inputType="numberDecimal|numberSigned"
         android:maxLength="10"
         android:minHeight="10dp"
         android:textColor="@color/steel_gray"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/foot4_y_coordinate"
-        app:layout_constraintTop_toBottomOf="@+id/foot3_x_coordinate" />
+        app:layout_constraintStart_toEndOf="@+id/center_foot4_y_coordinate"
+        app:layout_constraintTop_toBottomOf="@+id/center_foot3_x_coordinate" />
 
     <TextView
         android:id="@+id/text_distance_new_pillar"
@@ -246,7 +246,7 @@
         android:autofillHints=""
         android:ems="8"
         android:gravity="center"
-        android:inputType="numberDecimal"
+        android:inputType="numberDecimal|numberSigned"
         android:maxLength="10"
         android:minHeight="10dp"
         android:textColor="@color/steel_gray"
@@ -306,7 +306,7 @@
         android:ems="8"
         android:gravity="center"
         android:hint="@string/y_coordinate"
-        android:inputType="numberDecimal"
+        android:inputType="numberDecimal|numberSigned"
         android:maxLength="10"
         android:minHeight="10dp"
         android:textColor="@color/steel_gray"
@@ -324,7 +324,7 @@
         android:ems="8"
         android:gravity="center"
         android:hint="@string/x_coordinate"
-        android:inputType="numberDecimal"
+        android:inputType="numberDecimal|numberSigned"
         android:maxLength="10"
         android:minHeight="10dp"
         android:textColor="@color/steel_gray"
@@ -332,6 +332,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/direction_foot1_y_coordinate"
         app:layout_constraintTop_toBottomOf="@+id/text_next_prev_pillar" />
+
     <TextView
         android:id="@+id/direction_foot2_text"
         android:layout_width="wrap_content"
@@ -355,7 +356,7 @@
         android:ems="8"
         android:gravity="center"
         android:hint="@string/y_coordinate"
-        android:inputType="numberDecimal"
+        android:inputType="numberDecimal|numberSigned"
         android:maxLength="10"
         android:minHeight="10dp"
         android:textColor="@color/steel_gray"
@@ -373,7 +374,7 @@
         android:ems="8"
         android:gravity="center"
         android:hint="@string/x_coordinate"
-        android:inputType="numberDecimal"
+        android:inputType="numberDecimal|numberSigned"
         android:maxLength="10"
         android:minHeight="10dp"
         android:textColor="@color/steel_gray"
@@ -405,7 +406,7 @@
         android:ems="8"
         android:gravity="center"
         android:hint="@string/y_coordinate"
-        android:inputType="numberDecimal"
+        android:inputType="numberDecimal|numberSigned"
         android:maxLength="10"
         android:minHeight="10dp"
         android:textColor="@color/steel_gray"
@@ -423,7 +424,7 @@
         android:ems="8"
         android:gravity="center"
         android:hint="@string/x_coordinate"
-        android:inputType="numberDecimal"
+        android:inputType="numberDecimal|numberSigned"
         android:maxLength="10"
         android:minHeight="10dp"
         android:textColor="@color/steel_gray"
@@ -455,7 +456,7 @@
         android:ems="8"
         android:gravity="center"
         android:hint="@string/y_coordinate"
-        android:inputType="numberDecimal"
+        android:inputType="numberDecimal|numberSigned"
         android:maxLength="10"
         android:minHeight="10dp"
         android:textColor="@color/steel_gray"
@@ -473,7 +474,7 @@
         android:ems="8"
         android:gravity="center"
         android:hint="@string/x_coordinate"
-        android:inputType="numberDecimal"
+        android:inputType="numberDecimal|numberSigned"
         android:maxLength="10"
         android:minHeight="10dp"
         android:textColor="@color/steel_gray"
@@ -481,5 +482,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/direction_foot4_y_coordinate"
         app:layout_constraintTop_toBottomOf="@+id/direction_foot3_x_coordinate" />
+
+    <Button
+        android:id="@+id/btn_send"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:text="@string/send"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

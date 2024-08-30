@@ -45,6 +45,8 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.david.giczi.pillarbasedisplayerapp.databinding.ActivityMainBinding;
+import com.david.giczi.pillarbasedisplayerapp.service.AzimuthAndDistance;
+import com.david.giczi.pillarbasedisplayerapp.service.Point;
 import com.david.giczi.pillarbasedisplayerapp.utils.EOV;
 import com.david.giczi.pillarbasedisplayerapp.utils.WGS84;
 
