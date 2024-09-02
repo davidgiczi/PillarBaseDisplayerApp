@@ -117,25 +117,43 @@ public class PillarLocationCalculator {
                 PolarPoint centerPoint = new PolarPoint(startPoint, distance, centerPointData.calcAzimuth(), "center");
                 centerX = df.format(centerPoint.calcPolarPoint().getX_coord()).replace(",", ".");
                 centerY = df.format(centerPoint.calcPolarPoint().getY_coord()).replace(",", ".");
-                directionX = df.format(aveCenterX).replace(",", ".");
-                directionY = df.format(aveCenterY).replace(",", ".");
+                directionX = df.format(distance == 0 ? aveDirectionX :  aveCenterX).replace(",", ".");
+                directionY = df.format(distance == 0 ? aveDirectionY : aveCenterY).replace(",", ".");
             }
 
         }
         else if( centerPillarMeasData.size() == 3 && distance != null ){
             aveCenterX = (centerPillarMeasData.get(0).getX_coord() + centerPillarMeasData.get(2).getX_coord()) / 2.0;
             aveCenterY = (centerPillarMeasData.get(0).getY_coord() + centerPillarMeasData.get(2).getY_coord()) / 2.0;
-            aveDirectionX = (centerPillarMeasData.get(1).getX_coord() + centerPillarMeasData.get(2).getX_coord()) / 2.0;
-            aveDirectionY = (centerPillarMeasData.get(1).getY_coord() + centerPillarMeasData.get(2).getY_coord()) / 2.0;
+            if( aveDirectionX == null ){
+                aveDirectionX = (centerPillarMeasData.get(1).getX_coord() + centerPillarMeasData.get(2).getX_coord()) / 2.0;
+            }
+            if( aveDirectionY == null ){
+                aveDirectionY = (centerPillarMeasData.get(1).getY_coord() + centerPillarMeasData.get(2).getY_coord()) / 2.0;
+            }
             Point startPoint = new Point("start", aveCenterX, aveCenterY);
             Point endPoint = new Point("end", aveDirectionX, aveDirectionY);
             AzimuthAndDistance centerPointData = new AzimuthAndDistance(startPoint, endPoint);
             PolarPoint centerPoint = new PolarPoint(startPoint, distance, centerPointData.calcAzimuth(), "center");
             centerX = df.format(centerPoint.calcPolarPoint().getX_coord()).replace(",", ".");
             centerY = df.format(centerPoint.calcPolarPoint().getY_coord()).replace(",", ".");
-            directionX = df.format(aveCenterX).replace(",", ".");
-            directionY = df.format(aveCenterY).replace(",", ".");
+            directionX = df.format(aveDirectionX).replace(",", ".");
+            directionY = df.format(aveDirectionY).replace(",", ".");
+        } else if (centerPillarMeasData.size() == 3) {
+            aveCenterX = (centerPillarMeasData.get(0).getX_coord() + centerPillarMeasData.get(2).getX_coord()) / 2.0;
+            aveCenterY = (centerPillarMeasData.get(0).getY_coord() + centerPillarMeasData.get(2).getY_coord()) / 2.0;
+            if( aveDirectionX == null ){
+                aveDirectionX = (centerPillarMeasData.get(1).getX_coord() + centerPillarMeasData.get(2).getX_coord()) / 2.0;
+            }
+            if( aveDirectionY == null ){
+                aveDirectionY = (centerPillarMeasData.get(1).getY_coord() + centerPillarMeasData.get(2).getY_coord()) / 2.0;
+            }
+            centerX = df.format((aveCenterX + aveDirectionX) / 2.0).replace(",", ".");
+            centerY = df.format((aveCenterY + aveDirectionY) / 2.0).replace(",", ".");
+            directionX = df.format(aveDirectionX).replace(",", ".");
+            directionY = df.format(aveDirectionY).replace(",", ".");
         }
+
     }
 
     public void setDistance(String distance) {
