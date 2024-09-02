@@ -148,8 +148,8 @@ public class PillarLocationCalculator {
             if( aveDirectionY == null ){
                 aveDirectionY = (centerPillarMeasData.get(1).getY_coord() + centerPillarMeasData.get(2).getY_coord()) / 2.0;
             }
-            centerX = df.format((aveCenterX + aveDirectionX) / 2.0).replace(",", ".");
-            centerY = df.format((aveCenterY + aveDirectionY) / 2.0).replace(",", ".");
+            centerX = df.format(aveCenterX).replace(",", ".");
+            centerY = df.format(aveCenterY).replace(",", ".");
             directionX = df.format(aveDirectionX).replace(",", ".");
             directionY = df.format(aveDirectionY).replace(",", ".");
         }
