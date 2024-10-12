@@ -35,26 +35,51 @@ public class PillarMeasDataFragment extends Fragment {
             public void onClick(View v) {
                 PillarLocationCalculator calcPillarLocationData = new PillarLocationCalculator();
                 calcPillarLocationData.setDistance(fragmentMeasDataBinding.distanceOfNewPillar.getText().toString());
-                calcPillarLocationData
-                        .addCenterPillarMeasData(
-                                fragmentMeasDataBinding.centerFoot1YCoordinate.getText().toString(),
-                                fragmentMeasDataBinding.centerFoot1XCoordinate.getText().toString(),
-                                fragmentMeasDataBinding.centerFoot2YCoordinate.getText().toString(),
-                                fragmentMeasDataBinding.centerFoot2XCoordinate.getText().toString(),
-                                fragmentMeasDataBinding.centerFoot3YCoordinate.getText().toString(),
-                                fragmentMeasDataBinding.centerFoot3XCoordinate.getText().toString(),
-                                fragmentMeasDataBinding.centerFoot4YCoordinate.getText().toString(),
-                                fragmentMeasDataBinding.centerFoot4XCoordinate.getText().toString());
-                calcPillarLocationData
-                        .addDirectionPillarMeasData(
-                                fragmentMeasDataBinding.directionFoot1YCoordinate.getText().toString(),
-                                fragmentMeasDataBinding.directionFoot1XCoordinate.getText().toString(),
-                                fragmentMeasDataBinding.directionFoot2YCoordinate.getText().toString(),
-                                fragmentMeasDataBinding.directionFoot2XCoordinate.getText().toString(),
-                                fragmentMeasDataBinding.directionFoot3YCoordinate.getText().toString(),
-                                fragmentMeasDataBinding.directionFoot3XCoordinate.getText().toString(),
-                                fragmentMeasDataBinding.directionFoot4YCoordinate.getText().toString(),
-                                fragmentMeasDataBinding.directionFoot4XCoordinate.getText().toString());
+
+                if( fragmentMeasDataBinding.calcMirrorCheckBox.isChecked() ){
+                    calcPillarLocationData
+                            .addCenterPillarMeasData(
+                                    fragmentMeasDataBinding.directionFoot1YCoordinate.getText().toString(),
+                                    fragmentMeasDataBinding.directionFoot1XCoordinate.getText().toString(),
+                                    fragmentMeasDataBinding.directionFoot2YCoordinate.getText().toString(),
+                                    fragmentMeasDataBinding.directionFoot2XCoordinate.getText().toString(),
+                                    fragmentMeasDataBinding.directionFoot3YCoordinate.getText().toString(),
+                                    fragmentMeasDataBinding.directionFoot3XCoordinate.getText().toString(),
+                                    fragmentMeasDataBinding.directionFoot4YCoordinate.getText().toString(),
+                                    fragmentMeasDataBinding.directionFoot4XCoordinate.getText().toString());
+                    calcPillarLocationData
+                            .addDirectionPillarMeasData(
+                                    fragmentMeasDataBinding.centerFoot1YCoordinate.getText().toString(),
+                                    fragmentMeasDataBinding.centerFoot1XCoordinate.getText().toString(),
+                                    fragmentMeasDataBinding.centerFoot2YCoordinate.getText().toString(),
+                                    fragmentMeasDataBinding.centerFoot2XCoordinate.getText().toString(),
+                                    fragmentMeasDataBinding.centerFoot3YCoordinate.getText().toString(),
+                                    fragmentMeasDataBinding.centerFoot3XCoordinate.getText().toString(),
+                                    fragmentMeasDataBinding.centerFoot4YCoordinate.getText().toString(),
+                                    fragmentMeasDataBinding.centerFoot4XCoordinate.getText().toString());
+                }
+                else{
+                    calcPillarLocationData
+                            .addCenterPillarMeasData(
+                                    fragmentMeasDataBinding.centerFoot1YCoordinate.getText().toString(),
+                                    fragmentMeasDataBinding.centerFoot1XCoordinate.getText().toString(),
+                                    fragmentMeasDataBinding.centerFoot2YCoordinate.getText().toString(),
+                                    fragmentMeasDataBinding.centerFoot2XCoordinate.getText().toString(),
+                                    fragmentMeasDataBinding.centerFoot3YCoordinate.getText().toString(),
+                                    fragmentMeasDataBinding.centerFoot3XCoordinate.getText().toString(),
+                                    fragmentMeasDataBinding.centerFoot4YCoordinate.getText().toString(),
+                                    fragmentMeasDataBinding.centerFoot4XCoordinate.getText().toString());
+                    calcPillarLocationData
+                            .addDirectionPillarMeasData(
+                                    fragmentMeasDataBinding.directionFoot1YCoordinate.getText().toString(),
+                                    fragmentMeasDataBinding.directionFoot1XCoordinate.getText().toString(),
+                                    fragmentMeasDataBinding.directionFoot2YCoordinate.getText().toString(),
+                                    fragmentMeasDataBinding.directionFoot2XCoordinate.getText().toString(),
+                                    fragmentMeasDataBinding.directionFoot3YCoordinate.getText().toString(),
+                                    fragmentMeasDataBinding.directionFoot3XCoordinate.getText().toString(),
+                                    fragmentMeasDataBinding.directionFoot4YCoordinate.getText().toString(),
+                                    fragmentMeasDataBinding.directionFoot4XCoordinate.getText().toString());
+                }
                 calcPillarLocationData.calcPillarLocationData();
                 if( calcPillarLocationData.centerX == null || calcPillarLocationData.centerY == null
                 || calcPillarLocationData.directionX == null || calcPillarLocationData.directionY == null ){

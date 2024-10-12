@@ -78,7 +78,7 @@ public class PillarLocationCalculator {
         Double aveDirectionX = null;
         Double aveDirectionY = null;
 
-        if( directionPillarMeasData.size() == 2 || directionPillarMeasData.size() == 4 ){
+        if( !directionPillarMeasData.isEmpty() && directionPillarMeasData.size() != 3 ){
             aveDirectionX = directionPillarMeasData.stream().mapToDouble(Point::getX_coord)
                     .summaryStatistics().getAverage();
             aveDirectionY = directionPillarMeasData.stream().mapToDouble(Point::getY_coord)
@@ -90,7 +90,7 @@ public class PillarLocationCalculator {
         Double aveCenterX;
         Double aveCenterY;
 
-        if( centerPillarMeasData.size() == 2 || centerPillarMeasData.size() == 4 ){
+        if( !centerPillarMeasData.isEmpty() && centerPillarMeasData.size() != 3 ){
             aveCenterX = centerPillarMeasData.stream().mapToDouble(Point::getX_coord)
                     .summaryStatistics().getAverage();
             aveCenterY = centerPillarMeasData.stream().mapToDouble(Point::getY_coord)
@@ -117,8 +117,8 @@ public class PillarLocationCalculator {
                 PolarPoint centerPoint = new PolarPoint(startPoint, distance, centerPointData.calcAzimuth(), "center");
                 centerX = df.format(centerPoint.calcPolarPoint().getX_coord()).replace(",", ".");
                 centerY = df.format(centerPoint.calcPolarPoint().getY_coord()).replace(",", ".");
-                directionX = df.format(distance == 0 ? aveDirectionX :  aveCenterX).replace(",", ".");
-                directionY = df.format(distance == 0 ? aveDirectionY : aveCenterY).replace(",", ".");
+                directionX = df.format(aveCenterX).replace(",", ".");
+                directionY = df.format(aveCenterY).replace(",", ".");
             }
 
         }
@@ -137,8 +137,8 @@ public class PillarLocationCalculator {
             PolarPoint centerPoint = new PolarPoint(startPoint, distance, centerPointData.calcAzimuth(), "center");
             centerX = df.format(centerPoint.calcPolarPoint().getX_coord()).replace(",", ".");
             centerY = df.format(centerPoint.calcPolarPoint().getY_coord()).replace(",", ".");
-            directionX = df.format(aveDirectionX).replace(",", ".");
-            directionY = df.format(aveDirectionY).replace(",", ".");
+            directionX = df.format(aveCenterX).replace(",", ".");
+            directionY = df.format(aveCenterY).replace(",", ".");
         }
 
     }
