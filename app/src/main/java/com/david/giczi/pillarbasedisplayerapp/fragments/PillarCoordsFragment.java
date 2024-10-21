@@ -16,6 +16,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import com.david.giczi.pillarbasedisplayerapp.service.AzimuthAndDistance;
 import com.david.giczi.pillarbasedisplayerapp.MainActivity;
@@ -29,8 +31,10 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.security.InvalidParameterException;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 public class PillarCoordsFragment extends Fragment {
 
@@ -44,7 +48,15 @@ public class PillarCoordsFragment extends Fragment {
             Bundle savedInstanceState
     ) {
         fragmentCoordsBinding = FragmentCoordsBinding.inflate(inflater, container, false);
-        calcPillarBaseCoordinates();
+        try {
+            calcPillarBaseCoordinates();
+        }catch (InvalidParameterException e){
+            Toast.makeText(getContext(), "Koordináták nem számíthatók", Toast.LENGTH_LONG).show();
+            NavController navController =
+                    Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main);
+            navController.navigate(R.id.action_CoordsFragment_to_DataFragment);
+            return fragmentCoordsBinding.getRoot();
+        }
         displayPillarBaseCoordinates();
         MainActivity.PAGE_COUNTER = 3;
         MainActivity.MENU.findItem(R.id.weight_base).setEnabled(false);
@@ -91,8 +103,8 @@ public class PillarCoordsFragment extends Fragment {
                 Double.parseDouble(inputData.get(6)));
 
         if( MainActivity.IS_WEIGHT_BASE ){
-        PillarCoordsForWeightBase calculatorForWeightBase =
-                new PillarCoordsForWeightBase(center, direction);
+         PillarCoordsForWeightBase calculatorForWeightBase =
+                       new PillarCoordsForWeightBase(center, direction);
         calculatorForWeightBase.setDistanceOnTheAxis(Double.parseDouble(inputData.get(7)));
         calculatorForWeightBase.setHorizontalDistanceBetweenPillarLegs(Double.parseDouble(inputData.get(8)));
         calculatorForWeightBase.setVerticalDistanceBetweenPillarLegs(Double.parseDouble(inputData.get(9)));
@@ -118,7 +130,6 @@ public class PillarCoordsFragment extends Fragment {
             calculatorForPlateBase.setSideOfAngle("0".equals(inputData.get(14)));
             calculatorForPlateBase.calculatePillarPoints();
             MainActivity.PILLAR_BASE_COORDINATES = calculatorForPlateBase.getPillarPoints();
-
         }
         MainActivity.PILLAR_BASE_COORDINATES.add(direction);
     }

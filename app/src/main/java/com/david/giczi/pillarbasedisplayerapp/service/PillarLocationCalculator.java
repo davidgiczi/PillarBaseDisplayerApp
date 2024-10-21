@@ -117,8 +117,8 @@ public class PillarLocationCalculator {
                 PolarPoint centerPoint = new PolarPoint(startPoint, distance, centerPointData.calcAzimuth(), "center");
                 centerX = df.format(centerPoint.calcPolarPoint().getX_coord()).replace(",", ".");
                 centerY = df.format(centerPoint.calcPolarPoint().getY_coord()).replace(",", ".");
-                directionX = df.format(aveCenterX).replace(",", ".");
-                directionY = df.format(aveCenterY).replace(",", ".");
+                directionX = df.format(distance == 0 ? aveDirectionX : aveCenterX).replace(",", ".");
+                directionY = df.format(distance == 0 ? aveDirectionY : aveCenterY).replace(",", ".");
             }
 
         }
@@ -137,8 +137,8 @@ public class PillarLocationCalculator {
             PolarPoint centerPoint = new PolarPoint(startPoint, distance, centerPointData.calcAzimuth(), "center");
             centerX = df.format(centerPoint.calcPolarPoint().getX_coord()).replace(",", ".");
             centerY = df.format(centerPoint.calcPolarPoint().getY_coord()).replace(",", ".");
-            directionX = df.format(aveCenterX).replace(",", ".");
-            directionY = df.format(aveCenterY).replace(",", ".");
+            directionX = df.format(distance == 0 ? aveDirectionX : aveCenterX).replace(",", ".");
+            directionY = df.format(distance == 0 ? aveDirectionY : aveCenterY).replace(",", ".");
         }
 
     }
