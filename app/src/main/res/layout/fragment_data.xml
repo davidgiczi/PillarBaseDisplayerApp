@@ -356,8 +356,8 @@
             android:textColor="@color/steel_gray"
             android:textSize="20sp"
             android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@+id/input_sec"
-            app:layout_constraintTop_toTopOf="@+id/input_sec" />
+            app:layout_constraintStart_toEndOf="@+id/input_min"
+            app:layout_constraintTop_toTopOf="@+id/input_min" />
 
         <TextView
             android:id="@+id/sec"
@@ -369,8 +369,8 @@
             android:textColor="@color/steel_gray"
             android:textSize="20sp"
             android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@+id/input_min"
-            app:layout_constraintTop_toTopOf="@+id/input_min" />
+            app:layout_constraintStart_toEndOf="@+id/input_sec"
+            app:layout_constraintTop_toTopOf="@+id/input_sec" />
 
         <TextView
             android:id="@+id/text_save_format"
