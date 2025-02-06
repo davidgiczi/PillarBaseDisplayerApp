@@ -14,7 +14,6 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings;
@@ -31,29 +30,24 @@ import android.widget.PopupWindow;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.core.view.MenuCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-
 import com.david.giczi.pillarbasedisplayerapp.databinding.ActivityMainBinding;
 import com.david.giczi.pillarbasedisplayerapp.service.AzimuthAndDistance;
 import com.david.giczi.pillarbasedisplayerapp.service.Point;
 import com.david.giczi.pillarbasedisplayerapp.utils.EOV;
 import com.david.giczi.pillarbasedisplayerapp.utils.WGS84;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -100,14 +94,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         PAGE_COUNTER = 0;
         BASE_DATA = new ArrayList<>();
-        if( ContextCompat
+        /*if( ContextCompat
                 .checkSelfPermission(MainActivity.this, Manifest.permission.MANAGE_EXTERNAL_STORAGE) !=
                 PackageManager.PERMISSION_GRANTED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 ActivityCompat
                .requestPermissions(MainActivity.this, new String[]{Manifest.permission.MANAGE_EXTERNAL_STORAGE}, 1);
             }
-        }
+        }*/
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
