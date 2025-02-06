@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">PillarBaseDisplayerApp</string>
+    <string name="app_name">PillarBaseApp</string>
     <string name="input_option">Adatok beolvasása</string>
     <string name="next_fragment">Következő oldalra</string>
     <string name="weight_base_option">Súlyalap</string>

@@ -56,6 +56,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -422,9 +424,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     private void openPillarBaseDataFile() {
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("text/*");
+        intent.setType("text/plain");
         startActivityForResult(
                 Intent.createChooser(intent, "Choose a file"), 101);
     }
@@ -435,18 +437,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         if (requestCode == 101 && resultCode == Activity.RESULT_OK) {
             if (data != null) {
                 Uri uri = data.getData();
-                String path = Objects.requireNonNull(uri).getPath();
-                path =  Objects.requireNonNull(path).substring(path.indexOf(":") + 1);
-                readProjectFile(path);
+                readProjectFile(uri);
             }
         }
     }
-    private void readProjectFile(String path){
+    private void readProjectFile(Uri uri){
         BASE_DATA.clear();
-        File projectFile = new File(Environment.getExternalStorageDirectory(), path);
         try{
-            BufferedReader br = new BufferedReader(
-                    new FileReader(projectFile));
+            InputStream inputStream = getContentResolver().openInputStream(uri);
+            BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
             String line;
             while((line = br.readLine()) != null){
                 BASE_DATA.add(line);
@@ -477,7 +476,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     Toast.LENGTH_LONG).show();
         }
         else {
-            setTitle(projectFile.getName());
+            setTitle(Objects.requireNonNull(uri.getPath()).substring(uri.getPath().lastIndexOf("/") + 1));
             Toast.makeText(this, "Az adatok sikeresen beolvasva.",
                     Toast.LENGTH_LONG).show();
         }
