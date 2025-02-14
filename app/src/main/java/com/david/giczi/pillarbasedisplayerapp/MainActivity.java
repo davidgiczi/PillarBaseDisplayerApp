@@ -17,6 +17,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,6 +31,9 @@ import android.widget.PopupWindow;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -48,6 +52,7 @@ import com.david.giczi.pillarbasedisplayerapp.utils.WGS84;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -82,6 +87,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public static boolean IS_GPS_RUNNING;
     private static float northPoleDirection;
     private int previousPillarDistance;
+    private ActivityResultLauncher<Intent> activityResultLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,7 +100,18 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         PAGE_COUNTER = 0;
         BASE_DATA = new ArrayList<>();
-        /*if( ContextCompat
+        activityResultLauncher =  registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if( result.getResultCode() == Activity.RESULT_OK ) {
+                        Intent data = result.getData();
+                        if (data != null) {
+                            Uri uri = data.getData();
+                            readProjectFile(uri);
+                        }
+                    }
+                });
+       /* if( ContextCompat
                 .checkSelfPermission(MainActivity.this, Manifest.permission.MANAGE_EXTERNAL_STORAGE) !=
                 PackageManager.PERMISSION_GRANTED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -421,19 +438,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType("text/plain");
-        startActivityForResult(
-                Intent.createChooser(intent, "Choose a file"), 101);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 101 && resultCode == Activity.RESULT_OK) {
-            if (data != null) {
-                Uri uri = data.getData();
-                readProjectFile(uri);
-            }
-        }
+        activityResultLauncher.launch(intent);
     }
     private void readProjectFile(Uri uri){
         BASE_DATA.clear();
@@ -506,26 +511,25 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     private void saveProjectFile() {
-        String fileName = ((TextView) findViewById(R.id.projectNameTitle)).getText().toString();
-        File projectFile =
-                new File(Environment.getExternalStorageDirectory(),
-                        "/Documents/" + fileName + ".txt");
+       String fileName = "mod_" + ((TextView) findViewById(R.id.projectNameTitle)).getText().toString() + ".txt";
+
+       File projectFile = new File(Environment.getExternalStorageDirectory() , "Documents/" + fileName);
+
         try {
-            BufferedWriter bw = new BufferedWriter(
-                    new FileWriter(projectFile));
+                BufferedWriter bw = new BufferedWriter(new FileWriter(projectFile, false));
             for (String data : BASE_DATA) {
                 bw.write(data);
                 bw.newLine();
             }
             bw.close();
         } catch (IOException e) {
-            Toast.makeText(this, projectFile.getName() +
+            Toast.makeText(this, fileName +
                     "\nprojekt fájl mentése sikertelen.", Toast.LENGTH_SHORT).show();
             return;
         }
             Toast.makeText(this,
                     "Projekt fájl mentve:\n"
-                            + projectFile.getName() , Toast.LENGTH_SHORT).show();
+                            + fileName , Toast.LENGTH_SHORT).show();
     }
 
     private boolean isValidInputData(){

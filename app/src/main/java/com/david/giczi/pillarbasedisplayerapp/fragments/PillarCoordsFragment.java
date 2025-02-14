@@ -218,12 +218,12 @@ public class PillarCoordsFragment extends Fragment {
     }
 
     private void saveProjectFileForRTK() {
-        String fileName = ((TextView)
+        String fileName = "RTK_" +((TextView)
                 (((MainActivity)
-                        requireActivity()).findViewById(R.id.projectNameTitle))).getText().toString();
+                        requireActivity()).findViewById(R.id.projectNameTitle))).getText().toString() + ".txt";
         File projectFile =
                 new File(Environment.getExternalStorageDirectory(),
-                        "/Documents/" + fileName + "_RTK.txt");
+                        "/Documents/" + fileName);
         try {
             BufferedWriter bw = new BufferedWriter(
                     new FileWriter(projectFile, true));
@@ -247,12 +247,12 @@ public class PillarCoordsFragment extends Fragment {
     }
 
     private void saveProjectFileForTPS() {
-        String fileName = ((TextView)
+        String fileName = "TPS_" + ((TextView)
                 (((MainActivity)
-                        requireActivity()).findViewById(R.id.projectNameTitle))).getText().toString();
+                        requireActivity()).findViewById(R.id.projectNameTitle))).getText().toString() + ".txt";
         File projectFile =
                 new File(Environment.getExternalStorageDirectory(),
-                        "/Documents/" + fileName + "_TPS.txt");
+                        "/Documents/" + fileName);
         try {
             BufferedWriter bw = new BufferedWriter(
                     new FileWriter(projectFile, true));
