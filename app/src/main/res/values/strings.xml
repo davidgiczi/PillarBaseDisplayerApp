@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">PillarBaseApp</string>
     <string name="input_option">Adatok beolvasása</string>
+    <string name="project_process_option">Projekt megnyitása/törlése</string>
     <string name="next_fragment">Következő oldalra</string>
     <string name="weight_base_option">Súlyalap</string>
     <string name="plate_base_option">Lemezalap</string>
@@ -46,4 +47,6 @@
     <string name="foot4">4. láb</string>
     <string name="send">Küldés</string>
     <string name="calcMirrorCase">Tükörkép számítása"</string>
+    <string name="ok_text">OK</string>
+    <string name="delete_project">Projekt törlése</string>
 </resources>

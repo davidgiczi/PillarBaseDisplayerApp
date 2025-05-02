@@ -23,12 +23,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.RadioButton;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,6 +47,8 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import com.david.giczi.pillarbasedisplayerapp.databinding.ActivityMainBinding;
+import com.david.giczi.pillarbasedisplayerapp.db.PillarBaseParamsDAO;
+import com.david.giczi.pillarbasedisplayerapp.db.PillarBaseParamsDataBase;
 import com.david.giczi.pillarbasedisplayerapp.service.AzimuthAndDistance;
 import com.david.giczi.pillarbasedisplayerapp.service.Point;
 import com.david.giczi.pillarbasedisplayerapp.utils.EOV;
@@ -85,6 +89,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public static boolean IS_SAVE_RTK_FILE;
     public static boolean IS_SAVE_TPS_FILE;
     public static boolean IS_GPS_RUNNING;
+    public PillarBaseParamsDAO pillarBaseParamsDAO;
     private static float northPoleDirection;
     private int previousPillarDistance;
     private ActivityResultLauncher<Intent> activityResultLauncher;
@@ -122,6 +127,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
+        runDatabase();
+    }
+
+    private void runDatabase(){
+        PillarBaseParamsDataBase pillarBaseParamsDataBase = PillarBaseParamsDataBase.getInstance(this);
+        this.pillarBaseParamsDAO = pillarBaseParamsDataBase.PillarBaseParamsDAO();
     }
 
     private void stopMeasure(){
@@ -262,7 +273,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             exitDialog();
         } else if (id == R.id.input_data) {
             openPillarBaseDataFile();
-        } else if (id == R.id.goto_next_fragment) {
+        }
+        else if( id == R.id.project_process ){
+            popupProjectOpenDialog();
+            gotoDataFragment();
+        }
+        else if (id == R.id.goto_next_fragment) {
            gotoNextFragment();
         }
         else if( id == R.id.weight_base
@@ -298,6 +314,19 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             return super.onOptionsItemSelected(item);
     }
 
+    public void popupProjectOpenDialog() {
+        ViewGroup container = (ViewGroup) getLayoutInflater().inflate(R.layout.fragment_open_project, null);
+        PopupWindow openingProjectWindow = new PopupWindow(container, 1000, 700, true);
+        openingProjectWindow.showAtLocation(binding.getRoot(), Gravity.CENTER, 0, -400);
+        Spinner openingProjectSpinner = container.findViewById(R.id.opening_project_spinner);
+        openingProjectSpinner.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        Button okButton = container.findViewById(R.id.ok_button);
+        okButton.setOnClickListener(c ->{
+            if( ((CheckBox) container.findViewById(R.id.delete_project)).isChecked() ){
+                deleteProjectDialog();
+            }
+        });
+    }
 
     private void popupPillarFootDistanceCalculator(){
         ViewGroup container = (ViewGroup) getLayoutInflater().inflate(R.layout.fragment_foot_calc, null);
@@ -380,6 +409,23 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         inputForParallelFootDistance.setHint(R.string.distance_of_legs_parallel);
     }
 
+
+    private void deleteProjectDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle("Projekt törlése");
+        builder.setMessage("Biztos, hogy törlöd a projektet?");
+
+        builder.setPositiveButton("Igen", (dialog, which) -> {
+            dialog.dismiss();
+        });
+
+        builder.setNegativeButton("Nem", (dialog, which) -> dialog.dismiss());
+
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
     private void exitDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
@@ -413,12 +459,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         builder.setNegativeButton("Nem", (dialog, which) -> {
             if( isValidInputData() ) {
                 getDataFromDataFragment();
-                if( IS_SAVE_RTK_FILE ){
-                    IS_SAVE_RTK_FILE = false;
-                }
-                if( IS_SAVE_TPS_FILE ){
-                    IS_SAVE_TPS_FILE = false;
-                }
                 navController.navigate(R.id.action_DataFragment_to_CoordsFragment);
             }
             dialog.dismiss();

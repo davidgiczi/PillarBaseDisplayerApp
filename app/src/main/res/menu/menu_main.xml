@@ -11,6 +11,11 @@
         android:orderInCategory="100"
         android:title="@string/input_option"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/project_process"
+        android:orderInCategory="100"
+        android:title="@string/project_process_option"
+        app:showAsAction="never" />
         <item
             android:id="@+id/goto_next_fragment"
             android:orderInCategory="100"
