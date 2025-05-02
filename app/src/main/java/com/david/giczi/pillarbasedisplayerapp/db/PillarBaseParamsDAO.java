@@ -14,10 +14,9 @@ public interface PillarBaseParamsDAO {
     void insertPillarBaseParams(PillarBaseParams pillarBaseParams);
     @Update
     void updatePillarBaseParams(PillarBaseParams pillarBaseParams);
-    @Query("DELETE FROM pillar_base_params WHERE id = :id")
-    void deletePillarBaseParamsById(int id);
-    @Query("SELECT * FROM pillar_base_params WHERE name = :baseName")
-    List<PillarBaseParams> getPillarBaseNameList(String baseName);
-
+    @Query("DELETE FROM pillar_base_params WHERE name = :baseName")
+    void deletePillarBaseParamsByName(String baseName);
+    @Query("SELECT name FROM pillar_base_params")
+    List<String> getPillarBaseNameList();
 
 }

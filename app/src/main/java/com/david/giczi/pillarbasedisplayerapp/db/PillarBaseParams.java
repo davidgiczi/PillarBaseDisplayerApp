@@ -1,46 +1,39 @@
 package com.david.giczi.pillarbasedisplayerapp.db;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 @Entity(tableName = "pillar_base_params")
 public class PillarBaseParams {
 
-    @PrimaryKey(autoGenerate = true)
-    public int id;
+    @PrimaryKey
     @ColumnInfo(name = "name")
+    @NonNull
     public String baseName;
     @ColumnInfo(name = "type")
     public String baseType;
     @ColumnInfo(name = "directionDistance")
-    public Double directionDistance;
+    public String directionDistance;
     @ColumnInfo(name = "ppHoleDistance")
-    public Double perpendicularHoleDistance;
+    public String perpendicularHoleDistance;
     @ColumnInfo(name = "parallelHoleDistance")
-    public Double parallelHoleDistance;
+    public String parallelHoleDistance;
     @ColumnInfo(name = "ppFootDistance")
-    public Double perpendicularFootDistance;
+    public String perpendicularFootDistance;
     @ColumnInfo(name = "parallelFootDistance")
-    public Double parallelFootDistance;
+    public String parallelFootDistance;
     @ColumnInfo(name = "ppDirectionDistance")
-    public Double perpendicularDirectionDistance;
+    public String perpendicularDirectionDistance;
     @ColumnInfo(name = "parallelDirectionDistance")
-    public Double parallelDirectionDistance;
+    public String parallelDirectionDistance;
 
-
-    public int getId() {
-        return id;
+    public PillarBaseParams(@NonNull String baseName) {
+        this.baseName = baseName;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
     public String getBaseName() {
         return baseName;
-    }
-
-    public void setBaseName(String baseName) {
-        this.baseName = baseName;
     }
 
     public String getBaseType() {
@@ -51,59 +44,59 @@ public class PillarBaseParams {
         this.baseType = baseType;
     }
 
-    public Double getDirectionDistance() {
+    public String getDirectionDistance() {
         return directionDistance;
     }
 
-    public void setDirectionDistance(Double directionDistance) {
+    public void setDirectionDistance(String directionDistance) {
         this.directionDistance = directionDistance;
     }
 
-    public Double getPerpendicularHoleDistance() {
+    public String getPerpendicularHoleDistance() {
         return perpendicularHoleDistance;
     }
 
-    public void setPerpendicularHoleDistance(Double perpendicularHoleDistance) {
+    public void setPerpendicularHoleDistance(String perpendicularHoleDistance) {
         this.perpendicularHoleDistance = perpendicularHoleDistance;
     }
 
-    public Double getParallelHoleDistance() {
+    public String getParallelHoleDistance() {
         return parallelHoleDistance;
     }
 
-    public void setParallelHoleDistance(Double parallelHoleDistance) {
+    public void setParallelHoleDistance(String parallelHoleDistance) {
         this.parallelHoleDistance = parallelHoleDistance;
     }
 
-    public Double getPerpendicularFootDistance() {
+    public String getPerpendicularFootDistance() {
         return perpendicularFootDistance;
     }
 
-    public void setPerpendicularFootDistance(Double perpendicularFootDistance) {
+    public void setPerpendicularFootDistance(String perpendicularFootDistance) {
         this.perpendicularFootDistance = perpendicularFootDistance;
     }
 
-    public Double getParallelFootDistance() {
+    public String getParallelFootDistance() {
         return parallelFootDistance;
     }
 
-    public void setParallelFootDistance(Double parallelFootDistance) {
+    public void setParallelFootDistance(String parallelFootDistance) {
         this.parallelFootDistance = parallelFootDistance;
     }
 
-    public Double getPerpendicularDirectionDistance() {
+    public String getPerpendicularDirectionDistance() {
         return perpendicularDirectionDistance;
     }
 
-    public void setPerpendicularDirectionDistance(Double perpendicularDirectionDistance) {
+    public void setPerpendicularDirectionDistance(String perpendicularDirectionDistance) {
         this.perpendicularDirectionDistance = perpendicularDirectionDistance;
     }
 
-    public Double getParallelDirectionDistance() {
+    public String getParallelDirectionDistance() {
         return parallelDirectionDistance;
     }
 
-    public void setParallelDirectionDistance(Double parallelDirectionDistance) {
+    public void setParallelDirectionDistance(String parallelDirectionDistance) {
         this.parallelDirectionDistance = parallelDirectionDistance;
     }
 }

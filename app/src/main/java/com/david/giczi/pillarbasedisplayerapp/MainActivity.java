@@ -17,7 +17,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -37,7 +36,6 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -46,6 +44,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+
 import com.david.giczi.pillarbasedisplayerapp.databinding.ActivityMainBinding;
 import com.david.giczi.pillarbasedisplayerapp.db.PillarBaseParamsDAO;
 import com.david.giczi.pillarbasedisplayerapp.db.PillarBaseParamsDataBase;
@@ -53,10 +52,10 @@ import com.david.giczi.pillarbasedisplayerapp.service.AzimuthAndDistance;
 import com.david.giczi.pillarbasedisplayerapp.service.Point;
 import com.david.giczi.pillarbasedisplayerapp.utils.EOV;
 import com.david.giczi.pillarbasedisplayerapp.utils.WGS84;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -320,10 +319,19 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         openingProjectWindow.showAtLocation(binding.getRoot(), Gravity.CENTER, 0, -400);
         Spinner openingProjectSpinner = container.findViewById(R.id.opening_project_spinner);
         openingProjectSpinner.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+         String[] items = null;
+        PillarBaseParamsDataBase.databaseExecutor.execute(() ->{
+
+        });
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, items);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        openingProjectSpinner.setAdapter(adapter);
+
         Button okButton = container.findViewById(R.id.ok_button);
         okButton.setOnClickListener(c ->{
             if( ((CheckBox) container.findViewById(R.id.delete_project)).isChecked() ){
-                deleteProjectDialog();
+                deleteProjectDialog((String) openingProjectSpinner.getSelectedItem());
             }
         });
     }
@@ -410,15 +418,19 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
 
-    private void deleteProjectDialog() {
+    private void deleteProjectDialog(String baseName) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-        builder.setTitle("Projekt törlése");
+        builder.setTitle("\"" + baseName + "\" alap törlése");
         builder.setMessage("Biztos, hogy törlöd a projektet?");
 
         builder.setPositiveButton("Igen", (dialog, which) -> {
-            dialog.dismiss();
-        });
+                    PillarBaseParamsDataBase.databaseExecutor.execute(() -> {
+                        pillarBaseParamsDAO.deletePillarBaseParamsByName(baseName);
+                    });
+                    dialog.dismiss();
+                });
+
 
         builder.setNegativeButton("Nem", (dialog, which) -> dialog.dismiss());
 
@@ -451,7 +463,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         builder.setPositiveButton("Igen", (dialog, which) -> {
             if( isValidInputData() ){
                 getDataFromDataFragment();
-                saveProjectFile();
+
                 navController.navigate(R.id.action_DataFragment_to_CoordsFragment);
             }
             dialog.dismiss();
