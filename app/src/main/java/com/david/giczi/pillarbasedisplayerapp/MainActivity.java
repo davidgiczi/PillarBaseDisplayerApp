@@ -16,12 +16,14 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.Settings;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -44,15 +46,12 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-
 import com.david.giczi.pillarbasedisplayerapp.databinding.ActivityMainBinding;
-import com.david.giczi.pillarbasedisplayerapp.db.PillarBaseParamsDAO;
-import com.david.giczi.pillarbasedisplayerapp.db.PillarBaseParamsDataBase;
+import com.david.giczi.pillarbasedisplayerapp.db.PillarBaseParamsService;
 import com.david.giczi.pillarbasedisplayerapp.service.AzimuthAndDistance;
 import com.david.giczi.pillarbasedisplayerapp.service.Point;
 import com.david.giczi.pillarbasedisplayerapp.utils.EOV;
 import com.david.giczi.pillarbasedisplayerapp.utils.WGS84;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -88,10 +87,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public static boolean IS_SAVE_RTK_FILE;
     public static boolean IS_SAVE_TPS_FILE;
     public static boolean IS_GPS_RUNNING;
-    public PillarBaseParamsDAO pillarBaseParamsDAO;
+    public PillarBaseParamsService service;
     private static float northPoleDirection;
     private int previousPillarDistance;
     private ActivityResultLauncher<Intent> activityResultLauncher;
+    private Spinner openingProjectSpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,12 +126,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
-        runDatabase();
-    }
-
-    private void runDatabase(){
-        PillarBaseParamsDataBase pillarBaseParamsDataBase = PillarBaseParamsDataBase.getInstance(this);
-        this.pillarBaseParamsDAO = pillarBaseParamsDataBase.PillarBaseParamsDAO();
+        this.service = new PillarBaseParamsService(this);
     }
 
     private void stopMeasure(){
@@ -317,22 +312,39 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         ViewGroup container = (ViewGroup) getLayoutInflater().inflate(R.layout.fragment_open_project, null);
         PopupWindow openingProjectWindow = new PopupWindow(container, 1000, 700, true);
         openingProjectWindow.showAtLocation(binding.getRoot(), Gravity.CENTER, 0, -400);
-        Spinner openingProjectSpinner = container.findViewById(R.id.opening_project_spinner);
+        openingProjectSpinner = container.findViewById(R.id.opening_project_spinner);
         openingProjectSpinner.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-         String[] items = null;
-        PillarBaseParamsDataBase.databaseExecutor.execute(() ->{
+        openingProjectSpinner.setSelection(0);
+        String[] items = service.getItems();
+        Handler handler = new Handler();
+        handler.postDelayed(() -> {
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                    android.R.layout.simple_spinner_item, items);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            openingProjectSpinner.setAdapter(adapter);
+        }, 1000);
 
+        openingProjectSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                if( position != 0 ){
+                    service.getPillarBaseData((String) openingProjectSpinner.getSelectedItem());
+                }
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
         });
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_item, items);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        openingProjectSpinner.setAdapter(adapter);
 
         Button okButton = container.findViewById(R.id.ok_button);
         okButton.setOnClickListener(c ->{
             if( ((CheckBox) container.findViewById(R.id.delete_project)).isChecked() ){
                 deleteProjectDialog((String) openingProjectSpinner.getSelectedItem());
             }
+            System.out.println(PillarBaseParamsService.ACTUAL_PILLAR_BASE);
+            openingProjectWindow.dismiss();
         });
     }
 
@@ -425,9 +437,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         builder.setMessage("Biztos, hogy törlöd a projektet?");
 
         builder.setPositiveButton("Igen", (dialog, which) -> {
-                    PillarBaseParamsDataBase.databaseExecutor.execute(() -> {
-                        pillarBaseParamsDAO.deletePillarBaseParamsByName(baseName);
-                    });
+                    service.deletePillarParamsByName();
                     dialog.dismiss();
                 });
 
@@ -463,7 +473,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         builder.setPositiveButton("Igen", (dialog, which) -> {
             if( isValidInputData() ){
                 getDataFromDataFragment();
-
+                service.insertPillarParams((String) openingProjectSpinner.getSelectedItem());
+               if( service.isSavedParams){
+                   Toast.makeText(this, "Projekt adatai sikeresen mentve az eszközre.",
+                           Toast.LENGTH_LONG).show();
+               }
                 navController.navigate(R.id.action_DataFragment_to_CoordsFragment);
             }
             dialog.dismiss();
