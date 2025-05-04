@@ -46,12 +46,14 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+
 import com.david.giczi.pillarbasedisplayerapp.databinding.ActivityMainBinding;
 import com.david.giczi.pillarbasedisplayerapp.db.PillarBaseParamsService;
 import com.david.giczi.pillarbasedisplayerapp.service.AzimuthAndDistance;
 import com.david.giczi.pillarbasedisplayerapp.service.Point;
 import com.david.giczi.pillarbasedisplayerapp.utils.EOV;
 import com.david.giczi.pillarbasedisplayerapp.utils.WGS84;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -126,7 +128,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
+        //this.deleteDatabase("pillar_base_params_database");
         this.service = new PillarBaseParamsService(this);
+        //service.getAllPillarBaseParams();
     }
 
     private void stopMeasure(){
@@ -270,7 +274,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
         else if( id == R.id.project_process ){
             popupProjectOpenDialog();
-            gotoDataFragment();
         }
         else if (id == R.id.goto_next_fragment) {
            gotoNextFragment();
@@ -315,21 +318,22 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         openingProjectSpinner = container.findViewById(R.id.opening_project_spinner);
         openingProjectSpinner.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         openingProjectSpinner.setSelection(0);
-        String[] items = service.getItems();
+        service.getItems();
         Handler handler = new Handler();
         handler.postDelayed(() -> {
             ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                    android.R.layout.simple_spinner_item, items);
+                    R.layout.spinner_opening_project, service.itemList.toArray(new String[0]));
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             openingProjectSpinner.setAdapter(adapter);
         }, 1000);
 
         openingProjectSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-                if( position != 0 ){
-                    service.getPillarBaseData((String) openingProjectSpinner.getSelectedItem());
+                String selectedItem = (String) openingProjectSpinner.getSelectedItem();
+                if( !selectedItem.equals("Projektek") ){
+                    service.getPillarBaseData(selectedItem);
                 }
             }
             @Override
@@ -340,12 +344,87 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         Button okButton = container.findViewById(R.id.ok_button);
         okButton.setOnClickListener(c ->{
-            if( ((CheckBox) container.findViewById(R.id.delete_project)).isChecked() ){
-                deleteProjectDialog((String) openingProjectSpinner.getSelectedItem());
+            String selectedItem = (String) openingProjectSpinner.getSelectedItem();
+
+            if( selectedItem.equals("Projektek") ){
+                Toast.makeText(this, "Projekt választása szükéges.", Toast.LENGTH_LONG).show();
+                return;
             }
-            System.out.println(PillarBaseParamsService.ACTUAL_PILLAR_BASE);
+            if( ((CheckBox) container.findViewById(R.id.delete_project)).isChecked() ){
+                deleteProjectDialog(selectedItem);
+                openingProjectWindow.dismiss();
+                return;
+            }
+
+            readPillarBaseParamsFromDatabase();
+            setupMenu();
             openingProjectWindow.dismiss();
         });
+    }
+
+    private void readPillarBaseParamsFromDatabase(){
+        BASE_DATA.clear();
+        BASE_DATA.add(service.actualPillarBase.baseType);
+        BASE_DATA.add(service.actualPillarBase.centerPillarId);
+        BASE_DATA.add(service.actualPillarBase.centerPillarY);
+        BASE_DATA.add(service.actualPillarBase.centerPillarX);
+        BASE_DATA.add(service.actualPillarBase.directionPillarId);
+        BASE_DATA.add(service.actualPillarBase.directionPillarY);
+        BASE_DATA.add(service.actualPillarBase.directionPillarX);
+        if( service.actualPillarBase.baseType.equals(BASE_TYPE[0]) ){
+            BASE_DATA.add(service.actualPillarBase.directionDistance);
+            BASE_DATA.add(service.actualPillarBase.perpendicularFootDistance);
+            BASE_DATA.add(service.actualPillarBase.parallelFootDistance);
+            BASE_DATA.add(service.actualPillarBase.perpendicularHoleDistance);
+            BASE_DATA.add(service.actualPillarBase.parallelHoleDistance);
+            BASE_DATA.add(service.actualPillarBase.rotationAngle);
+            BASE_DATA.add(service.actualPillarBase.rotationMin);
+            BASE_DATA.add(service.actualPillarBase.rotationSec);
+        }
+        else if( service.actualPillarBase.baseType.equals(BASE_TYPE[1]) ) {
+            BASE_DATA.add(service.actualPillarBase.perpendicularHoleDistance);
+            BASE_DATA.add(service.actualPillarBase.parallelHoleDistance);
+            BASE_DATA.add(service.actualPillarBase.perpendicularDirectionDistance);
+            BASE_DATA.add(service.actualPillarBase.parallelDirectionDistance);
+            BASE_DATA.add(service.actualPillarBase.rotationAngle);
+            BASE_DATA.add(service.actualPillarBase.rotationMin);
+            BASE_DATA.add(service.actualPillarBase.rotationSec);
+        }
+
+        if( service.actualPillarBase.getRotationSide().equals("left") ){
+            BASE_DATA.add("1");
+        }
+        else if( service.actualPillarBase.getRotationSide().equals("right") ){
+            BASE_DATA.add("0");
+        }
+    }
+    private void setupMenu(){
+
+        if( !BASE_DATA.get(0).equals(BASE_TYPE[0])
+                && !BASE_DATA.get(0).equals(BASE_TYPE[1]) ){
+            BASE_DATA.clear();
+        }
+        else if( BASE_DATA.get(0).equals(BASE_TYPE[0]) ){
+            IS_WEIGHT_BASE = true;
+            MENU.findItem(R.id.weight_base).setTitle(R.string.ticked_weight_base_option);
+            MENU.findItem(R.id.plate_base).setTitle(R.string.plate_base_option);
+        }
+        else if( BASE_DATA.get(0).equals(BASE_TYPE[1]) ){
+            IS_WEIGHT_BASE = false;
+            MENU.findItem(R.id.weight_base).setTitle(R.string.weight_base_option);
+            MENU.findItem(R.id.plate_base).setTitle(R.string.ticked_plate_base_option);
+        }
+        TextView title = findViewById(R.id.projectNameTitle);
+        title.setText(service.actualPillarBase.baseName);
+        gotoDataFragment();
+        if( BASE_DATA.isEmpty() ){
+        Toast.makeText(this, "Projekt adatok beolvasása sikertelen.",
+                Toast.LENGTH_LONG).show();
+    }
+        else {
+        Toast.makeText(this, "Projekt adatok sikeresen beolvasva.",
+                Toast.LENGTH_LONG).show();
+        }
     }
 
     private void popupPillarFootDistanceCalculator(){
@@ -429,7 +508,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         inputForParallelFootDistance.setHint(R.string.distance_of_legs_parallel);
     }
 
-
     private void deleteProjectDialog(String baseName) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
@@ -437,11 +515,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         builder.setMessage("Biztos, hogy törlöd a projektet?");
 
         builder.setPositiveButton("Igen", (dialog, which) -> {
-                    service.deletePillarParamsByName();
+                    service.deletePillarParamsByName(baseName);
                     dialog.dismiss();
+                    Toast.makeText(this, "\"" + baseName + "\" projekt törölve az eszközről.",
+                    Toast.LENGTH_LONG).show();
                 });
-
-
         builder.setNegativeButton("Nem", (dialog, which) -> dialog.dismiss());
 
         AlertDialog alert = builder.create();
@@ -473,11 +551,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         builder.setPositiveButton("Igen", (dialog, which) -> {
             if( isValidInputData() ){
                 getDataFromDataFragment();
-                service.insertPillarParams((String) openingProjectSpinner.getSelectedItem());
-               if( service.isSavedParams){
+                service.insertOrUpdatePillarBaseParams(((EditText)findViewById(R.id.projectNameTitle)).getText().toString());
+
                    Toast.makeText(this, "Projekt adatai sikeresen mentve az eszközre.",
                            Toast.LENGTH_LONG).show();
-               }
+
                 navController.navigate(R.id.action_DataFragment_to_CoordsFragment);
             }
             dialog.dismiss();
@@ -506,6 +584,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         intent.setType("text/plain");
         activityResultLauncher.launch(intent);
     }
+
     private void readProjectFile(Uri uri){
         BASE_DATA.clear();
         try{
@@ -575,7 +654,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
 
     }
-
     private void saveProjectFile() {
        String fileName = "mod_" + ((TextView) findViewById(R.id.projectNameTitle)).getText().toString() + ".txt";
 

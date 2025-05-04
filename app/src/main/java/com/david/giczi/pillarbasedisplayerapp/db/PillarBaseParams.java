@@ -45,156 +45,92 @@ public class PillarBaseParams {
     public String rotationMin;
     @ColumnInfo(name = "Sec")
     public String rotationSec;
+    @ColumnInfo(name = "RotationSide")
+    public String rotationSide;
 
-    public PillarBaseParams(String baseName) {
+
+    public PillarBaseParams(@NonNull String baseName) {
         this.baseName = baseName;
-    }
-
-    public String getCenterPillarId() {
-        return centerPillarId;
     }
 
     public void setCenterPillarId(String centerPillarId) {
         this.centerPillarId = centerPillarId;
     }
 
-    public String getDirectionPillarId() {
-        return directionPillarId;
-    }
-
     public void setDirectionPillarId(String directionPillarId) {
         this.directionPillarId = directionPillarId;
-    }
-
-    @NonNull
-    public String getBaseName() {
-        return baseName;
-    }
-
-    public void setBaseName(@NonNull String baseName) {
-        this.baseName = baseName;
-    }
-
-    public String getBaseType() {
-        return baseType;
     }
 
     public void setBaseType(String baseType) {
         this.baseType = baseType;
     }
 
-    public String getCenterPillarY() {
-        return centerPillarY;
-    }
-
     public void setCenterPillarY(String centerPillarY) {
         this.centerPillarY = centerPillarY;
-    }
-
-    public String getCenterPillarX() {
-        return centerPillarX;
     }
 
     public void setCenterPillarX(String centerPillarX) {
         this.centerPillarX = centerPillarX;
     }
 
-    public String getDirectionPillarY() {
-        return directionPillarY;
-    }
-
     public void setDirectionPillarY(String directionPillarY) {
         this.directionPillarY = directionPillarY;
-    }
-
-    public String getDirectionPillarX() {
-        return directionPillarX;
     }
 
     public void setDirectionPillarX(String directionPillarX) {
         this.directionPillarX = directionPillarX;
     }
 
-    public String getDirectionDistance() {
-        return directionDistance;
-    }
-
     public void setDirectionDistance(String directionDistance) {
         this.directionDistance = directionDistance;
-    }
-
-    public String getPerpendicularHoleDistance() {
-        return perpendicularHoleDistance;
     }
 
     public void setPerpendicularHoleDistance(String perpendicularHoleDistance) {
         this.perpendicularHoleDistance = perpendicularHoleDistance;
     }
 
-    public String getParallelHoleDistance() {
-        return parallelHoleDistance;
-    }
-
     public void setParallelHoleDistance(String parallelHoleDistance) {
         this.parallelHoleDistance = parallelHoleDistance;
-    }
-
-    public String getPerpendicularFootDistance() {
-        return perpendicularFootDistance;
     }
 
     public void setPerpendicularFootDistance(String perpendicularFootDistance) {
         this.perpendicularFootDistance = perpendicularFootDistance;
     }
 
-    public String getParallelFootDistance() {
-        return parallelFootDistance;
-    }
-
     public void setParallelFootDistance(String parallelFootDistance) {
         this.parallelFootDistance = parallelFootDistance;
-    }
-
-    public String getPerpendicularDirectionDistance() {
-        return perpendicularDirectionDistance;
     }
 
     public void setPerpendicularDirectionDistance(String perpendicularDirectionDistance) {
         this.perpendicularDirectionDistance = perpendicularDirectionDistance;
     }
 
-    public String getParallelDirectionDistance() {
-        return parallelDirectionDistance;
-    }
-
     public void setParallelDirectionDistance(String parallelDirectionDistance) {
         this.parallelDirectionDistance = parallelDirectionDistance;
-    }
-
-    public String getRotationAngle() {
-        return rotationAngle;
     }
 
     public void setRotationAngle(String rotationAngle) {
         this.rotationAngle = rotationAngle;
     }
 
-    public String getRotationMin() {
-        return rotationMin;
-    }
 
     public void setRotationMin(String rotationMin) {
         this.rotationMin = rotationMin;
-    }
-
-    public String getRotationSec() {
-        return rotationSec;
     }
 
     public void setRotationSec(String rotationSec) {
         this.rotationSec = rotationSec;
     }
 
+    public String getRotationSide() {
+        return rotationSide;
+    }
+
+    public void setRotationSide(String rotationSide) {
+        this.rotationSide = rotationSide;
+    }
+
+    @NonNull
     @Override
     public String toString() {
         return "PillarBaseParams{" +
@@ -216,6 +152,7 @@ public class PillarBaseParams {
                 ", rotationAngle='" + rotationAngle + '\'' +
                 ", rotationMin='" + rotationMin + '\'' +
                 ", rotationSec='" + rotationSec + '\'' +
+                ", rotationSide='" + rotationSide + '\'' +
                 '}';
     }
 }

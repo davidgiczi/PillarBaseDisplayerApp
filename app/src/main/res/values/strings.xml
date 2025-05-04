@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">PillarBaseApp</string>
-    <string name="input_option">Adatok beolvasása</string>
+    <string name="input_option">Adatok fájlból beolvasása</string>
     <string name="project_process_option">Projekt megnyitása/törlése</string>
     <string name="next_fragment">Következő oldalra</string>
     <string name="weight_base_option">Súlyalap</string>
