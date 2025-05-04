@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -38,6 +39,7 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -321,9 +323,25 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         service.getItems();
         Handler handler = new Handler();
         handler.postDelayed(() -> {
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                    R.layout.spinner_opening_project, service.itemList.toArray(new String[0]));
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                    R.layout.spinner_opening_project, service.itemList.toArray(new String[0])){
+                @NonNull
+                @Override
+                public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                    View view = super.getView(position, convertView, parent);
+                    if( position == 0 ){
+                        ((TextView)  view.findViewById(R.id.project_spinner)).setTextColor(Color.RED);
+                    }
+                    return view;
+                }
+
+                @Override
+                public boolean isEnabled(int position) {
+                    return position != 0;
+                }
+            };
+            adapter.setDropDownViewResource(R.layout.spinner_opening_project);
+
             openingProjectSpinner.setAdapter(adapter);
         }, 1000);
 
@@ -331,10 +349,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selectedItem = (String) openingProjectSpinner.getSelectedItem();
-                if( !selectedItem.equals("Projektek") ){
-                    service.getPillarBaseData(selectedItem);
-                }
+
+                service.getPillarBaseData((String) openingProjectSpinner.getSelectedItem());
+
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
