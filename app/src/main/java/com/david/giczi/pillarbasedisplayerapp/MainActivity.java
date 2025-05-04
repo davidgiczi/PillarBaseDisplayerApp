@@ -295,6 +295,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             IS_WEIGHT_BASE = false;
         }
         else if( id == R.id.calc_foot_distance){
+                gotoDataFragmentForCalcDistanceBetweenPillarLegs();
                 popupPillarFootDistanceCalculator();
         }
         else if( id == R.id.start_stop_gps ){
@@ -473,9 +474,19 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     (2 * Double.parseDouble(inputSudarasodas.getText().toString() )
                             * Double.parseDouble(inputIllesztesiSik.getText().toString()) / 100.0) / 1000.0;
           ((TextView) container.findViewById(R.id.text_calc_foot_distance)).setText(R.string.value_of_foot_distance);
-           TextView resultFootDistance = container.findViewById(R.id.result_foot_distance);
-           resultFootDistance.setText(String.format(Locale.getDefault(), "%.3fm", footDistance));
-        });
+           TextView resultFootDistanceView = container.findViewById(R.id.result_foot_distance);
+           String resultDistance = String.format(Locale.getDefault(), "%.3f", footDistance);
+           resultFootDistanceView.setText(String.format(Locale.getDefault(), "%.3fm", footDistance));
+           TextView ppFootDistanceView = ((TextView)  findViewById(R.id.input_foot_distance_perpendicularly));
+        if( ppFootDistanceView != null && ppFootDistanceView.getText().toString().isEmpty() ){
+            ppFootDistanceView.setText(resultDistance);
+        }
+            TextView parallelFootDistanceView = ((TextView)  findViewById(R.id.input_foot_distance_parallel));
+        if( parallelFootDistanceView != null && parallelFootDistanceView.getText().toString().isEmpty() ){
+            parallelFootDistanceView.setText(resultDistance);
+        }
+
+  });
     }
 
 
@@ -661,6 +672,25 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 break;
             case 2 :
                 navController.navigate(R.id.action_DataFragment_to_StartFragment);
+                break;
+            case 3 :
+                navController.navigate(R.id.action_CoordsFragment_to_DataFragment);
+                break;
+            case 4 :
+                navController.navigate(R.id.action_BaseFragment_to_DataFragment);
+                break;
+        }
+    }
+
+    private void gotoDataFragmentForCalcDistanceBetweenPillarLegs(){
+        NavController navController =
+                Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+        switch (PAGE_COUNTER % 5){
+            case 0 :
+                navController.navigate(R.id.action_StartFragment_to_DataFragment);
+                break;
+            case 1 :
+                navController.navigate(R.id.action_MeasDataFragment_to_DataFragment);
                 break;
             case 3 :
                 navController.navigate(R.id.action_CoordsFragment_to_DataFragment);
