@@ -18,18 +18,17 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
-import com.david.giczi.pillarbasedisplayerapp.service.AzimuthAndDistance;
 import com.david.giczi.pillarbasedisplayerapp.MainActivity;
-import com.david.giczi.pillarbasedisplayerapp.service.Point;
-import com.david.giczi.pillarbasedisplayerapp.service.PolarPoint;
 import com.david.giczi.pillarbasedisplayerapp.R;
 import com.david.giczi.pillarbasedisplayerapp.databinding.FragmentBaseBinding;
+import com.david.giczi.pillarbasedisplayerapp.service.AzimuthAndDistance;
+import com.david.giczi.pillarbasedisplayerapp.service.Point;
+import com.david.giczi.pillarbasedisplayerapp.service.PolarPoint;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 
 
 public class PillarBaseFragment extends Fragment {
@@ -74,6 +73,7 @@ public class PillarBaseFragment extends Fragment {
             transformPillarBasePoints();
             addNorthSign();
             drawCircleForPoints();
+            drawFindPointCircle();
             drawTextsForPillarBase();
             drawMainLineDirections();
             if( MainActivity.IS_WEIGHT_BASE ){
@@ -165,6 +165,17 @@ public class PillarBaseFragment extends Fragment {
                     (float) transformedPillarBasePoints.get(i).getY_coord(), 0.75F * MM, paint);
         }
     }
+
+    private void drawFindPointCircle(){
+        paint.setColor(ContextCompat.getColor(requireContext(), R.color.green));
+        paint.setStyle(Paint.Style.FILL);
+        canvas.drawCircle((float) transformedPillarBasePoints
+                        .get(MainActivity.PILLAR_BASE_COORDINATES.indexOf(MainActivity.FIND_POINT)).getX_coord(),
+                (float) transformedPillarBasePoints
+                        .get(MainActivity.PILLAR_BASE_COORDINATES.indexOf(MainActivity.FIND_POINT)).getY_coord(),
+                1.2F * MM, paint);
+    }
+
 
     private void drawPillarBasePointId(Point pillarBasePoint){
         paint.setColor(Color.RED);

@@ -20,13 +20,13 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
-import com.david.giczi.pillarbasedisplayerapp.service.AzimuthAndDistance;
 import com.david.giczi.pillarbasedisplayerapp.MainActivity;
+import com.david.giczi.pillarbasedisplayerapp.R;
+import com.david.giczi.pillarbasedisplayerapp.databinding.FragmentCoordsBinding;
+import com.david.giczi.pillarbasedisplayerapp.service.AzimuthAndDistance;
 import com.david.giczi.pillarbasedisplayerapp.service.PillarCoordsForPlateBase;
 import com.david.giczi.pillarbasedisplayerapp.service.PillarCoordsForWeightBase;
 import com.david.giczi.pillarbasedisplayerapp.service.Point;
-import com.david.giczi.pillarbasedisplayerapp.R;
-import com.david.giczi.pillarbasedisplayerapp.databinding.FragmentCoordsBinding;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -35,7 +35,6 @@ import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 
 public class PillarCoordsFragment extends Fragment {
 
@@ -182,16 +181,18 @@ public class PillarCoordsFragment extends Fragment {
             });
             int coordinatesId = pointCoordinates.getId();
             if( MainActivity.FIND_POINT != null &&
-                    MainActivity.PILLAR_BASE_COORDINATES.indexOf(MainActivity.FIND_POINT) == coordinatesId - 100){
+                MainActivity.PILLAR_BASE_COORDINATES.indexOf(MainActivity.FIND_POINT) == coordinatesId - 100){
                 pointCoordinates.setTextColor(ContextCompat.getColor(requireContext(), R.color.green));
             }
             else if( MainActivity.FIND_POINT == null && MainActivity.IS_WEIGHT_BASE &&
-                    MainActivity.PILLAR_BASE_COORDINATES.indexOf(pillarBaseCoordinate) == 9 ){
+                MainActivity.PILLAR_BASE_COORDINATES.indexOf(pillarBaseCoordinate) == 9 ){
                 pointCoordinates.setTextColor(ContextCompat.getColor(requireContext(), R.color.green));
+                MainActivity.FIND_POINT = MainActivity.PILLAR_BASE_COORDINATES.get(9);
             }
             else if( MainActivity.FIND_POINT == null && !MainActivity.IS_WEIGHT_BASE &&
-                    MainActivity.PILLAR_BASE_COORDINATES.indexOf(pillarBaseCoordinate) == 1 ){
+                MainActivity.PILLAR_BASE_COORDINATES.indexOf(pillarBaseCoordinate) == 1 ){
                 pointCoordinates.setTextColor(ContextCompat.getColor(requireContext(), R.color.green));
+                MainActivity.FIND_POINT = MainActivity.PILLAR_BASE_COORDINATES.get(1);
             }
             else {
                 pointCoordinates.setTextColor(Color.RED);

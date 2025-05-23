@@ -148,9 +148,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
         northPoleWindow = null;
         northPoleContainer = null;
-        FIND_POINT = null;
         MainActivity.this.locationManager.removeUpdates(locationListener);
         sensorManager.unregisterListener(this);
+        IS_GPS_RUNNING = !IS_GPS_RUNNING;
         Toast.makeText(MainActivity.this, "GPS leállítva.", Toast.LENGTH_SHORT).show();
     }
 
@@ -201,7 +201,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_UI);
         MainActivity.this.locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
                 100, 0, locationListener);
-
+        IS_GPS_RUNNING = !IS_GPS_RUNNING;
       Toast.makeText(MainActivity.this, "GPS elindítva.", Toast.LENGTH_SHORT).show();
     }
 
@@ -289,6 +289,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 stopMeasure();
                 MENU.findItem(R.id.start_stop_gps).setTitle(R.string.start_gps);
             }
+            FIND_POINT = null;
             openPillarBaseDataFile();
         }
         else if( id == R.id.project_process ){
@@ -296,6 +297,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 stopMeasure();
                 MENU.findItem(R.id.start_stop_gps).setTitle(R.string.start_gps);
             }
+            FIND_POINT = null;
             popupProjectOpenDialog();
         }
         else if (id == R.id.goto_next_fragment) {
@@ -329,8 +331,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 startMeasure();
                  MENU.findItem(R.id.start_stop_gps).setTitle(R.string.stop_gps);
             }
-
-            IS_GPS_RUNNING = !IS_GPS_RUNNING;
         }
             return super.onOptionsItemSelected(item);
     }
