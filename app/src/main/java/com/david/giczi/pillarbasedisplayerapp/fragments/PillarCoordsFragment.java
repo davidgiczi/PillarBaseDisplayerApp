@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -69,9 +70,6 @@ public class PillarCoordsFragment extends Fragment {
         }
         if( MainActivity.northPoleWindow != null ){
             MainActivity.northPoleWindow.dismiss();
-        }
-        if( MainActivity.gpsDataWindow != null ){
-            MainActivity.gpsDataWindow.dismiss();
         }
         return fragmentCoordsBinding.getRoot();
     }
@@ -172,7 +170,32 @@ public class PillarCoordsFragment extends Fragment {
                 pointId.setText(pillarBaseCoordinate.getPointID());
             }
             TextView pointCoordinates = new TextView(getContext());
-            pointCoordinates.setTextColor(Color.RED);
+            pointCoordinates.setId(MainActivity.PILLAR_BASE_COORDINATES.indexOf(pillarBaseCoordinate) + 100);
+            pointCoordinates.setOnClickListener(c ->{
+                for (int i = 0; i < MainActivity.PILLAR_BASE_COORDINATES.size(); i++) {
+                    TextView coordinates = (TextView) ((MainActivity) requireActivity()).findViewById(i + 100);
+                    coordinates.setTextColor(Color.RED);
+                }
+                pointCoordinates.setTextColor(ContextCompat.getColor(requireContext(), R.color.green));
+                int coordinatesId = pointCoordinates.getId();
+                MainActivity.FIND_POINT = MainActivity.PILLAR_BASE_COORDINATES.get(coordinatesId - 100);
+            });
+            int coordinatesId = pointCoordinates.getId();
+            if( MainActivity.FIND_POINT != null &&
+                    MainActivity.PILLAR_BASE_COORDINATES.indexOf(MainActivity.FIND_POINT) == coordinatesId - 100){
+                pointCoordinates.setTextColor(ContextCompat.getColor(requireContext(), R.color.green));
+            }
+            else if( MainActivity.FIND_POINT == null && MainActivity.IS_WEIGHT_BASE &&
+                    MainActivity.PILLAR_BASE_COORDINATES.indexOf(pillarBaseCoordinate) == 9 ){
+                pointCoordinates.setTextColor(ContextCompat.getColor(requireContext(), R.color.green));
+            }
+            else if( MainActivity.FIND_POINT == null && !MainActivity.IS_WEIGHT_BASE &&
+                    MainActivity.PILLAR_BASE_COORDINATES.indexOf(pillarBaseCoordinate) == 1 ){
+                pointCoordinates.setTextColor(ContextCompat.getColor(requireContext(), R.color.green));
+            }
+            else {
+                pointCoordinates.setTextColor(Color.RED);
+            }
             pointCoordinates.setTextSize(20F);
             pointCoordinates.setTypeface(Typeface.create("sans-serif-light", Typeface.BOLD));
             pointCoordinates.setText(pillarBaseCoordinate.toString());
@@ -274,6 +297,5 @@ public class PillarCoordsFragment extends Fragment {
                             + projectFile.getName() , Toast.LENGTH_SHORT).show();
         }
     }
-
 
 }

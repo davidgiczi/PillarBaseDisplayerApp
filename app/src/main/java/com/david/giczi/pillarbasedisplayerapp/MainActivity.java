@@ -91,11 +91,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public static boolean IS_SAVE_RTK_FILE;
     public static boolean IS_SAVE_TPS_FILE;
     public static boolean IS_GPS_RUNNING;
+    public static Point FIND_POINT;
     public PillarBaseParamsService service;
     private static float northPoleDirection;
     private int previousPillarDistance;
     private ActivityResultLauncher<Intent> activityResultLauncher;
     private Spinner openingProjectSpinner;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -146,6 +148,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
         northPoleWindow = null;
         northPoleContainer = null;
+        FIND_POINT = null;
         MainActivity.this.locationManager.removeUpdates(locationListener);
         sensorManager.unregisterListener(this);
         Toast.makeText(MainActivity.this, "GPS leállítva.", Toast.LENGTH_SHORT).show();
@@ -172,7 +175,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                         location.getAltitude()).indexOf("m")));
                 EOV eov = new EOV(X_WGS, Y_WGS, Z_WGS);
                 popupGPSData();
-                showNorthSign();
+                if( PAGE_COUNTER == 4 ){
+                    showNorthSign();
+                }
                 showPillarDistanceAndDirection(eov);
             }
 
@@ -207,25 +212,28 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     private void popupGPSData() {
-        if ( gpsDataContainer == null && northPoleContainer == null ) {
+        if ( gpsDataContainer == null ) {
             gpsDataContainer = (ViewGroup) getLayoutInflater().inflate(R.layout.fragment_gps_data, null);
             gpsDataWindow = new PopupWindow(gpsDataContainer, 1000, 500, false);
-            northPoleContainer = (ViewGroup) getLayoutInflater().inflate(R.layout.fragment_north_pole, null);
-            northPoleWindow = new PopupWindow(northPoleContainer, 500, 360, false);
-            if( PAGE_COUNTER == 3 ) {
-                northPoleWindow.showAtLocation(binding.getRoot(), Gravity.CENTER, 0, -630);
-                gpsDataWindow.showAtLocation( binding.getRoot(), Gravity.CENTER, 0, 800);
-            }
+            gpsDataWindow.showAtLocation( binding.getRoot(), Gravity.CENTER, 0, 800);
         }
     }
 
     private void showPillarDistanceAndDirection(EOV eov){
+        if( FIND_POINT == null ){
+            if( IS_WEIGHT_BASE ){
+                FIND_POINT = PILLAR_BASE_COORDINATES.get(10);
+            }
+            else{
+                FIND_POINT = PILLAR_BASE_COORDINATES.get(1);
+            }
+        }
         TextView gpsDataView = gpsDataContainer.findViewById(R.id.actual_position);
         gpsDataView.setText(eov.toString());
         AzimuthAndDistance pillarData = new AzimuthAndDistance(
                 new Point("position", eov.getCoordinatesForEOV().get(0),
                         eov.getCoordinatesForEOV().get(1)),
-                new Point("center", Double.parseDouble(BASE_DATA.get(2)), Double.parseDouble(BASE_DATA.get(3))));
+                new Point("center", FIND_POINT.getX_coord(), FIND_POINT.getY_coord()));
         double direction = 0 > Math.toDegrees(pillarData.calcAzimuth()) - northPoleDirection ?
                 Math.toDegrees(pillarData.calcAzimuth()) - northPoleDirection + 360 :
                 Math.toDegrees(pillarData.calcAzimuth()) - northPoleDirection;
@@ -236,6 +244,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         pillarDataView.setText(pillarDirectionAndDistance);
     }
     private void showNorthSign(){
+        if( northPoleContainer == null  ){
+            northPoleContainer = (ViewGroup) getLayoutInflater().inflate(R.layout.fragment_north_pole, null);
+            northPoleWindow = new PopupWindow(northPoleContainer, 500, 360, false);
+            northPoleWindow.showAtLocation(binding.getRoot(), Gravity.CENTER, 0, -630);
+        }
         ImageView northPoleView = northPoleContainer.findViewById(R.id.north_pole);
         northPoleView.setRotation(- northPoleDirection);
         northPoleView.setImageResource(R.drawable.north);
@@ -272,9 +285,17 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         if (id == R.id.exit_option) {
             exitDialog();
         } else if (id == R.id.input_data) {
+            if( IS_GPS_RUNNING ){
+                stopMeasure();
+                MENU.findItem(R.id.start_stop_gps).setTitle(R.string.start_gps);
+            }
             openPillarBaseDataFile();
         }
         else if( id == R.id.project_process ){
+            if( IS_GPS_RUNNING ){
+                stopMeasure();
+                MENU.findItem(R.id.start_stop_gps).setTitle(R.string.start_gps);
+            }
             popupProjectOpenDialog();
         }
         else if (id == R.id.goto_next_fragment) {
@@ -361,9 +382,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         });
 
         Button okButton = container.findViewById(R.id.ok_button);
-        okButton.setOnClickListener(c ->{
+        okButton.setOnClickListener(c -> {
             String selectedItem = (String) openingProjectSpinner.getSelectedItem();
-
             if( selectedItem.equals("Projektek") ){
                 Toast.makeText(this, "Projekt választása szükéges.", Toast.LENGTH_LONG).show();
                 return;

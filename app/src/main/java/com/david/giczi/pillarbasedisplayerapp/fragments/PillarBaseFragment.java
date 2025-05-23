@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.david.giczi.pillarbasedisplayerapp.service.AzimuthAndDistance;
@@ -28,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 
 public class PillarBaseFragment extends Fragment {
@@ -194,7 +196,7 @@ public class PillarBaseFragment extends Fragment {
                         + ". oszlopok távolsága: " +
         String.format(Locale.getDefault(), "%.3fm", mainLineDistance.calcDistance()).replace(",", "."),
                3 * MM, getResources().getDisplayMetrics().heightPixels - 3 * MM, paint);
-        paint.setColor(Color.LTGRAY);
+        paint.setColor(ContextCompat.getColor(requireContext(), R.color.firebrick));
         for(int i = 1; i < transformedPillarBasePoints.size() - 1; i++){
             String[] idValues = transformedPillarBasePoints.get(i).getPointID().split("\\s+");
             canvas.drawText((idValues.length == 2 ? idValues[0] + idValues[1]  :
