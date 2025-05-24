@@ -171,28 +171,27 @@ public class PillarCoordsFragment extends Fragment {
             TextView pointCoordinates = new TextView(getContext());
             pointCoordinates.setId(MainActivity.PILLAR_BASE_COORDINATES.indexOf(pillarBaseCoordinate) + 100);
             pointCoordinates.setOnClickListener(c ->{
-                for (int i = 0; i < MainActivity.PILLAR_BASE_COORDINATES.size(); i++) {
-                    TextView coordinates = requireActivity().findViewById(i + 100);
+                for (int index = 0; index < MainActivity.PILLAR_BASE_COORDINATES.size(); index++) {
+                    TextView coordinates = requireActivity().findViewById(index + 100);
                     coordinates.setTextColor(Color.RED);
                 }
                 pointCoordinates.setTextColor(ContextCompat.getColor(requireContext(), R.color.green));
                 int coordinatesId = pointCoordinates.getId();
-                MainActivity.FIND_POINT = MainActivity.PILLAR_BASE_COORDINATES.get(coordinatesId - 100);
+                MainActivity.FIND_POINT_INDEX = coordinatesId - 100;
             });
             int coordinatesId = pointCoordinates.getId();
-            if( MainActivity.FIND_POINT != null &&
-                MainActivity.PILLAR_BASE_COORDINATES.indexOf(MainActivity.FIND_POINT) == coordinatesId - 100){
+            if( MainActivity.FIND_POINT_INDEX != null && MainActivity.FIND_POINT_INDEX == (coordinatesId - 100) ){
                 pointCoordinates.setTextColor(ContextCompat.getColor(requireContext(), R.color.green));
             }
-            else if( MainActivity.FIND_POINT == null && MainActivity.IS_WEIGHT_BASE &&
+            else if( MainActivity.FIND_POINT_INDEX == null && MainActivity.IS_WEIGHT_BASE &&
                 MainActivity.PILLAR_BASE_COORDINATES.indexOf(pillarBaseCoordinate) == 9 ){
                 pointCoordinates.setTextColor(ContextCompat.getColor(requireContext(), R.color.green));
-                MainActivity.FIND_POINT = MainActivity.PILLAR_BASE_COORDINATES.get(9);
+                MainActivity.FIND_POINT_INDEX = 9;
             }
-            else if( MainActivity.FIND_POINT == null && !MainActivity.IS_WEIGHT_BASE &&
+            else if( MainActivity.FIND_POINT_INDEX == null && !MainActivity.IS_WEIGHT_BASE &&
                 MainActivity.PILLAR_BASE_COORDINATES.indexOf(pillarBaseCoordinate) == 1 ){
                 pointCoordinates.setTextColor(ContextCompat.getColor(requireContext(), R.color.green));
-                MainActivity.FIND_POINT = MainActivity.PILLAR_BASE_COORDINATES.get(1);
+                MainActivity.FIND_POINT_INDEX = 1;
             }
             else {
                 pointCoordinates.setTextColor(Color.RED);

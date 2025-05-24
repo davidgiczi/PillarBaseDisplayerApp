@@ -60,19 +60,16 @@ public class Point {
 		return Objects.hash(pointID, x_coord, y_coord);
 	}
 
-
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Point other = (Point) obj;
-		return Objects.equals(pointID, other.pointID);
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Point point = (Point) o;
+		return Double.compare(point.x_coord, x_coord) == 0 &&
+				Double.compare(point.y_coord, y_coord) == 0 &&
+				Objects.equals(pointID, point.pointID) && Objects.equals(df, point.df);
 	}
-	
+
 	@NonNull
 	@Override
 	public String toString() {

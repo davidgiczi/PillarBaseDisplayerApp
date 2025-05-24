@@ -170,9 +170,9 @@ public class PillarBaseFragment extends Fragment {
         paint.setColor(ContextCompat.getColor(requireContext(), R.color.green));
         paint.setStyle(Paint.Style.FILL);
         canvas.drawCircle((float) transformedPillarBasePoints
-                        .get(MainActivity.PILLAR_BASE_COORDINATES.indexOf(MainActivity.FIND_POINT)).getX_coord(),
+                        .get(MainActivity.FIND_POINT_INDEX).getX_coord(),
                 (float) transformedPillarBasePoints
-                        .get(MainActivity.PILLAR_BASE_COORDINATES.indexOf(MainActivity.FIND_POINT)).getY_coord(),
+                        .get(MainActivity.FIND_POINT_INDEX).getY_coord(),
                 1.2F * MM, paint);
     }
 

@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public static boolean IS_SAVE_RTK_FILE;
     public static boolean IS_SAVE_TPS_FILE;
     public static boolean IS_GPS_RUNNING;
-    public static Point FIND_POINT;
+    public static Integer FIND_POINT_INDEX;
     public PillarBaseParamsService service;
     private static float northPoleDirection;
     private int previousPillarDistance;
@@ -220,12 +220,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     private void showPillarDistanceAndDirection(EOV eov){
-        if( FIND_POINT == null ){
+        if( FIND_POINT_INDEX == null ){
             if( IS_WEIGHT_BASE ){
-                FIND_POINT = PILLAR_BASE_COORDINATES.get(10);
+                FIND_POINT_INDEX = 10;
             }
             else{
-                FIND_POINT = PILLAR_BASE_COORDINATES.get(1);
+                FIND_POINT_INDEX = 1;
             }
         }
         TextView gpsDataView = gpsDataContainer.findViewById(R.id.actual_position);
@@ -233,7 +233,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         AzimuthAndDistance pillarData = new AzimuthAndDistance(
                 new Point("position", eov.getCoordinatesForEOV().get(0),
                         eov.getCoordinatesForEOV().get(1)),
-                new Point("center", FIND_POINT.getX_coord(), FIND_POINT.getY_coord()));
+                new Point("center", PILLAR_BASE_COORDINATES.get(FIND_POINT_INDEX).getX_coord(),
+                       PILLAR_BASE_COORDINATES.get(FIND_POINT_INDEX).getY_coord()));
         double direction = 0 > Math.toDegrees(pillarData.calcAzimuth()) - northPoleDirection ?
                 Math.toDegrees(pillarData.calcAzimuth()) - northPoleDirection + 360 :
                 Math.toDegrees(pillarData.calcAzimuth()) - northPoleDirection;
@@ -289,7 +290,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 stopMeasure();
                 MENU.findItem(R.id.start_stop_gps).setTitle(R.string.start_gps);
             }
-            FIND_POINT = null;
+            FIND_POINT_INDEX = null;
             openPillarBaseDataFile();
         }
         else if( id == R.id.project_process ){
@@ -297,7 +298,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 stopMeasure();
                 MENU.findItem(R.id.start_stop_gps).setTitle(R.string.start_gps);
             }
-            FIND_POINT = null;
+            FIND_POINT_INDEX = null;
             popupProjectOpenDialog();
         }
         else if (id == R.id.goto_next_fragment) {
