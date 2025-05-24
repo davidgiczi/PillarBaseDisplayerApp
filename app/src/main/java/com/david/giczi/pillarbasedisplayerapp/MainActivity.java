@@ -497,11 +497,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
            TextView resultFootDistanceView = container.findViewById(R.id.result_foot_distance);
            String resultDistance = String.format(Locale.getDefault(), "%.3f", footDistance);
            resultFootDistanceView.setText(String.format(Locale.getDefault(), "%.3fm", footDistance));
-           TextView ppFootDistanceView = ((TextView)  findViewById(R.id.input_foot_distance_perpendicularly));
+           TextView ppFootDistanceView = findViewById(R.id.input_foot_distance_perpendicularly);
         if( ppFootDistanceView != null && ppFootDistanceView.getText().toString().isEmpty() ){
             ppFootDistanceView.setText(resultDistance);
         }
-            TextView parallelFootDistanceView = ((TextView)  findViewById(R.id.input_foot_distance_parallel));
+            TextView parallelFootDistanceView = findViewById(R.id.input_foot_distance_parallel);
         if( parallelFootDistanceView != null && parallelFootDistanceView.getText().toString().isEmpty() ){
             parallelFootDistanceView.setText(resultDistance);
         }

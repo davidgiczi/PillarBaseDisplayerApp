@@ -70,9 +70,7 @@ public class Point {
 		if (getClass() != obj.getClass())
 			return false;
 		Point other = (Point) obj;
-		return Objects.equals(pointID, other.pointID)
-				&& Double.doubleToLongBits(x_coord) == Double.doubleToLongBits(other.x_coord)
-				&& Double.doubleToLongBits(y_coord) == Double.doubleToLongBits(other.y_coord);
+		return Objects.equals(pointID, other.pointID);
 	}
 	
 	@NonNull

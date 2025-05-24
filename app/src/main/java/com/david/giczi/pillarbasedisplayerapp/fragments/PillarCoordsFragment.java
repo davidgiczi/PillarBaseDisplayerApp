@@ -156,7 +156,7 @@ public class PillarCoordsFragment extends Fragment {
                     return;
                 }
               endPoint = MainActivity.PILLAR_BASE_COORDINATES.get(pointId.getId());
-                TextView endPointView = ((MainActivity) requireActivity()).findViewById(pointId.getId());
+                TextView endPointView = requireActivity().findViewById(pointId.getId());
                     endPointView.setTextSize(30F);
                     endPointView.setTextColor(Color.parseColor("#fe7e0f"));
               popupDistanceBetweenPoints();
@@ -172,7 +172,7 @@ public class PillarCoordsFragment extends Fragment {
             pointCoordinates.setId(MainActivity.PILLAR_BASE_COORDINATES.indexOf(pillarBaseCoordinate) + 100);
             pointCoordinates.setOnClickListener(c ->{
                 for (int i = 0; i < MainActivity.PILLAR_BASE_COORDINATES.size(); i++) {
-                    TextView coordinates = (TextView) ((MainActivity) requireActivity()).findViewById(i + 100);
+                    TextView coordinates = requireActivity().findViewById(i + 100);
                     coordinates.setTextColor(Color.RED);
                 }
                 pointCoordinates.setTextColor(ContextCompat.getColor(requireContext(), R.color.green));
@@ -231,7 +231,7 @@ public class PillarCoordsFragment extends Fragment {
         Handler handler = new Handler();
         handler.postDelayed(() -> {
             for (int i = 0; i < MainActivity.PILLAR_BASE_COORDINATES.size(); i++){
-            TextView pointId = (TextView)((MainActivity) requireActivity()).findViewById(i);
+            TextView pointId = requireActivity().findViewById(i);
             pointId.setTextColor(Color.BLACK);
             pointId.setTextSize(20F);
             }
@@ -243,8 +243,7 @@ public class PillarCoordsFragment extends Fragment {
 
     private void saveProjectFileForRTK() {
         String fileName = "RTK_" +((TextView)
-                (((MainActivity)
-                        requireActivity()).findViewById(R.id.projectNameTitle))).getText().toString() + ".txt";
+                (requireActivity().findViewById(R.id.projectNameTitle))).getText().toString() + ".txt";
         File projectFile =
                 new File(Environment.getExternalStorageDirectory(),
                         "/Documents/" + fileName);
@@ -272,8 +271,7 @@ public class PillarCoordsFragment extends Fragment {
 
     private void saveProjectFileForTPS() {
         String fileName = "TPS_" + ((TextView)
-                (((MainActivity)
-                        requireActivity()).findViewById(R.id.projectNameTitle))).getText().toString() + ".txt";
+                (requireActivity().findViewById(R.id.projectNameTitle))).getText().toString() + ".txt";
         File projectFile =
                 new File(Environment.getExternalStorageDirectory(),
                         "/Documents/" + fileName);
