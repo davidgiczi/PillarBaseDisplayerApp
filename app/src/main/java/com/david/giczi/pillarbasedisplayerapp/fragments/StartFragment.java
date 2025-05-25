@@ -27,9 +27,6 @@ public class StartFragment extends Fragment {
         fragmentStartBinding = FragmentStartBinding.inflate(inflater, container,false);
         addBackgroundImage();
         MainActivity.PAGE_COUNTER = 0;
-        if( MainActivity.BASE_DATA != null && !MainActivity.BASE_DATA.isEmpty() ){
-            MainActivity.MENU.findItem(R.id.start_stop_gps).setEnabled(true);
-        }
         if( MainActivity.northPoleWindow != null ){
             MainActivity.northPoleWindow.dismiss();
         }
