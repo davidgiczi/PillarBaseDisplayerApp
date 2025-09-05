@@ -50,13 +50,13 @@ public class StartFragment extends Fragment {
         Drawable backgroundImage;
         switch ((int) (Math.random() * 3) + 1){
             case 1 :
-                backgroundImage  = ((MainActivity) requireActivity()).getDrawable(R.drawable.pillars1);
+                backgroundImage  = requireActivity().getDrawable(R.drawable.pillars1);
                 break;
             case 2 :
-                backgroundImage  = ((MainActivity) requireActivity()).getDrawable(R.drawable.pillars2);
+                backgroundImage  = requireActivity().getDrawable(R.drawable.pillars2);
                 break;
             default:
-                backgroundImage  =((MainActivity) requireActivity()).getDrawable(R.drawable.pillars3);
+                backgroundImage  = requireActivity().getDrawable(R.drawable.pillars3);
         }
         fragmentStartBinding.startPage.setBackground(backgroundImage);
     }

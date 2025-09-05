@@ -79,7 +79,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public static PopupWindow gpsDataWindow;
     public static PopupWindow northPoleWindow;
     private SensorManager sensorManager;
-    private Sensor sensor;
+    private Sensor accelerometerSensor;
+    private Sensor magnetometerSensor;
+    private float[] gravityValues = new float[3];
+    private float[] geomagneticValues = new float[3];
     private static final int REQUEST_LOCATION = 1;
     public ActivityMainBinding binding;
     public static Menu MENU;
@@ -131,7 +134,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }*/
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
+        accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        magnetometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
         //this.deleteDatabase("pillar_base_params_database");
         this.service = new PillarBaseParamsService(this);
         //service.getAllPillarBaseParams();
@@ -197,12 +201,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             return;
         }
 
-        sensorManager.registerListener(this, sensor,
+        sensorManager.registerListener(this, accelerometerSensor,
+                SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_UI);
+        sensorManager.registerListener(this, magnetometerSensor,
                 SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_UI);
         MainActivity.this.locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
                 100, 0, locationListener);
         IS_GPS_RUNNING = !IS_GPS_RUNNING;
-      Toast.makeText(MainActivity.this, "GPS elindítva.", Toast.LENGTH_SHORT).show();
+      Toast.makeText(MainActivity.this, "GPS elindítva..", Toast.LENGTH_SHORT).show();
     }
 
     private void requestPermissions(){
@@ -235,9 +241,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                         eov.getCoordinatesForEOV().get(1)),
                 new Point("center", PILLAR_BASE_COORDINATES.get(FIND_POINT_INDEX).getX_coord(),
                        PILLAR_BASE_COORDINATES.get(FIND_POINT_INDEX).getY_coord()));
-        double direction = 0 > Math.toDegrees(pillarData.calcAzimuth()) - northPoleDirection ?
-                Math.toDegrees(pillarData.calcAzimuth()) - northPoleDirection + 360 :
-                Math.toDegrees(pillarData.calcAzimuth()) - northPoleDirection;
+        double direction = Math.toDegrees(pillarData.calcAzimuth()) + northPoleDirection > 360 ?
+                Math.toDegrees(pillarData.calcAzimuth()) + northPoleDirection - 360 :
+                Math.toDegrees(pillarData.calcAzimuth()) + northPoleDirection;
         addPillarDirectionArrowImage((float) direction, (int) Math.round(pillarData.calcDistance()) );
         String pillarDirectionAndDistance = "Irány: "  + String.format(Locale.getDefault(),"%5.1f°", direction) +
           "\t\tTávolság: " + String.format(Locale.getDefault(),"%5.0fm", pillarData.calcDistance());
@@ -924,7 +930,22 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-       northPoleDirection = event.values[0];
+
+        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            gravityValues = event.values.clone();
+        } else if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
+            geomagneticValues = event.values.clone();
+        }
+        float[] R = new float[9];
+        float[] I = new float[9];
+        boolean success = SensorManager.getRotationMatrix(R, I, gravityValues, geomagneticValues);
+
+        if (success) {
+            float[] orientation = new float[3];
+            SensorManager.getOrientation(R, orientation);
+
+            northPoleDirection = (float) Math.toDegrees(orientation[0]);
+        }
     }
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
