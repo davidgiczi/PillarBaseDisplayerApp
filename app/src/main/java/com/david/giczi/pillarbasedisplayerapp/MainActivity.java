@@ -2,6 +2,7 @@ package com.david.giczi.pillarbasedisplayerapp;
 
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -217,6 +218,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                         Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
     }
 
+    @SuppressLint("InflateParams")
     private void popupGPSData() {
         if ( gpsDataContainer == null ) {
             gpsDataContainer = (ViewGroup) getLayoutInflater().inflate(R.layout.fragment_gps_data, null);
@@ -251,6 +253,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         TextView pillarDataView = gpsDataContainer.findViewById(R.id.pillar_direction_and_distance);
         pillarDataView.setText(pillarDirectionAndDistance);
     }
+    @SuppressLint("InflateParams")
     private void showNorthSign(){
         if( northPoleContainer == null  ){
             northPoleContainer = (ViewGroup) getLayoutInflater().inflate(R.layout.fragment_north_pole, null);
@@ -344,7 +347,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     public void popupProjectOpenDialog() {
-        ViewGroup container = (ViewGroup) getLayoutInflater().inflate(R.layout.fragment_open_project, null);
+        @SuppressLint("InflateParams") ViewGroup container = (ViewGroup) getLayoutInflater().inflate(R.layout.fragment_open_project, null);
         PopupWindow openingProjectWindow = new PopupWindow(container, 1000, 700, true);
         openingProjectWindow.showAtLocation(binding.getRoot(), Gravity.CENTER, 0, -400);
         openingProjectSpinner = container.findViewById(R.id.opening_project_spinner);
@@ -474,7 +477,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     private void popupPillarFootDistanceCalculator(){
-        ViewGroup container = (ViewGroup) getLayoutInflater().inflate(R.layout.fragment_foot_calc, null);
+        @SuppressLint("InflateParams") ViewGroup container = (ViewGroup) getLayoutInflater().inflate(R.layout.fragment_foot_calc, null);
         PopupWindow footCalcWindow = new PopupWindow(container, 1000, 700, true);
         footCalcWindow.showAtLocation(binding.getRoot(), Gravity.CENTER, 0, -400);
         Button calcButton = container.findViewById(R.id.btn_count);

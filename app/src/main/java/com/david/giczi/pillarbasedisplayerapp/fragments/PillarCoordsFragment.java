@@ -1,5 +1,6 @@
 package com.david.giczi.pillarbasedisplayerapp.fragments;
 
+import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -210,7 +211,7 @@ public class PillarCoordsFragment extends Fragment {
     }
 
     private void popupDistanceBetweenPoints() {
-        ViewGroup container = (ViewGroup) getLayoutInflater()
+        @SuppressLint("InflateParams") ViewGroup container = (ViewGroup) getLayoutInflater()
                 .inflate(R.layout.fragment_distance_between_points, null);
         PopupWindow distanceWindow = new PopupWindow(container, 1050, 100, true);
         distanceWindow.showAtLocation(fragmentCoordsBinding.getRoot(), Gravity.CENTER, 0, 0);

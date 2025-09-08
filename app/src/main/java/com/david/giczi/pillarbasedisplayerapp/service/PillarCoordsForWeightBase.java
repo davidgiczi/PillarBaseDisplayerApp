@@ -13,7 +13,6 @@ public class PillarCoordsForWeightBase {
 	private double horizontalSizeOfHoleOfPillarLeg;
 	private double verticalSizeOfHoleOfPillarLeg; 
 	private double distanceOnTheAxis;
-	private double rotation = 0;
 	private double angleValueBetweenMainPath = 0;
 	private double angularMinuteValueBetweenMainPath = 0;
 	private double angularSecondValueBetweenMainPath = 0;
@@ -206,20 +205,7 @@ public class PillarCoordsForWeightBase {
 					angularSecondValueBetweenMainPath / 3600)) / 2) :
 					Math.toRadians((180 - (360 - (angleValueBetweenMainPath + 
 					angularMinuteValueBetweenMainPath / 60 + 
-					angularSecondValueBetweenMainPath / 3600))) / 2);		
-			
-			double rotationValue = sideOfAngle ? 
-					angleValueBetweenMainPath + 
-					angularMinuteValueBetweenMainPath / 60 + 
-					angularSecondValueBetweenMainPath / 3600 : 
-					360 - (angleValueBetweenMainPath + 
-					angularMinuteValueBetweenMainPath / 60 + 
-					angularSecondValueBetweenMainPath / 3600);
-			
-			
-			rotation =  ( angleValueBetweenMainPath == 180 && 
-					angularMinuteValueBetweenMainPath == 0 &&
-					angularSecondValueBetweenMainPath == 0 ) ? 0 : rotationValue;
+					angularSecondValueBetweenMainPath / 3600))) / 2);
 		}
 	}
 	

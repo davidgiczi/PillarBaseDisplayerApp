@@ -1,5 +1,7 @@
 package com.david.giczi.pillarbasedisplayerapp.service;
 
+import androidx.annotation.NonNull;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -87,8 +89,8 @@ public class PillarLocationCalculator {
             directionY = df.format(aveDirectionY).replace(",", ".");
         }
 
-        Double aveCenterX;
-        Double aveCenterY;
+        double aveCenterX;
+        double aveCenterY;
 
         if( !centerPillarMeasData.isEmpty() && centerPillarMeasData.size() != 3 ){
             aveCenterX = centerPillarMeasData.stream().mapToDouble(Point::getX_coord)
@@ -149,6 +151,7 @@ public class PillarLocationCalculator {
         }
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "PillarLocationCalculator{" +
