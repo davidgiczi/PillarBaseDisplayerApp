@@ -243,12 +243,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                         eov.getCoordinatesForEOV().get(1)),
                 new Point("center", PILLAR_BASE_COORDINATES.get(FIND_POINT_INDEX).getX_coord(),
                        PILLAR_BASE_COORDINATES.get(FIND_POINT_INDEX).getY_coord()));
-        double direction = Math.toDegrees(pillarData.calcAzimuth()) + northPoleDirection >= 360 ?
-                Math.toDegrees(pillarData.calcAzimuth()) + northPoleDirection - 360 :
+        double direction = 0 > northPoleDirection ?
+                Math.toDegrees(pillarData.calcAzimuth()) + Math.abs(northPoleDirection) :
                 Math.toDegrees(pillarData.calcAzimuth()) - northPoleDirection;
+        direction =  direction >= 360 ? direction - 360 : 0 > direction ? direction + 360 : direction;
         addPillarDirectionArrowImage((float) direction, (int) Math.round(pillarData.calcDistance()) );
-        String pillarDirectionAndDistance = "Irány: "  + String.format(Locale.getDefault(),"%5.1f°",
-                0 > direction ? direction + 360 : direction) +
+        String pillarDirectionAndDistance = "Irány: "  + String.format(Locale.getDefault(),"%5.1f°", direction) +
           "\t\tTávolság: " + String.format(Locale.getDefault(),"%5.0fm", pillarData.calcDistance());
         TextView pillarDataView = gpsDataContainer.findViewById(R.id.pillar_direction_and_distance);
         pillarDataView.setText(pillarDirectionAndDistance);
