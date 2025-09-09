@@ -18,6 +18,8 @@ public interface PillarBaseParamsDAO {
     void deletePillarBaseParamsByName(String baseName);
     @Query("SELECT name FROM pillar_base_params")
     List<String> getPillarBaseNameList();
+    @Query("SELECT NumberOfMeasure FROM pillar_base_params WHERE Name = :baseName")
+    Integer getBaseNumberOfMeasureByName(String baseName);
     @Query("SELECT * FROM pillar_base_params WHERE Name = :baseName")
     PillarBaseParams getPillarBaseDataByName(String baseName);
     @Query("SELECT * FROM pillar_base_params")

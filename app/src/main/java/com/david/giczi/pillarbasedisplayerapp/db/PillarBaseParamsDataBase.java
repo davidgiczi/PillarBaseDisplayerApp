@@ -2,14 +2,17 @@ package com.david.giczi.pillarbasedisplayerapp.db;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import androidx.room.migration.Migration;
+import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Database(entities = {PillarBaseParams.class}, version = 1)
+@Database(entities = {PillarBaseParams.class}, version = 2)
 public abstract class PillarBaseParamsDataBase extends RoomDatabase {
 
 
@@ -32,5 +35,14 @@ public abstract class PillarBaseParamsDataBase extends RoomDatabase {
         return INSTANCE;
     }
 
+    static final Migration MIGRATION_1_2 = new Migration(1, 2) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            // Add the new column "age" with a default value
+            database.execSQL("ALTER TABLE pillar_base_params ADD COLUMN HoleReady INTEGER NOT NULL DEFAULT 0");
+            database.execSQL("ALTER TABLE pillar_base_params ADD COLUMN AxisReady INTEGER NOT NULL DEFAULT 0");
+            database.execSQL("ALTER TABLE pillar_base_params ADD COLUMN NumberOfMeasure INTEGER NOT NULL DEFAULT 0");
+        }
+    };
 
 }

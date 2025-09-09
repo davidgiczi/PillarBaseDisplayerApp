@@ -40,6 +40,25 @@
             android:title="@string/calc_foot_distance_option"
             app:showAsAction="never" />
     </group>
+
+    <group android:id="@+id/stat">
+        <item
+            android:id="@+id/meas_pillar_input_data"
+            android:orderInCategory="100"
+            android:title="@string/meas_base_data_text"
+            app:showAsAction="never"
+            android:enabled="false"
+            />
+        <item
+            android:id="@+id/meas_pillar_stat"
+            android:orderInCategory="100"
+            android:title="@string/meas_base_statistics_text"
+            app:showAsAction="never"
+            android:enabled="false"
+            />
+    </group>
+
+
     <group android:id="@+id/meas">
         <item
             android:id="@+id/start_stop_gps"

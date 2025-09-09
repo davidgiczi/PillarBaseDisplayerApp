@@ -5,12 +5,14 @@ import android.os.Handler;
 
 import com.david.giczi.pillarbasedisplayerapp.MainActivity;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 public class PillarBaseParamsService {
 
     private final PillarBaseParamsDAO paramsDAO;
     public List<String> itemList;
+    public HashSet<String> projectNameSet;
     public PillarBaseParams actualPillarBase;
 
     public PillarBaseParamsService(Context context) {
@@ -21,8 +23,20 @@ public class PillarBaseParamsService {
     public void getItems(){
         itemList = new ArrayList<>();
         itemList.add("Projektek");
-        PillarBaseParamsDataBase.databaseExecutor.execute(() ->
-                itemList.addAll(paramsDAO.getPillarBaseNameList()));
+        PillarBaseParamsDataBase.databaseExecutor.execute(() -> {
+            for (String baseName : paramsDAO.getPillarBaseNameList()) {
+             itemList.add(baseName + "\t\t[ " + paramsDAO.getBaseNumberOfMeasureByName(baseName) + " ]");
+            }
+        });
+    }
+
+    public void getProjectNameSet(){
+        projectNameSet = new HashSet<>();
+        PillarBaseParamsDataBase.databaseExecutor.execute(() -> {
+            for (String pillarBaseName : paramsDAO.getPillarBaseNameList()) {
+                projectNameSet.add(pillarBaseName.split("_")[0]);
+            }
+        });
     }
 
     public void insertOrUpdatePillarBaseParams(String baseName){

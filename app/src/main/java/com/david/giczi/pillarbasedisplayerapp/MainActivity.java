@@ -101,6 +101,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private int previousPillarDistance;
     private ActivityResultLauncher<Intent> activityResultLauncher;
     private Spinner openingProjectSpinner;
+    private Spinner openingStatisticsSpinner;
 
 
     @Override
@@ -332,6 +333,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 gotoDataFragmentForCalcDistanceBetweenPillarLegs();
                 popupPillarFootDistanceCalculator();
         }
+        else if( id == R.id.meas_pillar_input_data ){
+
+        }
+        else if( id == R.id.meas_pillar_stat ){
+            popupStatisticsDialog();
+        }
         else if( id == R.id.start_stop_gps ){
 
             if( IS_GPS_RUNNING ){
@@ -357,7 +364,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         Handler handler = new Handler();
         handler.postDelayed(() -> {
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                    R.layout.spinner_opening_project, service.itemList.toArray(new String[0])){
+                    R.layout.fragment_for_spinners, service.itemList.toArray(new String[0])){
                 @NonNull
                 @Override
                 public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -373,7 +380,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     return position != 0;
                 }
             };
-            adapter.setDropDownViewResource(R.layout.spinner_opening_project);
+            adapter.setDropDownViewResource(R.layout.fragment_for_spinners);
 
             openingProjectSpinner.setAdapter(adapter);
         }, 1000);
@@ -383,7 +390,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                service.getPillarBaseData((String) openingProjectSpinner.getSelectedItem());
+                String selectedBaseName = ((String) openingProjectSpinner.getSelectedItem()).split("\\s+")[0];
+                service.getPillarBaseData(selectedBaseName);
 
             }
             @Override
@@ -411,6 +419,38 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         });
     }
 
+    public void popupStatisticsDialog() {
+        @SuppressLint("InflateParams") ViewGroup container =
+                (ViewGroup) getLayoutInflater().inflate(R.layout.fragment_open_statistics, null);
+        PopupWindow openingProjectWindow = new PopupWindow(container, 1000, 700, true);
+        openingProjectWindow.showAtLocation(binding.getRoot(), Gravity.CENTER, 0, -400);
+        openingStatisticsSpinner = container.findViewById(R.id.stat_opening_spinner);
+        openingStatisticsSpinner.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        openingStatisticsSpinner.setSelection(0);
+        service.getProjectNameSet();
+        Handler handler = new Handler();
+        handler.postDelayed(() -> {
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                R.layout.fragment_for_spinners, service.projectNameSet.toArray(new String[0]));
+
+        adapter.setDropDownViewResource(R.layout.fragment_for_spinners);
+        openingStatisticsSpinner.setAdapter(adapter);
+        }, 1000);
+        openingStatisticsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+    }
     private void readPillarBaseParamsFromDatabase(){
         BASE_DATA.clear();
         BASE_DATA.add(service.actualPillarBase.baseType);
@@ -574,7 +614,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         builder.setMessage("Biztos, hogy törlöd a projektet?");
 
         builder.setPositiveButton("Igen", (dialog, which) -> {
-                    service.deletePillarParamsByName(baseName);
+                    service.deletePillarParamsByName(baseName.split("\\s+")[0]);
                     dialog.dismiss();
                     Toast.makeText(this, "\"" + baseName + "\" projekt törölve az eszközről.",
                     Toast.LENGTH_LONG).show();
