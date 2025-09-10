@@ -138,9 +138,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         magnetometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-        //this.deleteDatabase("pillar_base_params_database");
         this.service = new PillarBaseParamsService(this);
-        //service.getAllPillarBaseParams();
     }
 
     private void stopMeasure(){
@@ -334,7 +332,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 popupPillarFootDistanceCalculator();
         }
         else if( id == R.id.meas_pillar_input_data ){
-
+            popupMeasuredBaseInputDataDialog();
         }
         else if( id == R.id.meas_pillar_stat ){
             popupStatisticsDialog();
@@ -392,7 +390,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
                 String selectedBaseName = ((String) openingProjectSpinner.getSelectedItem()).split("\\s+")[0];
                 service.getPillarBaseData(selectedBaseName);
-
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
@@ -412,44 +409,50 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 openingProjectWindow.dismiss();
                 return;
             }
-
             readPillarBaseParamsFromDatabase();
             setupMenu();
+            MENU.findItem(R.id.meas_pillar_input_data).setEnabled(true);
             openingProjectWindow.dismiss();
         });
+    }
+    public void popupMeasuredBaseInputDataDialog() {
+        @SuppressLint("InflateParams") ViewGroup container =
+                (ViewGroup) getLayoutInflater().inflate(R.layout.fragment_measured_base_data, null);
+        PopupWindow measuredInputDataWindow = new PopupWindow(container, 1000, 700, true);
+        measuredInputDataWindow.showAtLocation(binding.getRoot(), Gravity.CENTER, 0, -400);
+        ((TextView) container.findViewById(R.id.base_name_text)).setText(binding.projectNameTitle.getText().toString());
+        container.findViewById(R.id.ok_button).setOnClickListener(b -> measuredInputDataWindow.dismiss());
     }
 
     public void popupStatisticsDialog() {
         @SuppressLint("InflateParams") ViewGroup container =
                 (ViewGroup) getLayoutInflater().inflate(R.layout.fragment_open_statistics, null);
-        PopupWindow openingProjectWindow = new PopupWindow(container, 1000, 700, true);
-        openingProjectWindow.showAtLocation(binding.getRoot(), Gravity.CENTER, 0, -400);
+        PopupWindow openingStatisticsWindow = new PopupWindow(container, 1000, 700, true);
+        openingStatisticsWindow.showAtLocation(binding.getRoot(), Gravity.CENTER, 0, -400);
         openingStatisticsSpinner = container.findViewById(R.id.stat_opening_spinner);
         openingStatisticsSpinner.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         openingStatisticsSpinner.setSelection(0);
         service.getProjectNameSet();
-        Handler handler = new Handler();
-        handler.postDelayed(() -> {
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                R.layout.fragment_for_spinners, service.projectNameSet.toArray(new String[0]));
-
-        adapter.setDropDownViewResource(R.layout.fragment_for_spinners);
-        openingStatisticsSpinner.setAdapter(adapter);
+        new Handler().postDelayed(() -> {
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                    R.layout.fragment_for_spinners, service.projectNameSet.toArray(new String[0]));
+            adapter.setDropDownViewResource(R.layout.fragment_for_spinners);
+            openingStatisticsSpinner.setAdapter(adapter);
         }, 1000);
+
         openingStatisticsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-
+                service.getNumberOfBaseOfProject((String) openingStatisticsSpinner.getSelectedItem());
+                new Handler().postDelayed(() -> ((EditText) container.findViewById(R.id.number_of_project_field))
+                        .setText(String.valueOf(service.numberOfBaseOfProject)), 1000);
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-
             }
         });
-
+        container.findViewById(R.id.ok_button).setOnClickListener(b -> openingStatisticsWindow.dismiss());
     }
     private void readPillarBaseParamsFromDatabase(){
         BASE_DATA.clear();
@@ -559,7 +562,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
   });
     }
-
 
     private void gotoNextFragment(){
         NavController navController =
@@ -774,7 +776,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
     private void saveProjectFile() {
        String fileName = "mod_" + ((TextView) findViewById(R.id.projectNameTitle)).getText().toString() + ".txt";
-
        File projectFile = new File(Environment.getExternalStorageDirectory() , "Documents/" + fileName);
 
         try {

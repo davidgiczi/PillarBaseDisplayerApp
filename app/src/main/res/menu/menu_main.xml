@@ -54,7 +54,7 @@
             android:orderInCategory="100"
             android:title="@string/meas_base_statistics_text"
             app:showAsAction="never"
-            android:enabled="false"
+            android:enabled="true"
             />
     </group>
 

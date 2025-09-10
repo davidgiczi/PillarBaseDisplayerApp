@@ -51,4 +51,8 @@
     <string name="delete_project">Projekt törlése</string>
     <string name="meas_base_data_text">Alap kitűzési adatok megadása</string>
     <string name="meas_base_statistics_text">Kitűzött alapok statisztika</string>
+    <string name="number_of_base_of_project">Alapok darabszáma</string>
+    <string name="measured_base_hole">Gödör kitűzve</string>
+    <string name="measured_base_axis">Tengely kitűzve</string>
+    <string name="number_of_measured">Kitűzések száma</string>
 </resources>

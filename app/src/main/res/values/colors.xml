@@ -5,7 +5,8 @@
     <color name="steel_gray">#708090</color>
     <color name="default_background_color">#FAF9FD</color>
     <color name="light_gray">#BEBEBE</color>
-    <color name="red">#D2042D</color>
-    <color name="green">#82e0aa</color>
+    <color name="red">#D61F1F</color>
+    <color name="green">#7BB662</color>
+    <color name="yellow">#FFD301</color>
     <color name="firebrick">#b22222</color>
 </resources>
