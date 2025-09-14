@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -43,7 +44,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.MenuCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -51,6 +54,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.david.giczi.pillarbasedisplayerapp.databinding.ActivityMainBinding;
+import com.david.giczi.pillarbasedisplayerapp.db.PillarBaseParams;
 import com.david.giczi.pillarbasedisplayerapp.db.PillarBaseParamsService;
 import com.david.giczi.pillarbasedisplayerapp.service.AzimuthAndDistance;
 import com.david.giczi.pillarbasedisplayerapp.service.Point;
@@ -77,7 +81,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private LocationListener locationListener;
     private ViewGroup gpsDataContainer;
     private ViewGroup northPoleContainer;
-    private ViewGroup measBaseInputDatacontainer;
     public static PopupWindow gpsDataWindow;
     public static PopupWindow northPoleWindow;
     private SensorManager sensorManager;
@@ -358,6 +361,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         openingProjectSpinner.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         openingProjectSpinner.setSelection(0);
         service.getItems();
+        service.getAllPillarBaseParams();
         Handler handler = new Handler();
         handler.postDelayed(() -> {
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
@@ -366,10 +370,18 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 @Override
                 public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
                     View view = super.getView(position, convertView, parent);
-                    if( position == 0 ){
-                        ((TextView)  view.findViewById(R.id.project_spinner)).setTextColor(Color.RED);
-                    }
+
+                if( position == 0 ){
+                  ((TextView)  view.findViewById(R.id.project_spinner))
+                                    .setTextColor(ContextCompat.getColor(getContext(), R.color.red));}
+
                     return view;
+                }
+
+                @Override
+                public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                    TextView textView = (TextView) super.getDropDownView(position, convertView, parent);
+                    return textView;
                 }
 
                 @Override
@@ -377,8 +389,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     return position != 0;
                 }
             };
-            adapter.setDropDownViewResource(R.layout.fragment_for_spinners);
 
+            adapter.setDropDownViewResource(R.layout.fragment_for_spinners);
             openingProjectSpinner.setAdapter(adapter);
         }, 1000);
 
@@ -394,6 +406,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             public void onNothingSelected(AdapterView<?> parent) {
 
             }
+
         });
 
         Button okButton = container.findViewById(R.id.ok_button);
@@ -441,13 +454,19 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         numberOfMeasureField.setText( String.valueOf(service.actualPillarBase.numberOfMeasure) );
         Button okButton =  container.findViewById(R.id.ok_button);
         okButton.setOnClickListener( b -> {
+            if( !binding.projectNameTitle.getText().toString().equals(service.actualPillarBase.baseName) ) {
+                Toast.makeText(this, "Az adatok nem menthetők, a projekt mentése szükséges.",
+                        Toast.LENGTH_LONG).show();
+                return;
+            }
             service.actualPillarBase.setHoleReady(measHoleCheckbox.isChecked());
             service.actualPillarBase.setAxisReady(measAxisCheckbox.isChecked());
             service.actualPillarBase.setNumberOfMeasure(Integer.parseInt(numberOfMeasureField.getText().toString()));
             service.updatePillarBaseParams();
             measuredInputDataWindow.dismiss();
-            Toast.makeText(this, "Az adatok sikeresen mentve az eszközre.",
-                    Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Az adatok sikeresen mentve az eszközre.",
+                        Toast.LENGTH_LONG).show();
+
         });
 
     }
