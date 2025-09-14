@@ -40,6 +40,11 @@ public class PillarBaseParamsService {
         });
     }
 
+    public void updatePillarBaseParams(){
+        PillarBaseParamsDataBase.databaseExecutor.execute(() ->
+                paramsDAO.updatePillarBaseParams(actualPillarBase));
+    }
+
     public void insertOrUpdatePillarBaseParams(String baseName){
         PillarBaseParamsDataBase.databaseExecutor.execute(() -> actualPillarBase = paramsDAO.getPillarBaseDataByName(baseName));
         List<String> baseData = MainActivity.BASE_DATA;

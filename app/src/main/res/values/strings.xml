@@ -49,10 +49,18 @@
     <string name="calcMirrorCase">Tükörkép számítása"</string>
     <string name="ok_text">OK</string>
     <string name="delete_project">Projekt törlése</string>
-    <string name="meas_base_data_text">Alap kitűzési adatok megadása</string>
+    <string name="meas_base_data_text">Alap kitűzési adatok</string>
     <string name="meas_base_statistics_text">Kitűzött alapok statisztika</string>
     <string name="number_of_base_of_project">Alapok darabszáma</string>
     <string name="measured_base_hole">Gödör kitűzve</string>
     <string name="measured_base_axis">Tengely kitűzve</string>
     <string name="number_of_measured">Kitűzések száma</string>
+    <string name="save_statistics_text">Projekt statisztika mentése</string>
+    <string name="left_side">bal oldali,</string>
+    <string name="right_side">jobb oldali szög</string>
+    <string name="angle_180">180</string>
+    <string name="angle_0">0</string>
+    <string name="degree">°</string>
+    <string name="angle_min">\'</string>
+    <string name="angle_sec">\'\'</string>
 </resources>

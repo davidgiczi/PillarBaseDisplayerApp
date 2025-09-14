@@ -10,7 +10,7 @@
         android:layout_width="300dp"
         android:layout_height="48dp"
         android:layout_gravity="center"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="20dp"
         android:background="@drawable/fragment_open_project_style"
         android:gravity="center"
         android:textAlignment="center"
@@ -23,30 +23,43 @@
         android:id="@+id/number_of_project_field"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="10dp"
+        android:autofillHints=""
+        android:ems="10"
         android:gravity="center"
         android:hint="@string/number_of_base_of_project"
-        android:ems="10"
         android:inputType="number"
+        android:minHeight="48dp"
         android:textColor="@color/steel_gray"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/stat_opening_spinner"
-        android:autofillHints="" />
+        app:layout_constraintTop_toBottomOf="@+id/stat_opening_spinner" />
+
+    <CheckBox
+        android:id="@+id/save_statistics"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:fontFamily="sans-serif-light"
+        android:text="@string/save_statistics_text"
+        android:textColor="@color/steel_gray"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/number_of_project_field" />
 
     <Button
         android:id="@+id/ok_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="8dp"
         android:text="@string/ok_text"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/number_of_project_field"
-        app:layout_constraintVertical_bias="0.032" />
+        app:layout_constraintTop_toBottomOf="@+id/save_statistics" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

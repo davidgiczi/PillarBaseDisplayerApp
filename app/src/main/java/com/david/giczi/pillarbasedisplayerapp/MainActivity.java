@@ -77,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private LocationListener locationListener;
     private ViewGroup gpsDataContainer;
     private ViewGroup northPoleContainer;
+    private ViewGroup measBaseInputDatacontainer;
     public static PopupWindow gpsDataWindow;
     public static PopupWindow northPoleWindow;
     private SensorManager sensorManager;
@@ -242,10 +243,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                         eov.getCoordinatesForEOV().get(1)),
                 new Point("center", PILLAR_BASE_COORDINATES.get(FIND_POINT_INDEX).getX_coord(),
                        PILLAR_BASE_COORDINATES.get(FIND_POINT_INDEX).getY_coord()));
-        double direction = 0 > northPoleDirection ?
-                Math.toDegrees(pillarData.calcAzimuth()) + Math.abs(northPoleDirection) :
-                Math.toDegrees(pillarData.calcAzimuth()) - northPoleDirection;
-        direction =  direction >= 360 ? direction - 360 : 0 > direction ? direction + 360 : direction;
+        double direction = Math.toDegrees(pillarData.calcAzimuth()) - northPoleDirection;
+        direction = 0 > direction ? direction + 360 : direction >= 360 ? direction - 360 : direction;
         addPillarDirectionArrowImage((float) direction, (int) Math.round(pillarData.calcDistance()) );
         String pillarDirectionAndDistance = "Irány: "  + String.format(Locale.getDefault(),"%5.1f°", direction) +
           "\t\tTávolság: " + String.format(Locale.getDefault(),"%5.0fm", pillarData.calcDistance());
@@ -260,7 +259,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             northPoleWindow.showAtLocation(binding.getRoot(), Gravity.CENTER, 0, -630);
         }
         ImageView northPoleView = northPoleContainer.findViewById(R.id.north_pole);
-        northPoleView.setRotation(- northPoleDirection);
+        northPoleView.setRotation( - northPoleDirection );
         northPoleView.setImageResource(R.drawable.north);
     }
 
@@ -415,15 +414,43 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             openingProjectWindow.dismiss();
         });
     }
+    @SuppressLint("InflateParams")
     public void popupMeasuredBaseInputDataDialog() {
-        @SuppressLint("InflateParams") ViewGroup container =
+       ViewGroup container =
                 (ViewGroup) getLayoutInflater().inflate(R.layout.fragment_measured_base_data, null);
         PopupWindow measuredInputDataWindow = new PopupWindow(container, 1000, 700, true);
         measuredInputDataWindow.showAtLocation(binding.getRoot(), Gravity.CENTER, 0, -400);
         ((TextView) container.findViewById(R.id.base_name_text)).setText(binding.projectNameTitle.getText().toString());
-        container.findViewById(R.id.ok_button).setOnClickListener(b -> measuredInputDataWindow.dismiss());
-    }
+        CheckBox measHoleCheckbox = container.findViewById(R.id.checkbox_measured_base_hole);
+        CheckBox measAxisCheckbox = container.findViewById(R.id.checkbox_measured_base_axis);
+        EditText numberOfMeasureField = container.findViewById(R.id.number_of_measure_field);
+        measHoleCheckbox.setOnClickListener( c -> {
+            if( measHoleCheckbox.isChecked() ){
+                service.actualPillarBase.setNumberOfMeasure(service.actualPillarBase.numberOfMeasure + 1);
+                numberOfMeasureField.setText(String.valueOf(service.actualPillarBase.numberOfMeasure));
+            }
+        });
+        measAxisCheckbox.setOnClickListener( c -> {
+            if( measAxisCheckbox.isChecked() ){
+                service.actualPillarBase.setNumberOfMeasure(service.actualPillarBase.numberOfMeasure + 1);
+                numberOfMeasureField.setText(String.valueOf(service.actualPillarBase.numberOfMeasure));
+            }
+        });
+        measHoleCheckbox.setChecked(service.actualPillarBase.isHoleReady);
+        measAxisCheckbox.setChecked(service.actualPillarBase.isAxisReady);
+        numberOfMeasureField.setText( String.valueOf(service.actualPillarBase.numberOfMeasure) );
+        Button okButton =  container.findViewById(R.id.ok_button);
+        okButton.setOnClickListener( b -> {
+            service.actualPillarBase.setHoleReady(measHoleCheckbox.isChecked());
+            service.actualPillarBase.setAxisReady(measAxisCheckbox.isChecked());
+            service.actualPillarBase.setNumberOfMeasure(Integer.parseInt(numberOfMeasureField.getText().toString()));
+            service.updatePillarBaseParams();
+            measuredInputDataWindow.dismiss();
+            Toast.makeText(this, "Az adatok sikeresen mentve az eszközre.",
+                    Toast.LENGTH_LONG).show();
+        });
 
+    }
     public void popupStatisticsDialog() {
         @SuppressLint("InflateParams") ViewGroup container =
                 (ViewGroup) getLayoutInflater().inflate(R.layout.fragment_open_statistics, null);

@@ -178,7 +178,7 @@ public class PillarBaseFragment extends Fragment {
 
 
     private void drawPillarBasePointId(Point pillarBasePoint){
-        paint.setColor(Color.RED);
+        paint.setColor(ContextCompat.getColor(requireContext(), R.color.red));
         paint.setStyle(Paint.Style.FILL);
         paint.setTypeface(Typeface.DEFAULT_BOLD);
         paint.setTextSize(40);
@@ -245,7 +245,7 @@ public class PillarBaseFragment extends Fragment {
         return false;
     }
     private void drawLegNameForPlateBase(){
-        paint.setColor(Color.RED);
+        paint.setColor(ContextCompat.getColor(requireContext(), R.color.red));
         paint.setStyle(Paint.Style.FILL);
         paint.setTextSize(100);
         if( isPillarIdIncreased() ){
@@ -303,7 +303,7 @@ public class PillarBaseFragment extends Fragment {
     }
 
     private void drawLegNameForWeightBase(){
-        paint.setColor(Color.RED);
+        paint.setColor(ContextCompat.getColor(requireContext(), R.color.red));
         paint.setStyle(Paint.Style.FILL);
         paint.setTextSize(100);
         if( isPillarIdIncreased() ){
@@ -579,7 +579,7 @@ public class PillarBaseFragment extends Fragment {
     }
 
     private void drawPillarAxesForPlateBase(){
-        paint.setColor(Color.RED);
+        paint.setColor(ContextCompat.getColor(requireContext(), R.color.red));
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(5F);
         paint.setPathEffect(new DashPathEffect(new float[] {30f,20f}, 0f));
@@ -618,7 +618,7 @@ public class PillarBaseFragment extends Fragment {
     }
 
     private void drawPillarAxesForWeightBase(){
-        paint.setColor(Color.RED);
+        paint.setColor(ContextCompat.getColor(requireContext(), R.color.red));
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(5F);
         paint.setPathEffect(new DashPathEffect(new float[] {30f,20f}, 0f));

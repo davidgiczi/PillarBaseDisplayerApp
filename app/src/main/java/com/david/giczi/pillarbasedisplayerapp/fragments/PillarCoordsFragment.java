@@ -153,14 +153,14 @@ public class PillarCoordsFragment extends Fragment {
                     startPoint = MainActivity.PILLAR_BASE_COORDINATES.get(pointId.getId());
                  TextView startPointView = requireActivity().findViewById(pointId.getId());
                         startPointView.setTextSize(30F);
-                        startPointView.setTextColor(Color.parseColor("#fe7e0f"));
+                        startPointView.setTextColor(ContextCompat.getColor(requireContext(), R.color.orange_yellow));
                         MainActivity.MENU.findItem(R.id.goto_next_fragment).setEnabled(false);
                     return;
                 }
               endPoint = MainActivity.PILLAR_BASE_COORDINATES.get(pointId.getId());
                 TextView endPointView = requireActivity().findViewById(pointId.getId());
                     endPointView.setTextSize(30F);
-                    endPointView.setTextColor(Color.parseColor("#fe7e0f"));
+                    endPointView.setTextColor(ContextCompat.getColor(requireContext(), R.color.orange_yellow));
               popupDistanceBetweenPoints();
             });
             if( idValues.length == 2 ){
@@ -175,7 +175,7 @@ public class PillarCoordsFragment extends Fragment {
             pointCoordinates.setOnClickListener(c ->{
                 for (int index = 0; index < MainActivity.PILLAR_BASE_COORDINATES.size(); index++) {
                     TextView coordinates = requireActivity().findViewById(index + 100);
-                    coordinates.setTextColor(Color.RED);
+                    coordinates.setTextColor(ContextCompat.getColor(requireContext(), R.color.red));
                 }
                 pointCoordinates.setTextColor(ContextCompat.getColor(requireContext(), R.color.green));
                 int coordinatesId = pointCoordinates.getId();

@@ -19,7 +19,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <CheckBox
-        android:id="@+id/measured_base_hole"
+        android:id="@+id/checkbox_measured_base_hole"
         android:layout_width="200dp"
         android:layout_height="40dp"
         android:layout_marginTop="10dp"
@@ -27,7 +27,7 @@
         android:layoutDirection="rtl"
         android:text="@string/measured_base_hole"
         android:textColor="@color/steel_gray"
-        android:textSize="15sp"
+        android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.65"
@@ -35,7 +35,7 @@
         app:layout_constraintTop_toBottomOf="@+id/base_name_text" />
 
     <CheckBox
-        android:id="@+id/measured_base_axis"
+        android:id="@+id/checkbox_measured_base_axis"
         android:layout_width="200dp"
         android:layout_height="40dp"
         android:layout_marginTop="10dp"
@@ -43,15 +43,15 @@
         android:layoutDirection="rtl"
         android:text="@string/measured_base_axis"
         android:textColor="@color/steel_gray"
-        android:textSize="15sp"
+        android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.649"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/measured_base_hole" />
+        app:layout_constraintTop_toBottomOf="@+id/checkbox_measured_base_hole" />
 
     <EditText
-        android:id="@+id/number_of_project_field"
+        android:id="@+id/number_of_measure_field"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -63,7 +63,7 @@
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/measured_base_axis"
+        app:layout_constraintTop_toBottomOf="@+id/checkbox_measured_base_axis"
         android:autofillHints="" />
 
     <Button
@@ -76,6 +76,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/number_of_project_field"
+        app:layout_constraintTop_toBottomOf="@+id/number_of_measure_field"
         app:layout_constraintVertical_bias="0.0" />
 </androidx.constraintlayout.widget.ConstraintLayout>

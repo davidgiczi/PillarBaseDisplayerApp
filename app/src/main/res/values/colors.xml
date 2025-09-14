@@ -7,6 +7,7 @@
     <color name="light_gray">#BEBEBE</color>
     <color name="red">#D61F1F</color>
     <color name="green">#7BB662</color>
-    <color name="yellow">#FFD301</color>
+    <color name="lemon_yellow">#FFD301</color>
+    <color name="orange_yellow">#fe7e0f</color>
     <color name="firebrick">#b22222</color>
 </resources>
