@@ -7,8 +7,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
-import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -44,7 +42,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.MenuCompat;
@@ -54,7 +51,6 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.david.giczi.pillarbasedisplayerapp.databinding.ActivityMainBinding;
-import com.david.giczi.pillarbasedisplayerapp.db.PillarBaseParams;
 import com.david.giczi.pillarbasedisplayerapp.db.PillarBaseParamsService;
 import com.david.giczi.pillarbasedisplayerapp.service.AzimuthAndDistance;
 import com.david.giczi.pillarbasedisplayerapp.service.Point;
@@ -373,23 +369,20 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
                 if( position == 0 ){
                   ((TextView)  view.findViewById(R.id.project_spinner))
-                                    .setTextColor(ContextCompat.getColor(getContext(), R.color.red));}
+                                    .setTextColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));}
 
                     return view;
                 }
 
                 @Override
                 public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-                    TextView textView = (TextView) super.getDropDownView(position, convertView, parent);
-                    return textView;
+                    return super.getDropDownView(position, convertView, parent);
                 }
-
                 @Override
                 public boolean isEnabled(int position) {
                     return position != 0;
                 }
             };
-
             adapter.setDropDownViewResource(R.layout.fragment_for_spinners);
             openingProjectSpinner.setAdapter(adapter);
         }, 1000);

@@ -37,6 +37,7 @@
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_anchor="@+id/appBarLayout2"
-        app:layout_anchorGravity="center" />
+        app:layout_anchorGravity="center"
+        android:autofillHints="" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

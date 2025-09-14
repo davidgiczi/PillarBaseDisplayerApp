@@ -10,4 +10,5 @@
     <color name="lemon_yellow">#FFD301</color>
     <color name="orange_yellow">#fe7e0f</color>
     <color name="firebrick">#b22222</color>
+    <color name="colorPrimary">#FF6750A4</color>
 </resources>
