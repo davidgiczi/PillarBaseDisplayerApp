@@ -51,6 +51,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.david.giczi.pillarbasedisplayerapp.databinding.ActivityMainBinding;
+import com.david.giczi.pillarbasedisplayerapp.db.PillarBaseParams;
 import com.david.giczi.pillarbasedisplayerapp.db.PillarBaseParamsService;
 import com.david.giczi.pillarbasedisplayerapp.service.AzimuthAndDistance;
 import com.david.giczi.pillarbasedisplayerapp.service.Point;
@@ -376,7 +377,34 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
                 @Override
                 public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-                    return super.getDropDownView(position, convertView, parent);
+                    TextView textView = (TextView) super.getDropDownView(position, convertView, parent);
+
+                    if( position ==  0 ){
+                        textView.setTextColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
+                    }
+
+                    String baseText = textView.getText().toString().split("\\s+")[0];
+
+                    for (PillarBaseParams pillarBaseParam : service.allParamList) {
+                        if( pillarBaseParam.isHoleReady && pillarBaseParam.isAxisReady &&
+                                baseText.equals(pillarBaseParam.baseName)){
+                            textView.setTextColor(ContextCompat.getColor(getContext(), R.color.green));
+                        }
+                        else if( !pillarBaseParam.isHoleReady && !pillarBaseParam.isAxisReady &&
+                                baseText.equals(pillarBaseParam.baseName)){
+                            textView.setTextColor(ContextCompat.getColor(getContext(), R.color.steel_gray));
+                        }
+                        else if( pillarBaseParam.isHoleReady && !pillarBaseParam.isAxisReady &&
+                                baseText.equals(pillarBaseParam.baseName)){
+                            textView.setTextColor(ContextCompat.getColor(getContext(), R.color.red));
+                        }
+                        else if( !pillarBaseParam.isHoleReady && pillarBaseParam.isAxisReady &&
+                                baseText.equals(pillarBaseParam.baseName)){
+                            textView.setTextColor(ContextCompat.getColor(getContext(), R.color.orange_yellow));
+                        }
+                    }
+
+                    return  textView;
                 }
                 @Override
                 public boolean isEnabled(int position) {
