@@ -24,7 +24,7 @@ public class PillarBaseParamsService {
 
     public void getItems(){
         itemList = new ArrayList<>();
-        itemList.add("Projektek");
+        itemList.add("Alapok");
         PillarBaseParamsDataBase.databaseExecutor.execute(() -> {
             for (String baseName : paramsDAO.getPillarBaseNameList()) {
              itemList.add(baseName + "\t\t[ " + paramsDAO.getBaseNumberOfMeasureByName(baseName) + " ]");

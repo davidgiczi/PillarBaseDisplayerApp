@@ -244,7 +244,7 @@ public class PillarCoordsFragment extends Fragment {
 
     private void saveProjectFileForRTK() {
         String fileName = "RTK_" +((TextView)
-                (requireActivity().findViewById(R.id.projectNameTitle))).getText().toString() + ".txt";
+                (requireActivity().findViewById(R.id.baseNameTitle))).getText().toString() + ".txt";
         File projectFile =
                 new File(Environment.getExternalStorageDirectory(),
                         "/Documents/" + fileName);
@@ -272,7 +272,7 @@ public class PillarCoordsFragment extends Fragment {
 
     private void saveProjectFileForTPS() {
         String fileName = "TPS_" + ((TextView)
-                (requireActivity().findViewById(R.id.projectNameTitle))).getText().toString() + ".txt";
+                (requireActivity().findViewById(R.id.baseNameTitle))).getText().toString() + ".txt";
         File projectFile =
                 new File(Environment.getExternalStorageDirectory(),
                         "/Documents/" + fileName);

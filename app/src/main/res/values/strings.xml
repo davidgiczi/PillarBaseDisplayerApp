@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">PillarBaseApp</string>
     <string name="input_option">Adatok fájlból beolvasása</string>
-    <string name="project_process_option">Projekt megnyitása/törlése</string>
+    <string name="project_process_option">Alap megnyitása/törlése</string>
     <string name="next_fragment">Következő oldalra</string>
     <string name="weight_base_option">Súlyalap</string>
     <string name="plate_base_option">Lemezalap</string>
@@ -13,7 +13,7 @@
     <string name="exit_option">Kilépés</string>
     <!-- Strings used for fragments for navigation -->
     <string name="project_file_name_label"></string>
-    <string name="text_project_name">Projekt neve</string>
+    <string name="text_project_name">Alap neve</string>
     <string name="set_place_of_pillar">Az oszlop adatainak megadása</string>
     <string name="set_place_of_start_pillar">A kiinduló oszlop adatainak megadása</string>
     <string name="text_distance_of_new_pillar">Az új oszlop távolságának megadása</string>
@@ -48,7 +48,7 @@
     <string name="send">Küldés</string>
     <string name="calcMirrorCase">Tükörkép számítása"</string>
     <string name="ok_text">OK</string>
-    <string name="delete_project">Projekt törlése</string>
+    <string name="delete_project">Alap adatok törlése</string>
     <string name="meas_base_data_text">Alap kitűzési adatok</string>
     <string name="meas_base_statistics_text">Kitűzött alapok statisztika</string>
     <string name="number_of_base_of_project">Alapok darabszáma</string>

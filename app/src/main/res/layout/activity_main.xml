@@ -23,7 +23,7 @@
     <include layout="@layout/content_main" />
 
     <EditText
-        android:id="@+id/projectNameTitle"
+        android:id="@+id/baseNameTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-light"

@@ -7,6 +7,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.RectF;
+import android.graphics.Typeface;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -357,6 +363,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         openingProjectSpinner = container.findViewById(R.id.opening_project_spinner);
         openingProjectSpinner.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         openingProjectSpinner.setSelection(0);
+        container.findViewById(R.id.ok_button).setEnabled(false);
         service.getItems();
         service.getAllPillarBaseParams();
         Handler handler = new Handler();
@@ -413,6 +420,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             };
             adapter.setDropDownViewResource(R.layout.fragment_for_spinners);
             openingProjectSpinner.setAdapter(adapter);
+            container.findViewById(R.id.ok_button).setEnabled(true);
         }, 1000);
 
         openingProjectSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -433,8 +441,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         Button okButton = container.findViewById(R.id.ok_button);
         okButton.setOnClickListener(c -> {
             String selectedItem = (String) openingProjectSpinner.getSelectedItem();
-            if( selectedItem.equals("Projektek") ){
-                Toast.makeText(this, "Projekt választása szükéges.", Toast.LENGTH_LONG).show();
+            if( selectedItem.equals("Alapok") ){
+                Toast.makeText(this, "Alap választása szükéges.", Toast.LENGTH_LONG).show();
                 return;
             }
             if( ((CheckBox) container.findViewById(R.id.delete_project)).isChecked() ){
@@ -454,7 +462,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 (ViewGroup) getLayoutInflater().inflate(R.layout.fragment_measured_base_data, null);
         PopupWindow measuredInputDataWindow = new PopupWindow(container, 1000, 700, true);
         measuredInputDataWindow.showAtLocation(binding.getRoot(), Gravity.CENTER, 0, -400);
-        ((TextView) container.findViewById(R.id.base_name_text)).setText(binding.projectNameTitle.getText().toString());
+        ((TextView) container.findViewById(R.id.base_name_text)).setText(binding.baseNameTitle.getText().toString());
         CheckBox measHoleCheckbox = container.findViewById(R.id.checkbox_measured_base_hole);
         CheckBox measAxisCheckbox = container.findViewById(R.id.checkbox_measured_base_axis);
         EditText numberOfMeasureField = container.findViewById(R.id.number_of_measure_field);
@@ -475,8 +483,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         numberOfMeasureField.setText( String.valueOf(service.actualPillarBase.numberOfMeasure) );
         Button okButton =  container.findViewById(R.id.ok_button);
         okButton.setOnClickListener( b -> {
-            if( !binding.projectNameTitle.getText().toString().equals(service.actualPillarBase.baseName) ) {
-                Toast.makeText(this, "Az adatok nem menthetők, a projekt mentése szükséges.",
+            if( !binding.baseNameTitle.getText().toString().equals(service.actualPillarBase.baseName) ) {
+                Toast.makeText(this, "Az adatok nem menthetők, az alap mentése szükséges.",
                         Toast.LENGTH_LONG).show();
                 return;
             }
@@ -499,12 +507,17 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         openingStatisticsSpinner = container.findViewById(R.id.stat_opening_spinner);
         openingStatisticsSpinner.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         openingStatisticsSpinner.setSelection(0);
+        container.findViewById(R.id.ok_button).setEnabled(false);
         service.getProjectNameSet();
         new Handler().postDelayed(() -> {
             ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
                     R.layout.fragment_for_spinners, service.projectNameSet.toArray(new String[0]));
             adapter.setDropDownViewResource(R.layout.fragment_for_spinners);
             openingStatisticsSpinner.setAdapter(adapter);
+            if( !binding.baseNameTitle.getText().toString().isEmpty() ){
+                String projectName = binding.baseNameTitle.getText().toString().split("_")[0];
+                openingStatisticsSpinner.setSelection(adapter.getPosition(projectName));
+            }
         }, 1000);
 
         openingStatisticsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -514,13 +527,49 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 service.getNumberOfBaseOfProject((String) openingStatisticsSpinner.getSelectedItem());
                 new Handler().postDelayed(() -> ((EditText) container.findViewById(R.id.number_of_project_field))
                         .setText(String.valueOf(service.numberOfBaseOfProject)), 1000);
+                container.findViewById(R.id.ok_button).setEnabled(true);
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
-        container.findViewById(R.id.ok_button).setOnClickListener(b -> openingStatisticsWindow.dismiss());
+        container.findViewById(R.id.ok_button).setOnClickListener(b -> {
+            popupChartForProjectDialog(openingStatisticsSpinner.getSelectedItem().toString());
+            openingStatisticsWindow.dismiss();});
     }
+
+    private void popupChartForProjectDialog(String projectName){
+        @SuppressLint("InflateParams") ViewGroup container =
+                (ViewGroup) getLayoutInflater().inflate(R.layout.fragment_chart, null);
+        PopupWindow openingChartWindow = new PopupWindow(container, 1000, 700, true);
+        openingChartWindow.showAtLocation(binding.getRoot(), Gravity.CENTER, 0, -400);
+        Bitmap bitmap = Bitmap.createBitmap(990, 690, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        canvas.drawColor(Color.WHITE);
+        Paint paint = new Paint();
+        paint.setAntiAlias(true);
+        ((ImageView)  container.findViewById(R.id.drawing_chart)).setImageBitmap(bitmap);
+
+        paint.setColor(ContextCompat.getColor(this, R.color.colorPrimary));
+        paint.setStyle(Paint.Style.FILL);
+        paint.setTypeface(Typeface.DEFAULT_BOLD);
+        paint.setTextSize(50);
+        String title = projectName + " projekt";
+        canvas.drawText(title, (990 - title.length() * 22) / 2f, 60, paint);
+
+
+        RectF rectangle = new RectF(100, 100, 650, 650);
+        int[] colors = {R.color.steel_gray, R.color.red, R.color.orange_yellow, R.color.green, R.color.light_blue};
+        float[] angles = {72, 72, 72, 72, 72};
+        float startAngle = 0f;
+        for (int i = 0; i < angles.length; i++) {
+            paint.setColor(ContextCompat.getColor(this, colors[i]));
+            canvas.drawArc(rectangle, startAngle, angles[i], true, paint);
+            startAngle += angles[i];
+        }
+    }
+
+
     private void readPillarBaseParamsFromDatabase(){
         BASE_DATA.clear();
         BASE_DATA.add(service.actualPillarBase.baseType);
@@ -573,15 +622,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             MENU.findItem(R.id.weight_base).setTitle(R.string.weight_base_option);
             MENU.findItem(R.id.plate_base).setTitle(R.string.ticked_plate_base_option);
         }
-        TextView title = findViewById(R.id.projectNameTitle);
+        TextView title = findViewById(R.id.baseNameTitle);
         title.setText(service.actualPillarBase.baseName);
         gotoDataFragment();
         if( BASE_DATA.isEmpty() ){
-        Toast.makeText(this, "Projekt adatok beolvasása sikertelen.",
+        Toast.makeText(this, "Alap adatainak beolvasása sikertelen.",
                 Toast.LENGTH_LONG).show();
     }
         else {
-        Toast.makeText(this, "Projekt adatok sikeresen beolvasva.",
+        Toast.makeText(this, "Alap adatai sikeresen beolvasva.",
                 Toast.LENGTH_LONG).show();
         }
     }
@@ -680,12 +729,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         builder.setTitle("\"" + baseName + "\" alap törlése");
-        builder.setMessage("Biztos, hogy törlöd a projektet?");
+        builder.setMessage("Biztos, hogy törlöd az alap adatait?");
 
         builder.setPositiveButton("Igen", (dialog, which) -> {
                     service.deletePillarParamsByName(baseName.split("\\s+")[0]);
                     dialog.dismiss();
-                    Toast.makeText(this, "\"" + baseName + "\" projekt törölve az eszközről.",
+                    Toast.makeText(this, "\"" + baseName + "\" alap törölve az eszközről.",
                     Toast.LENGTH_LONG).show();
                 });
         builder.setNegativeButton("Nem", (dialog, which) -> dialog.dismiss());
@@ -719,9 +768,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         builder.setPositiveButton("Igen", (dialog, which) -> {
             if( isValidInputData() ){
                 getDataFromDataFragment();
-                service.insertOrUpdatePillarBaseParams(((EditText)findViewById(R.id.projectNameTitle)).getText().toString());
+                service.insertOrUpdatePillarBaseParams(((EditText)findViewById(R.id.baseNameTitle)).getText().toString());
 
-                   Toast.makeText(this, "Projekt adatai sikeresen mentve az eszközre.",
+                   Toast.makeText(this, "Az alap adatai sikeresen mentve az eszközre.",
                            Toast.LENGTH_LONG).show();
 
                 navController.navigate(R.id.action_DataFragment_to_CoordsFragment);
@@ -796,7 +845,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     private void setTitle(String projectFileName){
         String projectName = projectFileName.substring(0, projectFileName.indexOf("."));
-        TextView title = findViewById(R.id.projectNameTitle);
+        TextView title = findViewById(R.id.baseNameTitle);
         title.setText(projectName);
     }
 
@@ -842,7 +891,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     }
     private void saveProjectFile() {
-       String fileName = "mod_" + ((TextView) findViewById(R.id.projectNameTitle)).getText().toString() + ".txt";
+       String fileName = "mod_" + ((TextView) findViewById(R.id.baseNameTitle)).getText().toString() + ".txt";
        File projectFile = new File(Environment.getExternalStorageDirectory() , "Documents/" + fileName);
 
         try {
@@ -863,8 +912,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     private boolean isValidInputData(){
-        if(((TextView) findViewById(R.id.projectNameTitle)).getText().toString().isEmpty() ){
-            Toast.makeText(this, "Projeknév megadása szükséges.", Toast.LENGTH_LONG).show();
+        if(((TextView) findViewById(R.id.baseNameTitle)).getText().toString().isEmpty() ){
+            Toast.makeText(this, "Az alap nevének megadása szükséges.", Toast.LENGTH_LONG).show();
             return false;
         }
         else if( ((EditText) findViewById(R.id.input_pillar_id)).getText().toString().isEmpty() ){
