@@ -63,4 +63,5 @@
     <string name="degree">°</string>
     <string name="angle_min">\'</string>
     <string name="angle_sec">\'\'</string>
+    <string name="pie_chart">Kitűzött alapok diagramja</string>
 </resources>

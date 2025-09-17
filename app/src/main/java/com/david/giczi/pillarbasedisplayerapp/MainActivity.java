@@ -61,6 +61,7 @@ import com.david.giczi.pillarbasedisplayerapp.db.PillarBaseParams;
 import com.david.giczi.pillarbasedisplayerapp.db.PillarBaseParamsService;
 import com.david.giczi.pillarbasedisplayerapp.service.AzimuthAndDistance;
 import com.david.giczi.pillarbasedisplayerapp.service.Point;
+import com.david.giczi.pillarbasedisplayerapp.utils.AppExceptionHandler;
 import com.david.giczi.pillarbasedisplayerapp.utils.EOV;
 import com.david.giczi.pillarbasedisplayerapp.utils.WGS84;
 
@@ -71,7 +72,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -114,6 +117,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Thread.setDefaultUncaughtExceptionHandler(new AppExceptionHandler(this));
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         setSupportActionBar(binding.toolbar);
@@ -392,14 +396,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
                     String baseText = textView.getText().toString().split("\\s+")[0];
 
-                    for (PillarBaseParams pillarBaseParam : service.allParamList) {
+                    for (PillarBaseParams pillarBaseParam : service.allBaseList) {
                         if( pillarBaseParam.isHoleReady && pillarBaseParam.isAxisReady &&
                                 baseText.equals(pillarBaseParam.baseName)){
                             textView.setTextColor(ContextCompat.getColor(getContext(), R.color.green));
                         }
                         else if( !pillarBaseParam.isHoleReady && !pillarBaseParam.isAxisReady &&
                                 baseText.equals(pillarBaseParam.baseName)){
-                            textView.setTextColor(ContextCompat.getColor(getContext(), R.color.steel_gray));
+                            textView.setTextColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
                         }
                         else if( pillarBaseParam.isHoleReady && !pillarBaseParam.isAxisReady &&
                                 baseText.equals(pillarBaseParam.baseName)){
@@ -524,51 +528,179 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                container.findViewById(R.id.ok_button).setEnabled(false);
                 service.getNumberOfBaseOfProject((String) openingStatisticsSpinner.getSelectedItem());
-                new Handler().postDelayed(() -> ((EditText) container.findViewById(R.id.number_of_project_field))
-                        .setText(String.valueOf(service.numberOfBaseOfProject)), 1000);
-                container.findViewById(R.id.ok_button).setEnabled(true);
+                new Handler().postDelayed(() -> {((EditText) container.findViewById(R.id.number_of_project_field))
+                        .setText(String.valueOf(service.numberOfBaseOfProject));
+                        container.findViewById(R.id.ok_button).setEnabled(true);}
+                        , 1000);
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
         container.findViewById(R.id.ok_button).setOnClickListener(b -> {
-            popupChartForProjectDialog(openingStatisticsSpinner.getSelectedItem().toString());
+            int numberOfBase =
+                    Integer.parseInt( ((EditText) container.findViewById(R.id.number_of_project_field)).getText().toString());
+            if( service.numberOfBaseOfProject > numberOfBase ){
+                Toast.makeText(this,  "Az alapok száma legalább " + service.numberOfBaseOfProject + " db lehet.",
+                        Toast.LENGTH_LONG).show();
+                return;
+            }
+            String projectName = openingStatisticsSpinner.getSelectedItem().toString();
+            service.getPillarBaseParamsByProjectName(projectName);
+            new Handler().postDelayed(() -> {
+            if(  ((CheckBox) container.findViewById(R.id.save_statistics)).isChecked() ){
+                //saveProjectFile(projectName, numberOfBase);
+            }
+            popupChartForProjectDialog(projectName, numberOfBase);},1000);
             openingStatisticsWindow.dismiss();});
     }
 
-    private void popupChartForProjectDialog(String projectName){
+    private void popupChartForProjectDialog(String projectName, int numberOfBase){
         @SuppressLint("InflateParams") ViewGroup container =
                 (ViewGroup) getLayoutInflater().inflate(R.layout.fragment_chart, null);
         PopupWindow openingChartWindow = new PopupWindow(container, 1000, 700, true);
-        openingChartWindow.showAtLocation(binding.getRoot(), Gravity.CENTER, 0, -400);
+        openingChartWindow.showAtLocation(binding.getRoot(), Gravity.CENTER, 0, - 400);
+        displayChart(container, projectName, numberOfBase);
+    }
+
+    private void displayChart(@NonNull ViewGroup container, String projectName, int numberOfBase){
         Bitmap bitmap = Bitmap.createBitmap(990, 690, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
         canvas.drawColor(Color.WHITE);
         Paint paint = new Paint();
         paint.setAntiAlias(true);
         ((ImageView)  container.findViewById(R.id.drawing_chart)).setImageBitmap(bitmap);
-
-        paint.setColor(ContextCompat.getColor(this, R.color.colorPrimary));
+        paint.setColor(ContextCompat.getColor(this, R.color.red));
         paint.setStyle(Paint.Style.FILL);
         paint.setTypeface(Typeface.DEFAULT_BOLD);
-        paint.setTextSize(50);
+        paint.setTextSize(60);
         String title = projectName + " projekt";
-        canvas.drawText(title, (990 - title.length() * 22) / 2f, 60, paint);
-
-
+        canvas.drawText(title, (990 - title.length() * 25) / 2f, 60, paint);
+        int[] baseData = getMeasuredBaseData(numberOfBase);
         RectF rectangle = new RectF(100, 100, 650, 650);
-        int[] colors = {R.color.steel_gray, R.color.red, R.color.orange_yellow, R.color.green, R.color.light_blue};
-        float[] angles = {72, 72, 72, 72, 72};
+        rectangle.offset(-80, 0);
+        int[] colors = {R.color.green, R.color.orange_yellow,R.color.red, R.color.colorPrimary, R.color.steel_gray};
+        float[] angles = getAngles(baseData, numberOfBase);
+        String[] legends = getLegendTexts(baseData, numberOfBase);
         float startAngle = 0f;
+        float text_y = 200f;
         for (int i = 0; i < angles.length; i++) {
-            paint.setColor(ContextCompat.getColor(this, colors[i]));
-            canvas.drawArc(rectangle, startAngle, angles[i], true, paint);
+                paint.setColor(ContextCompat.getColor(this, colors[i]));
+                canvas.drawArc(rectangle, startAngle, angles[i], true, paint);
+                if( angles[i] != 0 ){
+                    canvas.drawText("■" , 600f, text_y, paint);
+                    paint.setTextSize(40);
+                    paint.setColor(Color.BLACK);
+                    paint.setTypeface(Typeface.SANS_SERIF);
+                    canvas.drawText(legends[i], 650f,  text_y, paint);
+                    paint.setTextSize(60);
+                }
             startAngle += angles[i];
-        }
+            text_y += 50;
+            }
+        paint.setColor(Color.BLACK);
+        paint.setTextSize(40);
+        canvas.drawText("Σ: ", 650f,  text_y + 50, paint);
+        paint.setTypeface(Typeface.DEFAULT_BOLD);
+        canvas.drawText(numberOfBase + " db ", 700f,  text_y + 50, paint);
+        paint.setTypeface(Typeface.SANS_SERIF);
+        canvas.drawText("alap", 850f,  text_y + 50, paint);
     }
 
+    private int[] getMeasuredBaseData(int numberOfBase){
+        int[] baseData = new int[5];
+
+            for (PillarBaseParams pillarBaseParam : service.projectBaseList) {
+
+                if( pillarBaseParam.isHoleReady && pillarBaseParam.isAxisReady ){
+                    baseData[0]++;
+                }
+                else if( !pillarBaseParam.isHoleReady && pillarBaseParam.isAxisReady ){
+                    baseData[1]++;
+                }
+                else if( pillarBaseParam.isHoleReady ){
+                    baseData[2]++;
+                }
+                else {
+                    baseData[3]++;
+                }
+            }
+            baseData[4] = numberOfBase - service.numberOfBaseOfProject;
+
+        return baseData;
+    }
+
+    private float[] getAngles(int[] baseData, int numberOfBase){
+        float[] angles = new float[5];
+        angles[0] = Math.round( 360f * baseData[0] / numberOfBase );
+        angles[1] = Math.round( 360f * baseData[1] / numberOfBase );
+        angles[2] = Math.round( 360f * baseData[2] / numberOfBase );
+        angles[3] = Math.round( 360f * baseData[3] / numberOfBase );
+        angles[4] = Math.round( 360f * baseData[4] / numberOfBase );
+        return angles;
+    }
+    @NonNull
+    private String[] getLegendTexts(int[] baseData, int numberOfBase){
+        String[] legends = new String[5];
+        legends[0] = "Teljes " + baseData[0] + " db " + Math.round( 100f * baseData[0] / numberOfBase ) + "%";
+        legends[1] = "Tengely " + baseData[1] + " db " + Math.round( 100f * baseData[1] / numberOfBase ) + "%";
+        legends[2] = "Gödör " + baseData[2] + " db " + Math.round( 100f * baseData[2] / numberOfBase ) + "%";
+        legends[3] = "Nincs " + baseData[3] + " db " + Math.round( 100f * baseData[3] / numberOfBase ) + "%";
+        legends[4] = "Hátral. " + baseData[4] + " db " +  Math.round( 100f * baseData[4] / numberOfBase ) + "%";
+        return  legends;
+    }
+
+    private void saveProjectFile(String projectName, int numberOfBase) {
+        File projectFile = new File(Environment.getExternalStorageDirectory() , "Documents/" +
+                projectName + "_project_report.txt");
+        try {
+            BufferedWriter bw = new BufferedWriter(new FileWriter(projectFile, true));
+            bw.write("Dátum: " + new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                    .format(new Date(System.currentTimeMillis())));
+            bw.newLine();
+            bw.write("Projekt neve: " + projectName);
+            bw.newLine();
+            bw.write("Kitűzött oh. alap: " + getMeasuredBase(numberOfBase));
+            bw.newLine();
+            bw.write("Kitűzött oh. gödör: ");
+            bw.newLine();
+            bw.write("Kitűzött oh. tengely: ");
+            bw.newLine();
+            bw.write("Nincs kitűzve: ");
+            bw.newLine();
+            bw.write("Nincs feldolgozva: ");
+            bw.newLine();
+            bw.write("Összesen: ");
+            bw.close();
+        } catch (IOException e) {
+            Toast.makeText(this, projectFile.getName() +
+                    "\nprojekt fájl mentése sikertelen.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Toast.makeText(this,   projectFile.getName() + " fájl mentve.",
+                Toast.LENGTH_LONG).show();
+    }
+
+    @NonNull
+    private String getMeasuredBase(int numberOfBase){
+        StringBuilder sb = new StringBuilder();
+        int pcs = 0;
+        for (PillarBaseParams pillarBaseParam : service.projectBaseList) {
+            if( pillarBaseParam.isHoleReady && pillarBaseParam.isAxisReady ){
+                String baseId = pillarBaseParam.baseName.substring(pillarBaseParam.baseName.indexOf("_") + 1,
+                        pillarBaseParam.baseName.indexOf("-"));
+                pcs++;
+                sb.append(baseId)
+                        .append(", ");
+            }
+        }
+        if( pcs == 0 ){
+            return " -";
+        }
+        return sb.substring(0, sb.toString().length() - 3) + " " + pcs + "db " + Math.round(100f * pcs / numberOfBase) + "%";
+    }
 
     private void readPillarBaseParamsFromDatabase(){
         BASE_DATA.clear();
@@ -889,26 +1021,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 break;
         }
 
-    }
-    private void saveProjectFile() {
-       String fileName = "mod_" + ((TextView) findViewById(R.id.baseNameTitle)).getText().toString() + ".txt";
-       File projectFile = new File(Environment.getExternalStorageDirectory() , "Documents/" + fileName);
-
-        try {
-                BufferedWriter bw = new BufferedWriter(new FileWriter(projectFile, false));
-            for (String data : BASE_DATA) {
-                bw.write(data);
-                bw.newLine();
-            }
-            bw.close();
-        } catch (IOException e) {
-            Toast.makeText(this, fileName +
-                    "\nprojekt fájl mentése sikertelen.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-            Toast.makeText(this,
-                    "Projekt fájl mentve:\n"
-                            + fileName , Toast.LENGTH_SHORT).show();
     }
 
     private boolean isValidInputData(){

@@ -26,4 +26,6 @@ public interface PillarBaseParamsDAO {
     List<PillarBaseParams> getAllPillarBaseParams();
     @Query("SELECT COUNT(*) FROM pillar_base_params WHERE Name LIKE :baseName || '%' COLLATE NOCASE")
     int getNumberOfBaseOfProject(String baseName);
+    @Query("SELECT * FROM pillar_base_params WHERE Name LIKE :projectName || '%' COLLATE NOCASE")
+    List<PillarBaseParams> getPillarBaseDataByProjectName(String projectName);
 }

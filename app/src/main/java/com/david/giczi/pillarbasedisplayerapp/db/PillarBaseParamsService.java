@@ -12,7 +12,8 @@ public class PillarBaseParamsService {
 
     private final PillarBaseParamsDAO paramsDAO;
     public List<String> itemList;
-    public List<PillarBaseParams> allParamList;
+    public List<PillarBaseParams> allBaseList;
+    public List<PillarBaseParams> projectBaseList;
     public HashSet<String> projectNameSet;
     public PillarBaseParams actualPillarBase;
     public int numberOfBaseOfProject;
@@ -139,7 +140,7 @@ public class PillarBaseParamsService {
 
     public void getAllPillarBaseParams(){
         PillarBaseParamsDataBase.databaseExecutor.execute(() ->
-            allParamList = paramsDAO.getAllPillarBaseParams());
+            allBaseList = paramsDAO.getAllPillarBaseParams());
     }
 
     public void getNumberOfBaseOfProject(String baseName){
@@ -147,4 +148,8 @@ public class PillarBaseParamsService {
                numberOfBaseOfProject = paramsDAO.getNumberOfBaseOfProject(baseName));
     }
 
+    public void getPillarBaseParamsByProjectName(String projectName){
+        PillarBaseParamsDataBase.databaseExecutor.execute(() ->
+                projectBaseList = paramsDAO.getPillarBaseDataByProjectName(projectName));
+    }
 }
