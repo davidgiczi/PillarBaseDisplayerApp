@@ -3,7 +3,6 @@ package com.david.giczi.pillarbasedisplayerapp;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -77,6 +76,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
 
@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public PillarBaseParamsService service;
     private static float northPoleDirection;
     private int previousPillarDistance;
-    private ActivityResultLauncher<Intent> activityResultLauncher;
+    private ActivityResultLauncher<String[]> openMultipleDocsLauncher;
     private Spinner openingProjectSpinner;
     private Spinner openingStatisticsSpinner;
 
@@ -126,17 +126,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         PAGE_COUNTER = 0;
         BASE_DATA = new ArrayList<>();
-        activityResultLauncher =  registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if( result.getResultCode() == Activity.RESULT_OK ) {
-                        Intent data = result.getData();
-                        if (data != null) {
-                            Uri uri = data.getData();
-                            readProjectFile(uri);
-                        }
+        openMultipleDocsLauncher =  registerForActivityResult(
+                new ActivityResultContracts.OpenMultipleDocuments(),
+                (result) -> {
+                    if( result.isEmpty() ){
+                        return;
                     }
-                });
+                    inputBaseDataDialog(result);
+                }
+        );
        /* if( ContextCompat
                 .checkSelfPermission(MainActivity.this, Manifest.permission.MANAGE_EXTERNAL_STORAGE) !=
                 PackageManager.PERMISSION_GRANTED) {
@@ -309,7 +307,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 MENU.findItem(R.id.start_stop_gps).setTitle(R.string.start_gps);
             }
             FIND_POINT_INDEX = null;
-            openPillarBaseDataFile();
+           // popupInputBaseFileWindow();
+            openPillarBaseDataFiles();
         }
         else if( id == R.id.project_process ){
             if( IS_GPS_RUNNING ){
@@ -317,7 +316,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 MENU.findItem(R.id.start_stop_gps).setTitle(R.string.start_gps);
             }
             FIND_POINT_INDEX = null;
-            popupProjectOpenDialog();
+            popupProjectOpenWindow();
         }
         else if (id == R.id.goto_next_fragment) {
            gotoNextFragment();
@@ -341,10 +340,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 popupPillarFootDistanceCalculator();
         }
         else if( id == R.id.meas_pillar_input_data ){
-            popupMeasuredBaseInputDataDialog();
+            popupMeasuredBaseInputDataWindow();
         }
         else if( id == R.id.meas_pillar_stat ){
-            popupStatisticsDialog();
+            popupStatisticsWindow();
         }
         else if( id == R.id.start_stop_gps ){
 
@@ -360,7 +359,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             return super.onOptionsItemSelected(item);
     }
 
-    public void popupProjectOpenDialog() {
+    public void popupProjectOpenWindow() {
         @SuppressLint("InflateParams") ViewGroup container = (ViewGroup) getLayoutInflater().inflate(R.layout.fragment_open_project, null);
         PopupWindow openingProjectWindow = new PopupWindow(container, 1000, 700, true);
         openingProjectWindow.showAtLocation(binding.getRoot(), Gravity.CENTER, 0, -400);
@@ -431,8 +430,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
                 String selectedBaseName = ((String) openingProjectSpinner.getSelectedItem()).split("\\s+")[0];
+                if( selectedBaseName.equals("Alapok") ){
+                    return;
+                }
                 service.getPillarBaseData(selectedBaseName);
             }
             @Override
@@ -450,8 +451,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 return;
             }
             if( ((CheckBox) container.findViewById(R.id.delete_project)).isChecked() ){
-                deleteProjectDialog(selectedItem);
-                openingProjectWindow.dismiss();
+                deleteBaseDataDialog(selectedItem, openingProjectWindow);
                 return;
             }
             readPillarBaseParamsFromDatabase();
@@ -461,7 +461,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         });
     }
     @SuppressLint("InflateParams")
-    public void popupMeasuredBaseInputDataDialog() {
+    public void popupMeasuredBaseInputDataWindow() {
        ViewGroup container =
                 (ViewGroup) getLayoutInflater().inflate(R.layout.fragment_measured_base_data, null);
         PopupWindow measuredInputDataWindow = new PopupWindow(container, 1000, 700, true);
@@ -503,7 +503,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         });
 
     }
-    public void popupStatisticsDialog() {
+    public void popupStatisticsWindow() {
         @SuppressLint("InflateParams") ViewGroup container =
                 (ViewGroup) getLayoutInflater().inflate(R.layout.fragment_open_statistics, null);
         PopupWindow openingStatisticsWindow = new PopupWindow(container, 1000, 700, true);
@@ -529,7 +529,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 container.findViewById(R.id.ok_button).setEnabled(false);
-                service.getNumberOfBaseOfProject((String) openingStatisticsSpinner.getSelectedItem());
+                service.getNumberOfBaseOfProject(openingStatisticsSpinner.getSelectedItem().toString());
                 new Handler().postDelayed(() -> {((EditText) container.findViewById(R.id.number_of_project_field))
                         .setText(String.valueOf(service.numberOfBaseOfProject));
                         container.findViewById(R.id.ok_button).setEnabled(true);}
@@ -540,6 +540,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             }
         });
         container.findViewById(R.id.ok_button).setOnClickListener(b -> {
+            if( ((CheckBox) container.findViewById(R.id.checkbox_delete_project_base)).isChecked() ){
+                deleteProjectBaseDialog(openingStatisticsSpinner.getSelectedItem().toString(), openingStatisticsWindow);
+                return;
+            }
             int numberOfBase =
                     Integer.parseInt( ((EditText) container.findViewById(R.id.number_of_project_field)).getText().toString());
             if( service.numberOfBaseOfProject > numberOfBase ){
@@ -550,14 +554,84 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             String projectName = openingStatisticsSpinner.getSelectedItem().toString();
             service.getPillarBaseParamsByProjectName(projectName);
             new Handler().postDelayed(() -> {
-            if(  ((CheckBox) container.findViewById(R.id.save_statistics)).isChecked() ){
-                //saveProjectFile(projectName, numberOfBase);
+            if(  ((CheckBox) container.findViewById(R.id.checkbox_save_statistics)).isChecked() ){
+                saveProjectFile(projectName, numberOfBase);
             }
-            popupChartForProjectDialog(projectName, numberOfBase);},1000);
+            popupChartForProjectWindow(projectName, numberOfBase);},1000);
             openingStatisticsWindow.dismiss();});
     }
 
-    private void popupChartForProjectDialog(String projectName, int numberOfBase){
+    private void deleteProjectBaseDialog(String projectName, PopupWindow window) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("\"" + projectName + "\" projekt törlése");
+        builder.setMessage("Biztos, hogy törlöd a(z) " + service.numberOfBaseOfProject + " db alap adatait az eszközről?");
+
+        builder.setPositiveButton("Igen", (dialog, which) -> {
+            service.deletePillarBaseParamsByProjectName(projectName);
+            dialog.dismiss();
+            window.dismiss();
+            Toast.makeText(this, "\"" + projectName + "\" " + service.numberOfBaseOfProject +
+                            " db alap törölve az eszközről.",
+                    Toast.LENGTH_LONG).show();
+        });
+        builder.setNegativeButton("Nem", (dialog, which) -> {
+                window.setFocusable(true);
+                dialog.dismiss();});
+
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    private void openPillarBaseDataFiles() {
+        openMultipleDocsLauncher.launch(new String[]{"text/plain"});
+    }
+    private void inputBaseDataDialog(List<Uri> uris) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle("Oszlophely alap fájlok beolvasása");
+        builder.setMessage("Biztos, hogy beolvasod a(z) " + uris.size() + " db fájlt." );
+
+        builder.setPositiveButton("Igen", (dialog, which) -> {
+         int numberOfInputFiles = readBaseFiles(uris);
+         Toast.makeText(this,
+                 numberOfInputFiles + " db fájl beolvasva az eszközre.", Toast.LENGTH_LONG).show();
+         dialog.dismiss();
+        });
+
+        builder.setNegativeButton("Nem", (dialog, which) -> dialog.dismiss());
+
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    private int readBaseFiles(List<Uri> uris){
+        if( !BASE_DATA.isEmpty() ){
+            BASE_DATA.clear();
+        }
+        int numberOfInputFiles = 0;
+        for (Uri uri : uris) {
+
+            String fileName = Objects.requireNonNull
+                    (uri.getPath()).substring(uri.getPath().lastIndexOf("/") + 1);
+
+            try (InputStream inputStream = getContentResolver().openInputStream(uri);
+                 BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    BASE_DATA.add(line);
+                }
+
+              service.insertOrUpdatePillarBaseParams(fileName.substring(0, fileName.indexOf(".")));
+              numberOfInputFiles++;
+            } catch (Exception e) {
+                Toast.makeText(this,  "\"" + fileName + "\"" + " fájl beolvasása sikertelen.",
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
+        return numberOfInputFiles;
+    }
+
+    private void popupChartForProjectWindow(String projectName, int numberOfBase){
         @SuppressLint("InflateParams") ViewGroup container =
                 (ViewGroup) getLayoutInflater().inflate(R.layout.fragment_chart, null);
         PopupWindow openingChartWindow = new PopupWindow(container, 1000, 700, true);
@@ -655,24 +729,26 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private void saveProjectFile(String projectName, int numberOfBase) {
         File projectFile = new File(Environment.getExternalStorageDirectory() , "Documents/" +
                 projectName + "_project_report.txt");
+
         try {
             BufferedWriter bw = new BufferedWriter(new FileWriter(projectFile, true));
-            bw.write("Dátum: " + new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            bw.write("Dátum:\t" + new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
                     .format(new Date(System.currentTimeMillis())));
             bw.newLine();
-            bw.write("Projekt neve: " + projectName);
+            bw.write("Projekt neve:\t" + projectName);
             bw.newLine();
-            bw.write("Kitűzött oh. alap: " + getMeasuredBase(numberOfBase));
+            bw.write( getMeasuredBase(numberOfBase) );
             bw.newLine();
-            bw.write("Kitűzött oh. gödör: ");
+            bw.write( getMeasuredBaseHole(numberOfBase) );
             bw.newLine();
-            bw.write("Kitűzött oh. tengely: ");
+            bw.write( getMeasuredBaseAxis(numberOfBase) );
             bw.newLine();
-            bw.write("Nincs kitűzve: ");
+            bw.write( getMeasuredNotMeasuredBase(numberOfBase) );
             bw.newLine();
-            bw.write("Nincs feldolgozva: ");
+            bw.write( getNotProcessedBase(numberOfBase) );
             bw.newLine();
-            bw.write("Összesen: ");
+            bw.write("Összesen:\t" + numberOfBase + " db alap");
+            bw.newLine();
             bw.close();
         } catch (IOException e) {
             Toast.makeText(this, projectFile.getName() +
@@ -687,20 +763,120 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private String getMeasuredBase(int numberOfBase){
         StringBuilder sb = new StringBuilder();
         int pcs = 0;
+        sb.append("Kitűzött alapok:")
+                .append("\t");
         for (PillarBaseParams pillarBaseParam : service.projectBaseList) {
             if( pillarBaseParam.isHoleReady && pillarBaseParam.isAxisReady ){
-                String baseId = pillarBaseParam.baseName.substring(pillarBaseParam.baseName.indexOf("_") + 1,
-                        pillarBaseParam.baseName.indexOf("-"));
                 pcs++;
-                sb.append(baseId)
-                        .append(", ");
+                sb.append(pillarBaseParam.centerPillarId)
+                        .append(",").append(" ");
             }
         }
         if( pcs == 0 ){
-            return " -";
+            return sb.append("-").toString();
         }
-        return sb.substring(0, sb.toString().length() - 3) + " " + pcs + "db " + Math.round(100f * pcs / numberOfBase) + "%";
+                sb.setLength(sb.length() - 2);
+                sb.append("\t")
+                .append(pcs)
+                .append(" ")
+                .append("db")
+                .append("\t")
+                .append(Math.round(100f * pcs / numberOfBase))
+                .append("%");
+        return sb.toString();
     }
+
+    @NonNull
+    private String getMeasuredBaseHole(int numberOfBase){
+        StringBuilder sb = new StringBuilder();
+        int pcs = 0;
+        sb.append("Kitűzött gödör:")
+                .append("\t");
+        for (PillarBaseParams pillarBaseParam : service.projectBaseList) {
+            if( pillarBaseParam.isHoleReady && !pillarBaseParam.isAxisReady ){
+                pcs++;
+                sb.append(pillarBaseParam.centerPillarId)
+                        .append(",").append(" ");
+            }
+        }
+        if( pcs == 0 ){
+            return sb.append("-").toString();
+        }
+        sb.setLength(sb.length() - 2);
+        sb.append("\t")
+                .append(pcs)
+                .append(" ")
+                .append("db")
+                .append("\t")
+                .append(Math.round(100f * pcs / numberOfBase))
+                .append("%");
+        return sb.toString();
+    }
+
+    @NonNull
+    private String getMeasuredBaseAxis(int numberOfBase){
+        StringBuilder sb = new StringBuilder();
+        int pcs = 0;
+        sb.append("Kitűzött tengely:")
+                .append("\t");
+        for (PillarBaseParams pillarBaseParam : service.projectBaseList) {
+            if( !pillarBaseParam.isHoleReady && pillarBaseParam.isAxisReady ){
+                pcs++;
+                sb.append(pillarBaseParam.centerPillarId)
+                        .append(",").append(" ");
+            }
+        }
+        if( pcs == 0 ){
+            return sb.append("-").toString();
+        }
+        sb.setLength(sb.length() - 2);
+        sb.append("\t")
+                .append(pcs)
+                .append(" ")
+                .append("db")
+                .append("\t")
+                .append(Math.round(100f * pcs / numberOfBase))
+                .append("%");
+        return sb.toString();
+    }
+
+    @NonNull
+    private String getMeasuredNotMeasuredBase(int numberOfBase){
+        StringBuilder sb = new StringBuilder();
+        int pcs = 0;
+        sb.append("Nincs kitűzve:")
+                .append("\t");
+        for (PillarBaseParams pillarBaseParam : service.projectBaseList) {
+            if( !pillarBaseParam.isHoleReady && !pillarBaseParam.isAxisReady ){
+                pcs++;
+                sb.append(pillarBaseParam.centerPillarId)
+                        .append(",").append(" ");
+            }
+        }
+        if( pcs == 0 ){
+            return sb.append("-").toString();
+        }
+        sb.setLength(sb.length() - 2);
+        sb.append("\t")
+                .append(pcs)
+                .append(" ")
+                .append("db")
+                .append("\t")
+                .append(Math.round(100f * pcs / numberOfBase))
+                .append("%");
+        return sb.toString();
+    }
+
+    @NonNull
+    private String getNotProcessedBase(int numberOfBase){
+        int pcs = numberOfBase - service.numberOfBaseOfProject;
+        if( pcs == 0 ){
+            return "Nincs feldogozva:\n-";
+        }
+        return "Nincs feldolgozva:\t" + pcs + " db\t" + Math.round(100f * pcs / numberOfBase) + "%";
+    }
+
+
 
     private void readPillarBaseParamsFromDatabase(){
         BASE_DATA.clear();
@@ -857,7 +1033,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         inputForParallelFootDistance.setHint(R.string.distance_of_legs_parallel);
     }
 
-    private void deleteProjectDialog(String baseName) {
+    private void deleteBaseDataDialog(String baseName, PopupWindow window) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         builder.setTitle("\"" + baseName + "\" alap törlése");
@@ -866,11 +1042,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         builder.setPositiveButton("Igen", (dialog, which) -> {
                     service.deletePillarParamsByName(baseName.split("\\s+")[0]);
                     dialog.dismiss();
+                    window.dismiss();
                     Toast.makeText(this, "\"" + baseName + "\" alap törölve az eszközről.",
                     Toast.LENGTH_LONG).show();
                 });
-        builder.setNegativeButton("Nem", (dialog, which) -> dialog.dismiss());
-
+        builder.setNegativeButton("Nem", (dialog, which) ->{
+            dialog.dismiss();
+            window.setFocusable(true);
+        });
         AlertDialog alert = builder.create();
         alert.show();
     }
@@ -925,60 +1104,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public boolean onSupportNavigateUp() {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         return NavigationUI.navigateUp(navController, appBarConfiguration)|| super.onSupportNavigateUp();
-    }
-
-    private void openPillarBaseDataFile() {
-        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("text/plain");
-        activityResultLauncher.launch(intent);
-    }
-
-    private void readProjectFile(Uri uri){
-        BASE_DATA.clear();
-        try{
-            InputStream inputStream = getContentResolver().openInputStream(uri);
-            BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
-            String line;
-            while((line = br.readLine()) != null){
-                BASE_DATA.add(line);
-            }
-            br.close();
-        }catch (IOException e){
-            e.printStackTrace();
-        }finally {
-
-            if( !BASE_DATA.get(0).equals(BASE_TYPE[0])
-                    && !BASE_DATA.get(0).equals(BASE_TYPE[1]) ){
-                BASE_DATA.clear();
-            }
-            else if( BASE_DATA.get(0).equals(BASE_TYPE[0]) ){
-                IS_WEIGHT_BASE = true;
-                MENU.findItem(R.id.weight_base).setTitle(R.string.ticked_weight_base_option);
-                MENU.findItem(R.id.plate_base).setTitle(R.string.plate_base_option);
-            }
-            else if( BASE_DATA.get(0).equals(BASE_TYPE[1]) ){
-                IS_WEIGHT_BASE = false;
-                MENU.findItem(R.id.weight_base).setTitle(R.string.weight_base_option);
-                MENU.findItem(R.id.plate_base).setTitle(R.string.ticked_plate_base_option);
-            }
-        }
-        gotoDataFragment();
-        if( BASE_DATA.isEmpty() ){
-            Toast.makeText(this, "Az adatok beolvasása sikertelen.",
-                    Toast.LENGTH_LONG).show();
-        }
-        else {
-            setTitle(Objects.requireNonNull(uri.getPath()).substring(uri.getPath().lastIndexOf("/") + 1));
-            Toast.makeText(this, "Az adatok sikeresen beolvasva.",
-                    Toast.LENGTH_LONG).show();
-        }
-    }
-
-    private void setTitle(String projectFileName){
-        String projectName = projectFileName.substring(0, projectFileName.indexOf("."));
-        TextView title = findViewById(R.id.baseNameTitle);
-        title.setText(projectName);
     }
 
     private void gotoDataFragment(){

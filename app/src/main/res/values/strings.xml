@@ -48,7 +48,7 @@
     <string name="send">Küldés</string>
     <string name="calcMirrorCase">Tükörkép számítása"</string>
     <string name="ok_text">OK</string>
-    <string name="delete_project">Alap adatok törlése</string>
+    <string name="delete_base_data">Alap adatok törlése</string>
     <string name="meas_base_data_text">Alap kitűzési adatok</string>
     <string name="meas_base_statistics_text">Kitűzött alapok statisztika</string>
     <string name="number_of_base_of_project">Alapok darabszáma</string>
@@ -64,4 +64,7 @@
     <string name="angle_min">\'</string>
     <string name="angle_sec">\'\'</string>
     <string name="pie_chart">Kitűzött alapok diagramja</string>
+    <string name="delete_project_bases">Projekt alapok törlése</string>
+    <string name="name_of_input_files">Betöltendő fájl(ok) név kezdete</string>
+    <string name="delete_input_files">Betöltendő fájlok törlése</string>
 </resources>

@@ -152,4 +152,10 @@ public class PillarBaseParamsService {
         PillarBaseParamsDataBase.databaseExecutor.execute(() ->
                 projectBaseList = paramsDAO.getPillarBaseDataByProjectName(projectName));
     }
+
+    public void deletePillarBaseParamsByProjectName(String projectName){
+        PillarBaseParamsDataBase.databaseExecutor.execute(() ->
+                paramsDAO.deletePillarBaseProjectByProjectName(projectName));
+    }
+
 }

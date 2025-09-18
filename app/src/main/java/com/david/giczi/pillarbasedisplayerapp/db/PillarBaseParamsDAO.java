@@ -28,4 +28,6 @@ public interface PillarBaseParamsDAO {
     int getNumberOfBaseOfProject(String baseName);
     @Query("SELECT * FROM pillar_base_params WHERE Name LIKE :projectName || '%' COLLATE NOCASE")
     List<PillarBaseParams> getPillarBaseDataByProjectName(String projectName);
+    @Query("DELETE FROM pillar_base_params WHERE Name LIKE :projectName || '%' COLLATE NOCASE")
+    void deletePillarBaseProjectByProjectName(String projectName);
 }
