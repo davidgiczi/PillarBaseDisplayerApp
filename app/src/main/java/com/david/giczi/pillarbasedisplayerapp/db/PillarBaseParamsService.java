@@ -119,6 +119,7 @@ public class PillarBaseParamsService {
             else if( baseData.get(baseData.size() - 1).equals("1") ){
                 actualPillarBase.setRotationSide("left");
             }
+
             PillarBaseParamsDataBase.databaseExecutor.execute(() ->
                     paramsDAO.updatePillarBaseParams(actualPillarBase));
     }
@@ -126,7 +127,6 @@ public class PillarBaseParamsService {
     public void deletePillarParamsByName(String baseName){
         PillarBaseParamsDataBase.databaseExecutor.execute(() ->
                 paramsDAO.deletePillarBaseParamsByName(baseName));
-                actualPillarBase = null;
     }
 
     public void getPillarBaseData(String baseName){

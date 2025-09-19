@@ -307,7 +307,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 MENU.findItem(R.id.start_stop_gps).setTitle(R.string.start_gps);
             }
             FIND_POINT_INDEX = null;
-           // popupInputBaseFileWindow();
             openPillarBaseDataFiles();
         }
         else if( id == R.id.project_process ){
@@ -584,7 +583,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     private void openPillarBaseDataFiles() {
-        openMultipleDocsLauncher.launch(new String[]{"text/plain"});
+        openMultipleDocsLauncher.launch(new String[]{"*/*"});
     }
     private void inputBaseDataDialog(List<Uri> uriList) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
