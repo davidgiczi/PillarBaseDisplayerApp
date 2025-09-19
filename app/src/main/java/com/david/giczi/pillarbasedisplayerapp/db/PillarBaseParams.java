@@ -139,24 +139,12 @@ public class PillarBaseParams {
         this.rotationSide = rotationSide;
     }
 
-    public boolean isHoleReady() {
-        return isHoleReady;
-    }
-
     public void setHoleReady(boolean holeReady) {
         isHoleReady = holeReady;
     }
 
-    public boolean isAxisReady() {
-        return isAxisReady;
-    }
-
     public void setAxisReady(boolean axisReady) {
         isAxisReady = axisReady;
-    }
-
-    public int getNumberOfMeasure() {
-        return numberOfMeasure;
     }
 
     public void setNumberOfMeasure(int numberOfMeasure) {

@@ -1,9 +1,9 @@
 package com.david.giczi.pillarbasedisplayerapp.db;
 
 import android.content.Context;
-import android.os.Handler;
 
 import com.david.giczi.pillarbasedisplayerapp.MainActivity;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -48,10 +48,9 @@ public class PillarBaseParamsService {
     }
 
     public void insertOrUpdatePillarBaseParams(String baseName){
-        PillarBaseParamsDataBase.databaseExecutor.execute(() -> actualPillarBase = paramsDAO.getPillarBaseDataByName(baseName));
-        List<String> baseData = MainActivity.BASE_DATA;
-        Handler handler = new Handler();
-        handler.postDelayed(() ->{
+        PillarBaseParamsDataBase.databaseExecutor.execute(() ->
+                actualPillarBase = paramsDAO.getPillarBaseDataByName(baseName));
+            List<String> baseData = MainActivity.BASE_DATA;
             if( actualPillarBase == null ){
                 PillarBaseParams params = new PillarBaseParams(baseName);
                 params.setBaseType(baseData.get(0));
@@ -122,9 +121,6 @@ public class PillarBaseParamsService {
             }
             PillarBaseParamsDataBase.databaseExecutor.execute(() ->
                     paramsDAO.updatePillarBaseParams(actualPillarBase));
-
-        }, 1000 );
-
     }
 
     public void deletePillarParamsByName(String baseName){

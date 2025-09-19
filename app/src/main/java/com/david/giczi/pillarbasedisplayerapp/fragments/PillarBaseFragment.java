@@ -42,10 +42,11 @@ public class PillarBaseFragment extends Fragment {
     private static float MM;
     private static float SCALE;
     private static List<Point> transformedPillarBasePoints;
-
-    private static final List<String> LETTERS = Arrays.asList(
+    public static final List<String> LETTERS = Arrays.asList(
             "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L",
     "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z");
+    public static final List<String> NUMBERS = Arrays.asList(
+            "1", "2", "3", "4", "5", "6", "7", "8", "9", "0");
 
     @Override
     public View onCreateView(

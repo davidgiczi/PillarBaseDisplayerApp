@@ -62,6 +62,7 @@ import com.david.giczi.pillarbasedisplayerapp.service.AzimuthAndDistance;
 import com.david.giczi.pillarbasedisplayerapp.service.Point;
 import com.david.giczi.pillarbasedisplayerapp.utils.AppExceptionHandler;
 import com.david.giczi.pillarbasedisplayerapp.utils.EOV;
+import com.david.giczi.pillarbasedisplayerapp.utils.PillarBaseComparator;
 import com.david.giczi.pillarbasedisplayerapp.utils.WGS84;
 
 import java.io.BufferedReader;
@@ -76,7 +77,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.NoSuchElementException;
 import java.util.Objects;
 
 
@@ -128,11 +128,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         BASE_DATA = new ArrayList<>();
         openMultipleDocsLauncher =  registerForActivityResult(
                 new ActivityResultContracts.OpenMultipleDocuments(),
-                (result) -> {
-                    if( result.isEmpty() ){
+                (uriList) -> {
+                    if( uriList.isEmpty() ){
                         return;
                     }
-                    inputBaseDataDialog(result);
+                    inputBaseDataDialog(uriList);
                 }
         );
        /* if( ContextCompat
@@ -430,7 +430,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selectedBaseName = ((String) openingProjectSpinner.getSelectedItem()).split("\\s+")[0];
+                String selectedBaseName = openingProjectSpinner.getSelectedItem().toString().split("\\s+")[0];
                 if( selectedBaseName.equals("Alapok") ){
                     return;
                 }
@@ -445,7 +445,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         Button okButton = container.findViewById(R.id.ok_button);
         okButton.setOnClickListener(c -> {
-            String selectedItem = (String) openingProjectSpinner.getSelectedItem();
+            String selectedItem =  openingProjectSpinner.getSelectedItem().toString().split("\\s+")[0];
             if( selectedItem.equals("Alapok") ){
                 Toast.makeText(this, "Alap választása szükéges.", Toast.LENGTH_LONG).show();
                 return;
@@ -555,6 +555,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             service.getPillarBaseParamsByProjectName(projectName);
             new Handler().postDelayed(() -> {
             if(  ((CheckBox) container.findViewById(R.id.checkbox_save_statistics)).isChecked() ){
+                service.projectBaseList.sort(new PillarBaseComparator());
                 saveProjectFile(projectName, numberOfBase);
             }
             popupChartForProjectWindow(projectName, numberOfBase);},1000);
@@ -585,14 +586,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private void openPillarBaseDataFiles() {
         openMultipleDocsLauncher.launch(new String[]{"text/plain"});
     }
-    private void inputBaseDataDialog(List<Uri> uris) {
+    private void inputBaseDataDialog(List<Uri> uriList) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         builder.setTitle("Oszlophely alap fájlok beolvasása");
-        builder.setMessage("Biztos, hogy beolvasod a(z) " + uris.size() + " db fájlt." );
+        builder.setMessage("Biztos, hogy beolvasod a(z) " + uriList.size() + " db fájlt." );
 
         builder.setPositiveButton("Igen", (dialog, which) -> {
-         int numberOfInputFiles = readBaseFiles(uris);
+         int numberOfInputFiles = readBaseFiles(uriList);
          Toast.makeText(this,
                  numberOfInputFiles + " db fájl beolvasva az eszközre.", Toast.LENGTH_LONG).show();
          dialog.dismiss();
@@ -604,12 +605,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         alert.show();
     }
 
-    private int readBaseFiles(List<Uri> uris){
-        if( !BASE_DATA.isEmpty() ){
-            BASE_DATA.clear();
-        }
+    private int readBaseFiles(List<Uri> uriList){
         int numberOfInputFiles = 0;
-        for (Uri uri : uris) {
+
+        for (Uri uri : uriList) {
 
             String fileName = Objects.requireNonNull
                     (uri.getPath()).substring(uri.getPath().lastIndexOf("/") + 1);
@@ -617,10 +616,17 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             try (InputStream inputStream = getContentResolver().openInputStream(uri);
                  BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
                 String line;
+                BASE_DATA.clear();
                 while ((line = reader.readLine()) != null) {
                     BASE_DATA.add(line);
                 }
 
+                if( !BASE_TYPE[0].equals(BASE_DATA.get(0)) && !BASE_TYPE[1].equals(BASE_DATA.get(0))){
+                    BASE_DATA.clear();
+                    Toast.makeText(this,  "\"" + fileName + "\"" + " fájl beolvasása sikertelen.",
+                            Toast.LENGTH_SHORT).show();
+                    continue;
+                }
               service.insertOrUpdatePillarBaseParams(fileName.substring(0, fileName.indexOf(".")));
               numberOfInputFiles++;
             } catch (Exception e) {
@@ -871,7 +877,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private String getNotProcessedBase(int numberOfBase){
         int pcs = numberOfBase - service.numberOfBaseOfProject;
         if( pcs == 0 ){
-            return "Nincs feldogozva:\n-";
+            return "Nincs feldolgozva:\n-";
         }
         return "Nincs feldolgozva:\t" + pcs + " db\t" + Math.round(100f * pcs / numberOfBase) + "%";
     }
