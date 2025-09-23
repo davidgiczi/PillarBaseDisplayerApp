@@ -122,6 +122,6 @@ public class EOV {
     @Override
     public String toString() {
         List<Double> eovData = getCoordinatesForEOV();
-        return "Y: " +  eovData.get(0) + "m\tX: " + eovData.get(1) + "m\th: " + eovData.get(2) + "m";
+        return "Y: " +  eovData.get(0) + "m\tX: " + eovData.get(1) + "m\tH: " + eovData.get(2) + "m";
     }
 }

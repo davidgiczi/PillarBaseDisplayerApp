@@ -12,6 +12,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.Typeface;
+import android.hardware.GeomagneticField;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -92,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private SensorManager sensorManager;
     private Sensor accelerometerSensor;
     private Sensor magnetometerSensor;
+    private float declination;
     private float[] gravityValues = new float[3];
     private float[] geomagneticValues = new float[3];
     private static final int REQUEST_LOCATION = 1;
@@ -172,7 +174,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(@NonNull Location location) {
-
+                declination = getDeclination(location.getLatitude(), location.getLongitude(), location.getAltitude());
                 double X_WGS = Double.parseDouble(WGS84.getX(location.getLatitude(),
                         location.getLongitude(),
                         location.getAltitude()).substring(0, WGS84.getX(location.getLatitude(),
@@ -218,6 +220,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 100, 0, locationListener);
         IS_GPS_RUNNING = !IS_GPS_RUNNING;
       Toast.makeText(MainActivity.this, "GPS elindítva..", Toast.LENGTH_SHORT).show();
+    }
+
+    private float getDeclination(double latitude, double longitude, double altitude){
+        long time = System.currentTimeMillis();
+        GeomagneticField geomagneticField =
+                new GeomagneticField((float) latitude, (float) longitude, (float) altitude, time);
+        return geomagneticField.getDeclination();
     }
 
     private void requestPermissions(){
@@ -1332,7 +1341,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     @Override
-    public void onSensorChanged(SensorEvent event) {
+    public void onSensorChanged(@NonNull SensorEvent event) {
 
         if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
             gravityValues = event.values.clone();
@@ -1347,7 +1356,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             float[] orientation = new float[3];
             SensorManager.getOrientation(R, orientation);
 
-            northPoleDirection = (float) Math.toDegrees(orientation[0]);
+            northPoleDirection = (float) Math.toDegrees(orientation[0]) + declination;
         }
     }
     @Override
