@@ -6,13 +6,16 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.david.giczi.pillarbasedisplayerapp.MainActivity;
 import com.david.giczi.pillarbasedisplayerapp.R;
 import com.david.giczi.pillarbasedisplayerapp.databinding.FragmentDataBinding;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -51,11 +54,29 @@ public class PillarDataFragment extends Fragment {
 
     private void displayPillarLocationData(){
         getParentFragmentManager().setFragmentResultListener("results", this, (requestKey, result) -> {
-            fragmentDataBinding.inputYCoordinate.setText(Objects.requireNonNull(result.get("centerX")).toString());
-            fragmentDataBinding.inputXCoordinate.setText(Objects.requireNonNull(result.get("centerY")).toString());
-            fragmentDataBinding.inputNextPrevYCoordinate.setText(Objects.requireNonNull(result.get("directionX")).toString());
-            fragmentDataBinding.inputNextPrevXCoordinate.setText(Objects.requireNonNull(result.get("directionY")).toString());
+            String centerX = Objects.requireNonNull(result.get("centerX")).toString();
+            String centerY = Objects.requireNonNull(result.get("centerY")).toString();
+            String directionX = Objects.requireNonNull(result.get("directionX")).toString();
+            String directionY = Objects.requireNonNull(result.get("directionY")).toString();
+            showCalculatedPillarBaseDataDialog(centerX, centerY, directionX, directionY);
         });
+    }
+
+    private void showCalculatedPillarBaseDataDialog(String centerX, String centerY, String directionX, String directionY) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Oh közép: " + centerX + " " + centerY + "\nIrány: " + directionX + " " + directionY);
+        builder.setMessage("Hozzáadja az oszlophely alapjának elhelyezésére vonatkozó adatokat?");
+
+        builder.setPositiveButton("Igen", (dialog, which) -> {
+            fragmentDataBinding.inputYCoordinate.setText(centerX);
+            fragmentDataBinding.inputXCoordinate.setText(centerY);
+            fragmentDataBinding.inputNextPrevYCoordinate.setText(directionX);
+            fragmentDataBinding.inputNextPrevXCoordinate.setText(directionY);
+        });
+        builder.setNegativeButton("Nem", (dialog, which) -> dialog.dismiss());
+
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
     @Override
