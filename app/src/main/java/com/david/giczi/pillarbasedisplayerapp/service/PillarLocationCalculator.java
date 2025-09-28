@@ -5,23 +5,27 @@ import androidx.annotation.NonNull;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class PillarLocationCalculator {
 
     public String centerX;
     public String centerY;
+    private double aveCenterX;
+    private double aveCenterY;
     public String directionX;
     public String directionY;
+    private Double aveDirectionX;
+    private Double aveDirectionY;
     private final List<Point> centerPillarMeasData;
     private final List<Point> directionPillarMeasData;
-
     private Double distance;
     private final DecimalFormat df;
 
     public PillarLocationCalculator() {
         centerPillarMeasData = new ArrayList<>();
         directionPillarMeasData = new ArrayList<>();
-        df= new DecimalFormat("0.000");
+        df = new DecimalFormat("0.000");
     }
 
     public void addCenterPillarMeasData(String foot1Y, String foot1X, String foot2Y, String foot2X,
@@ -77,9 +81,6 @@ public class PillarLocationCalculator {
 
     public void calcPillarLocationData(){
 
-        Double aveDirectionX = null;
-        Double aveDirectionY = null;
-
         if( !directionPillarMeasData.isEmpty() && directionPillarMeasData.size() != 3 ){
             aveDirectionX = directionPillarMeasData.stream().mapToDouble(Point::getX_coord)
                     .summaryStatistics().getAverage();
@@ -89,8 +90,6 @@ public class PillarLocationCalculator {
             directionY = df.format(aveDirectionY).replace(",", ".");
         }
 
-        double aveCenterX;
-        double aveCenterY;
 
         if( !centerPillarMeasData.isEmpty() && centerPillarMeasData.size() != 3 ){
             aveCenterX = centerPillarMeasData.stream().mapToDouble(Point::getX_coord)
@@ -149,6 +148,75 @@ public class PillarLocationCalculator {
         if( !distance.isEmpty() ){
             this.distance = Double.parseDouble(distance);
         }
+    }
+
+    public String getOrdinateAsString(Point basePoint){
+        Point startPoint = new Point("AveStart", aveCenterX, aveCenterY);
+        Point endPoint = new Point("AveEnd", aveDirectionX, aveDirectionY);
+        double ordinate = getOrdinateValue(startPoint, endPoint, basePoint);
+        return (ordinate > 0 ? "+" : "") +
+                String.format(Locale.getDefault(),"%.3fm", ordinate)
+                        .replace(",", ".") + " " +
+                getOrdinateErrorMargin(startPoint, endPoint);
+    }
+    public String getAbscissaAsString(Point basePoint){
+        Point startPoint = new Point("AveStart", aveCenterX, aveCenterY);
+        Point endPoint = new Point("AveEnd", aveDirectionX, aveDirectionY);
+        double abscissa = getAbscissaValue(startPoint, endPoint, basePoint);
+        return  (abscissa > 0 ? "+" :  "")  +
+                String.format(Locale.getDefault(), "%.3fm", abscissa)
+                        .replace(",", ".") + " " +
+                getAbscissaErrorMargin(startPoint, endPoint);
+    }
+    private double getOrdinateValue(Point startPoint, Point endPoint, Point basePoint){
+        if( startPoint.equals(endPoint) ){
+            return Double.NaN;
+        }
+       else if( startPoint.equals(basePoint) ){
+            return 0d;
+        }
+        double alfa = new AzimuthAndDistance(startPoint, endPoint).calcAzimuth() -
+                new AzimuthAndDistance(startPoint, basePoint).calcAzimuth();
+        double distance = new AzimuthAndDistance(startPoint, basePoint).calcDistance();
+        return Math.sin(alfa) * distance;
+    }
+
+    private double getAbscissaValue(Point startPoint, Point endPoint, Point basePoint) {
+        if( startPoint.equals(endPoint) ){
+            return Double.NaN;
+        }
+        else if( startPoint.equals(basePoint) ){
+            return 0d;
+        }
+        double alfa = new AzimuthAndDistance(startPoint, endPoint).calcAzimuth() -
+                new AzimuthAndDistance(startPoint, basePoint).calcAzimuth();
+        double distance = new AzimuthAndDistance(startPoint, basePoint).calcDistance();
+        return Math.cos(alfa) * distance;
+    }
+
+    private String getAbscissaErrorMargin(Point startPoint, Point endPoint){
+        double lengthOfMainLine = new AzimuthAndDistance(startPoint, endPoint).calcDistance();
+        return "|" + String.format(Locale.getDefault(),"%.1f",lengthOfMainLine / 4.0)
+                .replace("," , ".") + "cm|";
+    }
+    private String getOrdinateErrorMargin(Point startPoint, Point endPoint){
+        double lengthOfMainLine =  new AzimuthAndDistance(startPoint, endPoint).calcDistance();
+        return "|" + String.format(Locale.getDefault(),"%.1f",3 * lengthOfMainLine / 10)
+                .replace(",", ".") + "cm|";
+    }
+
+    public boolean isOkAbscissaValue(Point basePoint){
+        Point startPoint = new Point("AveStart", aveCenterX, aveCenterY);
+        Point endPoint = new Point("AveEnd", aveDirectionX, aveDirectionY);
+        double lengthOfMainLine =  new AzimuthAndDistance(startPoint, endPoint).calcDistance();
+        return 2.5 * lengthOfMainLine / 1000 >= Math.abs(getAbscissaValue(startPoint, endPoint, basePoint));
+    }
+
+    public boolean isOkOrdinateValue(Point basePoint){
+        Point startPoint = new Point("AveStart", aveCenterX, aveCenterY);
+        Point endPoint = new Point("AveEnd", aveDirectionX, aveDirectionY);
+        double lengthOfMainLine = new AzimuthAndDistance(startPoint, endPoint).calcDistance();
+        return 3 * lengthOfMainLine / 1000 >= Math.abs(getOrdinateValue(startPoint, endPoint, basePoint));
     }
 
     @NonNull

@@ -60,6 +60,7 @@ import com.david.giczi.pillarbasedisplayerapp.databinding.ActivityMainBinding;
 import com.david.giczi.pillarbasedisplayerapp.db.PillarBaseParams;
 import com.david.giczi.pillarbasedisplayerapp.db.PillarBaseParamsService;
 import com.david.giczi.pillarbasedisplayerapp.service.AzimuthAndDistance;
+import com.david.giczi.pillarbasedisplayerapp.service.PillarLocationCalculator;
 import com.david.giczi.pillarbasedisplayerapp.service.Point;
 import com.david.giczi.pillarbasedisplayerapp.utils.AppExceptionHandler;
 import com.david.giczi.pillarbasedisplayerapp.utils.EOV;
@@ -114,6 +115,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private ActivityResultLauncher<String[]> openMultipleDocsLauncher;
     private Spinner openingProjectSpinner;
     private Spinner openingStatisticsSpinner;
+    public static PillarLocationCalculator calcPillarLocationData;
 
 
     @Override

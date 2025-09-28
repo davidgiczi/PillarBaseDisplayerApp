@@ -66,8 +66,7 @@ public class Point {
 		if (o == null || getClass() != o.getClass()) return false;
 		Point point = (Point) o;
 		return Double.compare(point.x_coord, x_coord) == 0 &&
-				Double.compare(point.y_coord, y_coord) == 0 &&
-				Objects.equals(pointID, point.pointID) && Objects.equals(df, point.df);
+				Double.compare(point.y_coord, y_coord) == 0;
 	}
 
 	@NonNull

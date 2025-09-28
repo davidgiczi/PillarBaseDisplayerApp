@@ -2,19 +2,26 @@ package com.david.giczi.pillarbasedisplayerapp.fragments;
 
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.text.TextWatcher;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.david.giczi.pillarbasedisplayerapp.MainActivity;
 import com.david.giczi.pillarbasedisplayerapp.R;
 import com.david.giczi.pillarbasedisplayerapp.databinding.FragmentDataBinding;
+import com.david.giczi.pillarbasedisplayerapp.service.Point;
 
 import java.util.List;
 import java.util.Objects;
@@ -58,14 +65,54 @@ public class PillarDataFragment extends Fragment {
             String centerY = Objects.requireNonNull(result.get("centerY")).toString();
             String directionX = Objects.requireNonNull(result.get("directionX")).toString();
             String directionY = Objects.requireNonNull(result.get("directionY")).toString();
-            showCalculatedPillarBaseDataDialog(centerX, centerY, directionX, directionY);
+            String basePointY =  fragmentDataBinding.inputYCoordinate.getText().toString();
+            String basePointX = fragmentDataBinding.inputXCoordinate.getText().toString();
+            if( basePointY.isEmpty() && basePointX.isEmpty() ){
+                fragmentDataBinding.inputYCoordinate.setText(centerX);
+                fragmentDataBinding.inputXCoordinate.setText(centerY);
+                fragmentDataBinding.inputNextPrevYCoordinate.setText(directionX);
+                fragmentDataBinding.inputNextPrevXCoordinate.setText(directionY);
+                return;
+            }
+            showCalculatedPillarBaseDataDialog(new Point("BasePoint",
+                            Double.parseDouble(basePointY), Double.parseDouble(basePointX)),
+                    centerX, centerY, directionX, directionY);
         });
     }
 
-    private void showCalculatedPillarBaseDataDialog(String centerX, String centerY, String directionX, String directionY) {
+    private void showCalculatedPillarBaseDataDialog(Point basePoint, String centerX, String centerY,
+                                                    String directionX, String directionY) {
+        String ordinate = MainActivity.calcPillarLocationData.getOrdinateAsString(basePoint);
+        String abscissa = MainActivity.calcPillarLocationData.getAbscissaAsString(basePoint);
+        if( ordinate.startsWith("NaN") || abscissa.startsWith("NaN")){
+            Toast.makeText(getContext(), "A kezdő-, és végpont nem lehet egyező.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        SpannableString ordinateSpan = new SpannableString("Merőlegesen: " + ordinate);
+        if( MainActivity.calcPillarLocationData.isOkOrdinateValue(basePoint) ){
+            ordinateSpan.setSpan(new ForegroundColorSpan(ContextCompat.getColor(requireContext(), R.color.green)),
+                    13, ordinateSpan.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+        else {
+            ordinateSpan.setSpan(new ForegroundColorSpan(ContextCompat.getColor(requireContext(), R.color.red)),
+                    13, ordinateSpan.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+        SpannableString abscissaSpan = new SpannableString("Vonalban: " + abscissa);
+        if( MainActivity.calcPillarLocationData.isOkAbscissaValue(basePoint) ){
+            abscissaSpan.setSpan(new ForegroundColorSpan(ContextCompat.getColor(requireContext(), R.color.green)),
+                    10, abscissaSpan.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+        else {
+            abscissaSpan.setSpan(new ForegroundColorSpan(ContextCompat.getColor(requireContext(), R.color.red)),
+                    10, abscissaSpan.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+        SpannableStringBuilder titleBuilder = new SpannableStringBuilder();
+        titleBuilder.append(abscissaSpan)
+                        .append("\n")
+                                .append(ordinateSpan);
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-        builder.setTitle("Oh közép: " + centerX + " " + centerY + "\nIrány: " + directionX + " " + directionY);
-        builder.setMessage("Hozzáadja az oszlophely alapjának elhelyezésére vonatkozó adatokat?");
+        builder.setTitle(titleBuilder);
+        builder.setMessage("Hozzáadja a mért adatokat?");
 
         builder.setPositiveButton("Igen", (dialog, which) -> {
             fragmentDataBinding.inputYCoordinate.setText(centerX);
@@ -74,7 +121,6 @@ public class PillarDataFragment extends Fragment {
             fragmentDataBinding.inputNextPrevXCoordinate.setText(directionY);
         });
         builder.setNegativeButton("Nem", (dialog, which) -> dialog.dismiss());
-
         AlertDialog alert = builder.create();
         alert.show();
     }

@@ -21,7 +21,6 @@ public class PillarMeasDataFragment extends Fragment {
     private FragmentMeasDataBinding fragmentMeasDataBinding;
 
 
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -29,11 +28,11 @@ public class PillarMeasDataFragment extends Fragment {
         MainActivity.PAGE_COUNTER = 1;
         MainActivity.MENU.findItem(R.id.start_stop_gps).setEnabled(false);
         fragmentMeasDataBinding.btnSend.setOnClickListener(v -> {
-            PillarLocationCalculator calcPillarLocationData = new PillarLocationCalculator();
-            calcPillarLocationData.setDistance(fragmentMeasDataBinding.distanceOfNewPillar.getText().toString());
+            MainActivity.calcPillarLocationData = new PillarLocationCalculator();
+           MainActivity.calcPillarLocationData.setDistance(fragmentMeasDataBinding.distanceOfNewPillar.getText().toString());
 
             if( fragmentMeasDataBinding.calcMirrorCheckBox.isChecked() ){
-                calcPillarLocationData
+                MainActivity.calcPillarLocationData
                         .addCenterPillarMeasData(
                                 fragmentMeasDataBinding.directionFoot1YCoordinate.getText().toString(),
                                 fragmentMeasDataBinding.directionFoot1XCoordinate.getText().toString(),
@@ -43,7 +42,7 @@ public class PillarMeasDataFragment extends Fragment {
                                 fragmentMeasDataBinding.directionFoot3XCoordinate.getText().toString(),
                                 fragmentMeasDataBinding.directionFoot4YCoordinate.getText().toString(),
                                 fragmentMeasDataBinding.directionFoot4XCoordinate.getText().toString());
-                calcPillarLocationData
+                MainActivity.calcPillarLocationData
                         .addDirectionPillarMeasData(
                                 fragmentMeasDataBinding.centerFoot1YCoordinate.getText().toString(),
                                 fragmentMeasDataBinding.centerFoot1XCoordinate.getText().toString(),
@@ -55,7 +54,7 @@ public class PillarMeasDataFragment extends Fragment {
                                 fragmentMeasDataBinding.centerFoot4XCoordinate.getText().toString());
             }
             else{
-                calcPillarLocationData
+                MainActivity.calcPillarLocationData
                         .addCenterPillarMeasData(
                                 fragmentMeasDataBinding.centerFoot1YCoordinate.getText().toString(),
                                 fragmentMeasDataBinding.centerFoot1XCoordinate.getText().toString(),
@@ -65,7 +64,7 @@ public class PillarMeasDataFragment extends Fragment {
                                 fragmentMeasDataBinding.centerFoot3XCoordinate.getText().toString(),
                                 fragmentMeasDataBinding.centerFoot4YCoordinate.getText().toString(),
                                 fragmentMeasDataBinding.centerFoot4XCoordinate.getText().toString());
-                calcPillarLocationData
+                MainActivity.calcPillarLocationData
                         .addDirectionPillarMeasData(
                                 fragmentMeasDataBinding.directionFoot1YCoordinate.getText().toString(),
                                 fragmentMeasDataBinding.directionFoot1XCoordinate.getText().toString(),
@@ -76,17 +75,17 @@ public class PillarMeasDataFragment extends Fragment {
                                 fragmentMeasDataBinding.directionFoot4YCoordinate.getText().toString(),
                                 fragmentMeasDataBinding.directionFoot4XCoordinate.getText().toString());
             }
-            calcPillarLocationData.calcPillarLocationData();
-            if( calcPillarLocationData.centerX == null || calcPillarLocationData.centerY == null
-            || calcPillarLocationData.directionX == null || calcPillarLocationData.directionY == null ){
+            MainActivity.calcPillarLocationData.calcPillarLocationData();
+            if( MainActivity.calcPillarLocationData.centerX == null || MainActivity.calcPillarLocationData.centerY == null
+            || MainActivity.calcPillarLocationData.directionX == null || MainActivity.calcPillarLocationData.directionY == null ){
                 Toast.makeText(getContext(), "Koordináták nem számíthatók", Toast.LENGTH_LONG).show();
                 return;
             }
             Bundle resultData = new Bundle();
-            resultData.putString("centerX", calcPillarLocationData.centerX);
-            resultData.putString("centerY", calcPillarLocationData.centerY);
-            resultData.putString("directionX", calcPillarLocationData.directionX);
-            resultData.putString("directionY", calcPillarLocationData.directionY);
+            resultData.putString("centerX", MainActivity.calcPillarLocationData.centerX);
+            resultData.putString("centerY", MainActivity.calcPillarLocationData.centerY);
+            resultData.putString("directionX", MainActivity.calcPillarLocationData.directionX);
+            resultData.putString("directionY", MainActivity.calcPillarLocationData.directionY);
             getParentFragmentManager().setFragmentResult("results", resultData);
             Navigation.findNavController(requireView())
                     .navigate(R.id.action_MeasDataFragment_to_DataFragment);
