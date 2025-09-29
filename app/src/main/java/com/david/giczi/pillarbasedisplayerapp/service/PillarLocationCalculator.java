@@ -191,7 +191,12 @@ public class PillarLocationCalculator {
         double alfa = new AzimuthAndDistance(startPoint, endPoint).calcAzimuth() -
                 new AzimuthAndDistance(startPoint, basePoint).calcAzimuth();
         double distance = new AzimuthAndDistance(startPoint, basePoint).calcDistance();
-        return Math.cos(alfa) * distance;
+
+        if( this.distance == null ){
+            return new AzimuthAndDistance(startPoint, endPoint).calcDistance() / 2.0
+                    - Math.cos(alfa) * distance;
+        }
+        return this.distance - Math.cos(alfa) * distance;
     }
 
     private String getAbscissaErrorMargin(Point startPoint, Point endPoint){
