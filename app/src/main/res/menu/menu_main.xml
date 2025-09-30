@@ -70,6 +70,13 @@
     </group>
 
     <group android:id="@+id/exit">
+
+        <item
+            android:id="@+id/save_pillar_center"
+            android:orderInCategory="100"
+            android:title="@string/save_pillar_center"
+            app:showAsAction="never"
+            android:enabled="false"/>
         <item
             android:id="@+id/exit_option"
             android:orderInCategory="100"

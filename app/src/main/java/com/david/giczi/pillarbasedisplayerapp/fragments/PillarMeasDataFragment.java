@@ -27,6 +27,7 @@ public class PillarMeasDataFragment extends Fragment {
        fragmentMeasDataBinding = FragmentMeasDataBinding.inflate(inflater, container, false);
         MainActivity.PAGE_COUNTER = 1;
         MainActivity.MENU.findItem(R.id.start_stop_gps).setEnabled(false);
+        MainActivity.MENU.findItem(R.id.save_pillar_center).setEnabled(false);
         fragmentMeasDataBinding.btnSend.setOnClickListener(v -> {
             MainActivity.calcPillarLocationData = new PillarLocationCalculator();
            MainActivity.calcPillarLocationData.setDistance(fragmentMeasDataBinding.distanceOfNewPillar.getText().toString());

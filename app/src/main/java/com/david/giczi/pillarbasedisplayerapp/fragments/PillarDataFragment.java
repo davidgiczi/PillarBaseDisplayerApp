@@ -49,6 +49,7 @@ public class PillarDataFragment extends Fragment {
         MainActivity.MENU.findItem(R.id.weight_base).setEnabled(true);
         MainActivity.MENU.findItem(R.id.plate_base).setEnabled(true);
         MainActivity.MENU.findItem(R.id.start_stop_gps).setEnabled(false);
+        MainActivity.MENU.findItem(R.id.save_pillar_center).setEnabled(false);
         if( MainActivity.northPoleWindow != null ){
             MainActivity.northPoleWindow.dismiss();
         }

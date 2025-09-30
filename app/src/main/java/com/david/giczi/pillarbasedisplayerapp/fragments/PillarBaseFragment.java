@@ -56,6 +56,7 @@ public class PillarBaseFragment extends Fragment {
         fragmentBaseBinding = FragmentBaseBinding.inflate(inflater, container, false);
         MainActivity.MENU.findItem(R.id.weight_base).setEnabled(false);
         MainActivity.MENU.findItem(R.id.plate_base).setEnabled(false);
+        MainActivity.MENU.findItem(R.id.save_pillar_center).setEnabled(true);
         PillarBaseFragment.X_CENTER = getResources().getDisplayMetrics().widthPixels / 2F;
         PillarBaseFragment.Y_CENTER = getResources().getDisplayMetrics().heightPixels / 2F;
         PillarBaseFragment.MM = (float) (Math.sqrt(Math.pow(getResources().getDisplayMetrics().widthPixels, 2) +

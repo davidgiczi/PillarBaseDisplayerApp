@@ -7,15 +7,15 @@ import java.util.List;
 
 public class EOV {
 
-    private static final double a = 6378160.0;
+    public static final double a = 6378160.0;
     private static final double b = 6356774.516;
-    private static final double R = 6379743.001;
-    private static final double m0 = 0.99993;
-    private static final double fi_0 = 47.0 + 6.0 / 60.0;
-    private static final double n = 1.000719704936;
-    private static final double k_EOV = 1.003110007693;
-    private static final double lambda_0 = 19.0 + 2.0 / 60.0 + 54.8584 / 3600.0;
-    private static final double e = Math.sqrt((Math.pow(a, 2) - Math.pow(b, 2)) / Math.pow(a, 2));
+    public static final double R = 6379743.001;
+    public static final double m0 = 0.99993;
+    public static final double fi_0 = 47.0 + 6.0 / 60.0;
+    public static final double n = 1.000719704936;
+    public static final double k_EOV = 1.003110007693;
+    public static final double lambda_0 = 19.0 + 2.0 / 60.0 + 54.8584 / 3600.0;
+    public static final double e = Math.sqrt((Math.pow(a, 2) - Math.pow(b, 2)) / Math.pow(a, 2));
     private static final double e_ = Math.sqrt((Math.pow(a, 2) - Math.pow(b, 2)) / Math.pow(b, 2));
     private static final double deltaX = - 54.595;
     private static final double deltaY =  72.495;

@@ -67,4 +67,5 @@
     <string name="delete_project_bases">Projekt alapok törlése</string>
     <string name="name_of_input_files">Betöltendő fájl(ok) név kezdete</string>
     <string name="delete_input_files">Betöltendő fájlok törlése</string>
+    <string name="save_pillar_center">Oh közép WGS mentése</string>
 </resources>

@@ -35,6 +35,7 @@ android {
 }
 
 dependencies {
+    implementation(files("libs\\ToWGS.jar"))
     annotationProcessor("androidx.room:room-compiler:2.6.1")
     implementation("androidx.room:room-runtime:2.6.1")
     implementation("androidx.appcompat:appcompat:1.7.0")

@@ -312,7 +312,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         //noinspection SimplifiableIfStatement
         if (id == R.id.exit_option) {
             exitDialog();
-        } else if (id == R.id.input_data) {
+        }
+        else if( id == R.id.save_pillar_center ){
+                savePillarCenterInWGS();
+        }
+        else if (id == R.id.input_data) {
             if( IS_GPS_RUNNING ){
                 stopMeasure();
                 MENU.findItem(R.id.start_stop_gps).setTitle(R.string.start_gps);
@@ -740,6 +744,29 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         legends[3] = "Nincs " + baseData[3] + " db " + Math.round( 100f * baseData[3] / numberOfBase ) + "%";
         legends[4] = "Hátral. " + baseData[4] + " db " +  Math.round( 100f * baseData[4] / numberOfBase ) + "%";
         return  legends;
+    }
+
+    private void savePillarCenterInWGS() {
+        if( BASE_DATA.isEmpty() ){
+            Toast.makeText(this,   "Oh adatok nem találhatók.",
+                    Toast.LENGTH_LONG).show();
+            return;
+        }
+        WGS84 wgs = new WGS84();
+        File projectFile = new File(Environment.getExternalStorageDirectory() , "Documents/PillarCenters.txt");
+        try {
+            BufferedWriter bw = new BufferedWriter(new FileWriter(projectFile, true));
+            bw.write(wgs.toWGS84(BASE_DATA.get(1),
+                    Double.parseDouble(BASE_DATA.get(2)), Double.parseDouble(BASE_DATA.get(3)), 0));
+            bw.newLine();
+            bw.close();
+        } catch (IOException e) {
+            Toast.makeText(this, projectFile.getName() +
+                    projectFile.getName() + " fájl mentése sikertelen.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Toast.makeText(this,   projectFile.getName() + " fájl mentve.",
+                Toast.LENGTH_LONG).show();
     }
 
     private void saveProjectFile(String projectName, int numberOfBase) {

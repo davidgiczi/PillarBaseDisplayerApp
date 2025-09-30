@@ -63,6 +63,7 @@ public class PillarCoordsFragment extends Fragment {
         MainActivity.MENU.findItem(R.id.weight_base).setEnabled(false);
         MainActivity.MENU.findItem(R.id.plate_base).setEnabled(false);
         MainActivity.MENU.findItem(R.id.start_stop_gps).setEnabled(true);
+        MainActivity.MENU.findItem(R.id.save_pillar_center).setEnabled(true);
         if( MainActivity.IS_SAVE_RTK_FILE ){
            saveProjectFileForRTK();
         }
