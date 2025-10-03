@@ -127,49 +127,6 @@ public class PillarDataFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        fragmentDataBinding.inputYCoordinate.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if(fragmentDataBinding.inputYCoordinate.getText().toString().length() > 3 ){
-                    fragmentDataBinding.inputNextPrevYCoordinate
-                            .setText(fragmentDataBinding.inputYCoordinate.getText().toString().substring(0, 3));
-                }
-                else if(fragmentDataBinding.inputYCoordinate.getText().toString().length() < 3 ){
-                    fragmentDataBinding.inputNextPrevYCoordinate.setText("");
-                }
-
-            }
-            @Override
-            public void afterTextChanged(Editable editable) {
-            }
-        });
-        fragmentDataBinding.inputXCoordinate.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if(fragmentDataBinding.inputXCoordinate.getText().toString().length() > 3 ){
-                    fragmentDataBinding.inputNextPrevXCoordinate
-                            .setText(fragmentDataBinding.inputXCoordinate.getText().toString().substring(0, 3));
-                }
-                else if(fragmentDataBinding.inputXCoordinate.getText().toString().length() < 3 ){
-                    fragmentDataBinding.inputNextPrevXCoordinate.setText("");
-                }
-            }
-            @Override
-            public void afterTextChanged(Editable editable) {
-            }
-        });
-    }
-
-    @Override
     public void onDestroyView() {
         super.onDestroyView();
         fragmentDataBinding = null;
