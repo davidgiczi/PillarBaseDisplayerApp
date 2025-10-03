@@ -247,14 +247,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     private void showPillarDistanceAndDirection(EOV eov){
-        if( FIND_POINT_INDEX == null ){
-            if( IS_WEIGHT_BASE ){
-                FIND_POINT_INDEX = 10;
-            }
-            else{
-                FIND_POINT_INDEX = 1;
-            }
-        }
         TextView gpsDataView = gpsDataContainer.findViewById(R.id.actual_position);
         gpsDataView.setText(eov.toString());
         AzimuthAndDistance pillarData = new AzimuthAndDistance(
@@ -341,6 +333,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             MENU.findItem(R.id.plate_base).setTitle(R.string.plate_base_option);
             getDataFragmentForWeightBase();
             IS_WEIGHT_BASE = true;
+            FIND_POINT_INDEX = null;
         }
         else if( id == R.id.plate_base
                 && Objects.requireNonNull(item.getTitle()).toString().equals(getString(R.string.plate_base_option))){
@@ -348,6 +341,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             MENU.findItem(R.id.weight_base).setTitle(R.string.weight_base_option);
             getDataFragmentForPlateBase();
             IS_WEIGHT_BASE = false;
+            FIND_POINT_INDEX = null;
         }
         else if( id == R.id.calc_foot_distance){
                 gotoDataFragmentForCalcDistanceBetweenPillarLegs();
@@ -641,7 +635,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                             Toast.LENGTH_SHORT).show();
                     continue;
                 }
-              service.insertOrUpdatePillarBaseParams(fileName.substring(0, fileName.indexOf(".")));
+              service.insertOrUpdatePillarBaseParams(fileName.substring(0, fileName.indexOf(".")), false);
               numberOfInputFiles++;
             } catch (Exception e) {
                 Toast.makeText(this,  "\"" + fileName + "\"" + " fájl beolvasása sikertelen.",
@@ -1122,11 +1116,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         builder.setPositiveButton("Igen", (dialog, which) -> {
             if( isValidInputData() ){
                 getDataFromDataFragment();
-                service.insertOrUpdatePillarBaseParams(((EditText)findViewById(R.id.baseNameTitle)).getText().toString());
-
-                   Toast.makeText(this, "Az alap adatai sikeresen mentve az eszközre.",
-                           Toast.LENGTH_LONG).show();
-
+                service.insertOrUpdatePillarBaseParams(((EditText)findViewById(R.id.baseNameTitle)).getText().toString(), true);
+                Toast.makeText(this, "Az alap adatai sikeresen mentve az eszközre.",
+                        Toast.LENGTH_LONG).show();
                 navController.navigate(R.id.action_DataFragment_to_CoordsFragment);
             }
             dialog.dismiss();

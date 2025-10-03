@@ -1,6 +1,7 @@
 package com.david.giczi.pillarbasedisplayerapp.db;
 
 import android.content.Context;
+import android.os.Handler;
 
 import com.david.giczi.pillarbasedisplayerapp.MainActivity;
 
@@ -47,9 +48,10 @@ public class PillarBaseParamsService {
                 paramsDAO.updatePillarBaseParams(actualPillarBase));
     }
 
-    public void insertOrUpdatePillarBaseParams(String baseName){
+    public void insertOrUpdatePillarBaseParams(String baseName, boolean isDelayed){
         PillarBaseParamsDataBase.databaseExecutor.execute(() ->
                 actualPillarBase = paramsDAO.getPillarBaseDataByName(baseName));
+        new Handler().postDelayed(() -> {
             List<String> baseData = MainActivity.BASE_DATA;
             if( actualPillarBase == null ){
                 PillarBaseParams params = new PillarBaseParams(baseName);
@@ -122,6 +124,8 @@ public class PillarBaseParamsService {
 
             PillarBaseParamsDataBase.databaseExecutor.execute(() ->
                     paramsDAO.updatePillarBaseParams(actualPillarBase));
+        }, isDelayed ? 500 : 0);
+
     }
 
     public void deletePillarParamsByName(String baseName){

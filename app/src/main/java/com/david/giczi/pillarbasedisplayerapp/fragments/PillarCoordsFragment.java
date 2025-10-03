@@ -58,6 +58,7 @@ public class PillarCoordsFragment extends Fragment {
             navController.navigate(R.id.action_CoordsFragment_to_DataFragment);
             return fragmentCoordsBinding.getRoot();
         }
+        setFindPointValue();
         displayPillarBaseCoordinates();
         MainActivity.PAGE_COUNTER = 3;
         MainActivity.MENU.findItem(R.id.weight_base).setEnabled(false);
@@ -74,6 +75,17 @@ public class PillarCoordsFragment extends Fragment {
             MainActivity.northPoleWindow.dismiss();
         }
         return fragmentCoordsBinding.getRoot();
+    }
+
+    private void setFindPointValue(){
+        if( MainActivity.FIND_POINT_INDEX == null ){
+            if( MainActivity.BASE_DATA.get(0).equals(MainActivity.BASE_TYPE[0]) ){
+                MainActivity.FIND_POINT_INDEX = 9;
+            }
+            else{
+                MainActivity.FIND_POINT_INDEX = 1;
+            }
+        }
     }
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {

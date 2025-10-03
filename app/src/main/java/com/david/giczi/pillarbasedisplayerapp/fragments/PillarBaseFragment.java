@@ -68,6 +68,7 @@ public class PillarBaseFragment extends Fragment {
         paint.setAntiAlias(true);
         canvas.drawColor(Color.WHITE);
         fragmentBaseBinding.drawingBase.setImageBitmap(bitmap);
+        setFindPointValue();
         MainActivity.PAGE_COUNTER = 4;
 
         if(MainActivity.PILLAR_BASE_COORDINATES != null ){
@@ -102,6 +103,17 @@ public class PillarBaseFragment extends Fragment {
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+    }
+
+    private void setFindPointValue(){
+        if( MainActivity.FIND_POINT_INDEX == null ){
+            if( MainActivity.BASE_DATA.get(0).equals(MainActivity.BASE_TYPE[0]) ){
+              MainActivity.FIND_POINT_INDEX = 9;
+            }
+            else{
+              MainActivity.FIND_POINT_INDEX = 1;
+            }
+        }
     }
 
     private void setScaleValue(){
