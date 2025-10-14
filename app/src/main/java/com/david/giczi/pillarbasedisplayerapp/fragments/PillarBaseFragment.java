@@ -105,13 +105,12 @@ public class PillarBaseFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
     }
 
-    private void setFindPointValue(){
-        if( MainActivity.FIND_POINT_INDEX == null ){
-            if( MainActivity.BASE_DATA.get(0).equals(MainActivity.BASE_TYPE[0]) ){
-              MainActivity.FIND_POINT_INDEX = 9;
-            }
-            else{
-              MainActivity.FIND_POINT_INDEX = 1;
+    private void setFindPointValue() {
+        if (MainActivity.FIND_POINT_INDEX == null) {
+            if (MainActivity.BASE_DATA.get(0).equals(MainActivity.BASE_TYPE[0])) {
+                MainActivity.FIND_POINT_INDEX = 9;
+            } else {
+                MainActivity.FIND_POINT_INDEX = 1;
             }
         }
     }
