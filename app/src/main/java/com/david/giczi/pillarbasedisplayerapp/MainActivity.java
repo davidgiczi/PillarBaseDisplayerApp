@@ -604,6 +604,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
          int numberOfInputFiles = readBaseFiles(uriList);
          Toast.makeText(this,
                  numberOfInputFiles + " db fájl beolvasva az eszközre.", Toast.LENGTH_LONG).show();
+         setupMenu();
          dialog.dismiss();
         });
 
@@ -635,8 +636,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                             Toast.LENGTH_SHORT).show();
                     continue;
                 }
-              service.insertOrUpdatePillarBaseParams(fileName.substring(0, fileName.indexOf(".")), false);
-              numberOfInputFiles++;
+
+                service.insertOrUpdatePillarBaseParams(fileName.substring(0, fileName.indexOf(".")));
+                numberOfInputFiles++;
+
             } catch (Exception e) {
                 Toast.makeText(this,  "\"" + fileName + "\"" + " fájl beolvasása sikertelen.",
                         Toast.LENGTH_SHORT).show();
@@ -1116,7 +1119,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         builder.setPositiveButton("Igen", (dialog, which) -> {
             if( isValidInputData() ){
                 getDataFromDataFragment();
-                service.insertOrUpdatePillarBaseParams(((EditText)findViewById(R.id.baseNameTitle)).getText().toString(), true);
+                service.insertOrUpdatePillarBaseParams(((EditText)findViewById(R.id.baseNameTitle)).getText().toString());
                 Toast.makeText(this, "Az alap adatai sikeresen mentve az eszközre.",
                         Toast.LENGTH_LONG).show();
                 navController.navigate(R.id.action_DataFragment_to_CoordsFragment);
