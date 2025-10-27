@@ -59,8 +59,7 @@ public class PillarBaseFragment extends Fragment {
         MainActivity.MENU.findItem(R.id.save_pillar_center).setEnabled(true);
         PillarBaseFragment.X_CENTER = getResources().getDisplayMetrics().widthPixels / 2F;
         PillarBaseFragment.Y_CENTER = getResources().getDisplayMetrics().heightPixels / 2F;
-        PillarBaseFragment.MM = (float) (Math.sqrt(Math.pow(getResources().getDisplayMetrics().widthPixels, 2) +
-                Math.pow(getResources().getDisplayMetrics().heightPixels, 2)) / 140F);
+        PillarBaseFragment.MM = (float) (getResources().getDisplayMetrics().xdpi / 25.4);
         this.bitmap = Bitmap.createBitmap(getResources().getDisplayMetrics().widthPixels,
                 getResources().getDisplayMetrics().heightPixels, Bitmap.Config.ARGB_8888);
         this.canvas = new Canvas(bitmap);
