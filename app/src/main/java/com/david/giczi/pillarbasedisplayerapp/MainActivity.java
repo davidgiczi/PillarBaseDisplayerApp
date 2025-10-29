@@ -956,31 +956,28 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
     private void setupMenu(){
 
-        if( !BASE_DATA.get(0).equals(BASE_TYPE[0])
-                && !BASE_DATA.get(0).equals(BASE_TYPE[1]) ){
-            BASE_DATA.clear();
-        }
-        else if( BASE_DATA.get(0).equals(BASE_TYPE[0]) ){
-            IS_WEIGHT_BASE = true;
-            MENU.findItem(R.id.weight_base).setTitle(R.string.ticked_weight_base_option);
-            MENU.findItem(R.id.plate_base).setTitle(R.string.plate_base_option);
-        }
-        else if( BASE_DATA.get(0).equals(BASE_TYPE[1]) ){
-            IS_WEIGHT_BASE = false;
-            MENU.findItem(R.id.weight_base).setTitle(R.string.weight_base_option);
-            MENU.findItem(R.id.plate_base).setTitle(R.string.ticked_plate_base_option);
-        }
-        TextView title = findViewById(R.id.baseNameTitle);
-        title.setText(service.actualPillarBase.baseName);
-        gotoDataFragment();
         if( BASE_DATA.isEmpty() ){
         Toast.makeText(this, "Alap adatainak beolvasása sikertelen.",
                 Toast.LENGTH_LONG).show();
     }
         else {
+
+            if( BASE_DATA.get(0).equals(BASE_TYPE[0]) ){
+                IS_WEIGHT_BASE = true;
+                MENU.findItem(R.id.weight_base).setTitle(R.string.ticked_weight_base_option);
+                MENU.findItem(R.id.plate_base).setTitle(R.string.plate_base_option);
+            }
+            else if( BASE_DATA.get(0).equals(BASE_TYPE[1]) ){
+                IS_WEIGHT_BASE = false;
+                MENU.findItem(R.id.weight_base).setTitle(R.string.weight_base_option);
+                MENU.findItem(R.id.plate_base).setTitle(R.string.ticked_plate_base_option);
+            }
         Toast.makeText(this, "Alap adatai sikeresen beolvasva.",
                 Toast.LENGTH_LONG).show();
+            TextView title = findViewById(R.id.baseNameTitle);
+            title.setText(service.actualPillarBase.baseName);
         }
+        gotoDataFragment();
     }
 
     private void popupPillarFootDistanceCalculator(){
