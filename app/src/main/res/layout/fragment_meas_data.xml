@@ -240,36 +240,42 @@
         app:layout_constraintTop_toBottomOf="@+id/text_start_pillar_data" />
 
     <EditText
-        android:id="@+id/distance_of_new_pillar"
+        android:id="@+id/abscissa_distance_of_new_pillar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="120dp"
-        android:layout_marginTop="10dp"
-        android:autofillHints=""
-        android:ems="8"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="12dp"
+        android:ems="6"
         android:gravity="center"
+        android:hint="@string/abscissa"
         android:inputType="numberDecimal|numberSigned"
         android:maxLength="10"
         android:minHeight="10dp"
         android:textColor="@color/steel_gray"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_distance_new_pillar" />
+        app:layout_constraintTop_toBottomOf="@+id/text_distance_new_pillar"
+        android:autofillHints="" />
 
-    <TextView
-        android:id="@+id/distance_unit"
+    <EditText
+        android:id="@+id/ordinate_distance_of_new_pillar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="50dp"
-        android:fontFamily="sans-serif-light"
-        android:text="@string/meter"
-        android:textSize="17sp"
-        android:textStyle="bold"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="60dp"
+        android:ems="6"
+        android:gravity="center"
+        android:hint="@string/ordinate"
+        android:inputType="numberDecimal|numberSigned"
+        android:maxLength="10"
+        android:minHeight="10dp"
+        android:textColor="@color/steel_gray"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/text_next_prev_pillar"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/distance_of_new_pillar"
-        app:layout_constraintTop_toTopOf="@+id/text_distance_new_pillar" />
+        app:layout_constraintTop_toBottomOf="@+id/text_distance_new_pillar"
+        app:layout_constraintVertical_bias="0.0"
+        android:autofillHints="" />
 
     <TextView
         android:id="@+id/text_next_prev_pillar"
@@ -283,7 +289,7 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/distance_of_new_pillar" />
+        app:layout_constraintTop_toBottomOf="@+id/abscissa_distance_of_new_pillar" />
 
     <TextView
         android:id="@+id/direction_foot1_text"
@@ -501,12 +507,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="@string/calcMirrorCase"
-        app:layout_constraintBottom_toBottomOf="parent"
         android:fontFamily="sans-serif-light"
+        android:text="@string/calcMirrorCase"
         android:textColor="@color/steel_gray"
-        android:textStyle="bold"
         android:textSize="17sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"

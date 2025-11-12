@@ -16,7 +16,7 @@
     <string name="text_project_name">Alap neve</string>
     <string name="set_place_of_pillar">Az oszlop adatainak megadása</string>
     <string name="set_place_of_start_pillar">A kiinduló oszlop adatainak megadása</string>
-    <string name="text_distance_of_new_pillar">Az új oszlop távolságának megadása</string>
+    <string name="text_distance_of_new_pillar">Az új oszlop távolságainak megadása</string>
     <string name="set_id_of_pillar">Az oszlop azonosítója</string>
     <string name="first_coordinate">1. koordináta</string>
     <string name="second_coordinate">2. koordináta</string>
@@ -68,4 +68,6 @@
     <string name="name_of_input_files">Betöltendő fájl(ok) név kezdete</string>
     <string name="delete_input_files">Betöltendő fájlok törlése</string>
     <string name="save_pillar_center">Oh közép WGS mentése</string>
+    <string name="abscissa">Abcissza [m]</string>
+    <string name="ordinate">Ordináta [m]</string>
 </resources>

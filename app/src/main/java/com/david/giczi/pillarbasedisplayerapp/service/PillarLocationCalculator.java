@@ -19,7 +19,8 @@ public class PillarLocationCalculator {
     private Double aveDirectionY;
     private final List<Point> centerPillarMeasData;
     private final List<Point> directionPillarMeasData;
-    private Double distance;
+    private Double abscissa_distance;
+    private Double ordinate_distance;
     private final DecimalFormat df;
 
     public PillarLocationCalculator() {
@@ -97,7 +98,7 @@ public class PillarLocationCalculator {
             aveCenterY = centerPillarMeasData.stream().mapToDouble(Point::getY_coord)
                     .summaryStatistics().getAverage();
 
-            if( aveDirectionX != null && distance == null ){
+            if( aveDirectionX != null && abscissa_distance == null ){
                 centerX = df.format((aveCenterX + aveDirectionX) / 2.0).replace(",", ".");
                 centerY = df.format((aveCenterY + aveDirectionY) / 2.0).replace(",", ".");
             }
@@ -105,25 +106,25 @@ public class PillarLocationCalculator {
                 Point startPoint = new Point("start", aveCenterX, aveCenterY);
                 Point endPoint = new Point("end", aveDirectionX, aveDirectionY);
                 AzimuthAndDistance centerPointData = new AzimuthAndDistance(startPoint, endPoint);
-                PolarPoint centerPoint = new PolarPoint(startPoint, distance, centerPointData.calcAzimuth(), "center");
+                PolarPoint centerPoint = new PolarPoint(startPoint, abscissa_distance, centerPointData.calcAzimuth(), "center");
                 centerX = df.format(centerPoint.calcPolarPoint().getX_coord()).replace(",", ".");
                 centerY = df.format(centerPoint.calcPolarPoint().getY_coord()).replace(",", ".");
             }
-            else if( centerPillarMeasData.size() == 4 && distance != null ) {
+            else if( centerPillarMeasData.size() == 4 && abscissa_distance != null ) {
                 aveDirectionX = (centerPillarMeasData.get(1).getX_coord() + centerPillarMeasData.get(2).getX_coord()) / 2.0;
                 aveDirectionY = (centerPillarMeasData.get(1).getY_coord() + centerPillarMeasData.get(2).getY_coord()) / 2.0;
                 Point startPoint = new Point("start", aveCenterX, aveCenterY);
                 Point endPoint = new Point("end", aveDirectionX, aveDirectionY);
                 AzimuthAndDistance centerPointData = new AzimuthAndDistance(startPoint, endPoint);
-                PolarPoint centerPoint = new PolarPoint(startPoint, distance, centerPointData.calcAzimuth(), "center");
+                PolarPoint centerPoint = new PolarPoint(startPoint, abscissa_distance, centerPointData.calcAzimuth(), "center");
                 centerX = df.format(centerPoint.calcPolarPoint().getX_coord()).replace(",", ".");
                 centerY = df.format(centerPoint.calcPolarPoint().getY_coord()).replace(",", ".");
-                directionX = df.format(distance == 0 ? aveDirectionX : aveCenterX).replace(",", ".");
-                directionY = df.format(distance == 0 ? aveDirectionY : aveCenterY).replace(",", ".");
+                directionX = df.format(abscissa_distance == 0 ? aveDirectionX : aveCenterX).replace(",", ".");
+                directionY = df.format(abscissa_distance == 0 ? aveDirectionY : aveCenterY).replace(",", ".");
             }
 
         }
-        else if( centerPillarMeasData.size() == 3 && distance != null ){
+        else if( centerPillarMeasData.size() == 3 && abscissa_distance != null ){
             aveCenterX = (centerPillarMeasData.get(0).getX_coord() + centerPillarMeasData.get(2).getX_coord()) / 2.0;
             aveCenterY = (centerPillarMeasData.get(0).getY_coord() + centerPillarMeasData.get(2).getY_coord()) / 2.0;
             if( aveDirectionX == null ){
@@ -135,18 +136,24 @@ public class PillarLocationCalculator {
             Point startPoint = new Point("start", aveCenterX, aveCenterY);
             Point endPoint = new Point("end", aveDirectionX, aveDirectionY);
             AzimuthAndDistance centerPointData = new AzimuthAndDistance(startPoint, endPoint);
-            PolarPoint centerPoint = new PolarPoint(startPoint, distance, centerPointData.calcAzimuth(), "center");
+            PolarPoint centerPoint = new PolarPoint(startPoint, abscissa_distance, centerPointData.calcAzimuth(), "center");
             centerX = df.format(centerPoint.calcPolarPoint().getX_coord()).replace(",", ".");
             centerY = df.format(centerPoint.calcPolarPoint().getY_coord()).replace(",", ".");
-            directionX = df.format(distance == 0 ? aveDirectionX : aveCenterX).replace(",", ".");
-            directionY = df.format(distance == 0 ? aveDirectionY : aveCenterY).replace(",", ".");
+            directionX = df.format(abscissa_distance == 0 ? aveDirectionX : aveCenterX).replace(",", ".");
+            directionY = df.format(abscissa_distance == 0 ? aveDirectionY : aveCenterY).replace(",", ".");
         }
 
     }
 
-    public void setDistance(String distance) {
-        if( !distance.isEmpty() ){
-            this.distance = Double.parseDouble(distance);
+    public void setAbscissa_distance(String abscissa_distance) {
+        if( !abscissa_distance.isEmpty() ){
+            this.abscissa_distance = Double.parseDouble(abscissa_distance);
+        }
+    }
+
+    public void setOrdinate_distance(String ordinate_distance) {
+        if( !ordinate_distance.isEmpty() ){
+            this.ordinate_distance = Double.parseDouble(ordinate_distance);
         }
     }
 
@@ -178,7 +185,12 @@ public class PillarLocationCalculator {
         double alfa = new AzimuthAndDistance(startPoint, endPoint).calcAzimuth() -
                 new AzimuthAndDistance(startPoint, basePoint).calcAzimuth();
         double distance = new AzimuthAndDistance(startPoint, basePoint).calcDistance();
-        return Math.sin(alfa) * distance;
+
+        if( this.ordinate_distance == null ){
+            return Math.sin(alfa) * distance;
+        }
+
+        return this.ordinate_distance - Math.sin(alfa) * distance;
     }
 
     private double getAbscissaValue(Point startPoint, Point endPoint, Point basePoint) {
@@ -192,11 +204,11 @@ public class PillarLocationCalculator {
                 new AzimuthAndDistance(startPoint, basePoint).calcAzimuth();
         double distance = new AzimuthAndDistance(startPoint, basePoint).calcDistance();
 
-        if( this.distance == null ){
+        if( this.abscissa_distance == null ){
             return new AzimuthAndDistance(startPoint, endPoint).calcDistance() / 2.0
                     - Math.cos(alfa) * distance;
         }
-        return this.distance - Math.cos(alfa) * distance;
+        return this.abscissa_distance - Math.cos(alfa) * distance;
     }
 
     private String getAbscissaErrorMargin(Point startPoint, Point endPoint){
