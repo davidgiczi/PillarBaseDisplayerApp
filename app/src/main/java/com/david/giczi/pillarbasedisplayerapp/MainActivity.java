@@ -76,6 +76,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -116,6 +117,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private Spinner openingProjectSpinner;
     private Spinner openingStatisticsSpinner;
     public static PillarLocationCalculator calcPillarLocationData;
+    private static final List<String> INPUT_CHARS = Arrays.asList(".", ",", "-");
 
 
     @Override
@@ -343,6 +345,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             IS_WEIGHT_BASE = false;
             FIND_POINT_INDEX = null;
         }
+        else if( id == R.id.control_point ){
+            popupControlPointInputDataWindow();
+        }
         else if( id == R.id.calc_foot_distance){
                 gotoDataFragmentForCalcDistanceBetweenPillarLegs();
                 popupPillarFootDistanceCalculator();
@@ -468,6 +473,39 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             openingProjectWindow.dismiss();
         });
     }
+
+    @SuppressLint("InflateParams")
+    public void popupControlPointInputDataWindow() {
+        ViewGroup container =
+                (ViewGroup) getLayoutInflater().inflate(R.layout.fragment_control_point_input_data, null);
+        PopupWindow controlPointInputDataWindow = new PopupWindow(container, 1000, 700, true);
+        controlPointInputDataWindow.showAtLocation(binding.getRoot(), Gravity.CENTER, 0, -400);
+        Button okButton =  container.findViewById(R.id.ok_button);
+        if( BASE_DATA.size() == 17 ){
+            ((EditText) container.findViewById(R.id.control_point_id_field)).setText(BASE_DATA.get(14));
+            ((EditText) container.findViewById(R.id.control_point_first_coordinate_field)).setText(BASE_DATA.get(15));
+            ((EditText) container.findViewById(R.id.control_point_second_coordinate_field)).setText(BASE_DATA.get(16));
+        }
+        else if( BASE_DATA.size() == 18 ){
+            ((EditText) container.findViewById(R.id.control_point_id_field)).setText(BASE_DATA.get(15));
+            ((EditText) container.findViewById(R.id.control_point_first_coordinate_field)).setText(BASE_DATA.get(16));
+            ((EditText) container.findViewById(R.id.control_point_second_coordinate_field)).setText(BASE_DATA.get(17));
+        }
+        okButton.setOnClickListener( b -> {
+         String controlPointId = ((EditText) container.findViewById(R.id.control_point_id_field))
+                        .getText().toString().replace(",", ".");
+         String controlPointY = ((EditText) container.findViewById(R.id.control_point_first_coordinate_field))
+                    .getText().toString().replace(",", ".");
+         String controlPointX = ((EditText) container.findViewById(R.id.control_point_second_coordinate_field))
+                    .getText().toString().replace(",", ".");
+        controlPointInputDataWindow.dismiss();
+        });
+    }
+
+    public static boolean isNotCorrectInputData(String inputData){
+        return  inputData.length() == 1 && INPUT_CHARS.contains(inputData);
+    }
+
     @SuppressLint("InflateParams")
     public void popupMeasuredBaseInputDataWindow() {
        ViewGroup container =
@@ -946,12 +984,20 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             BASE_DATA.add(service.actualPillarBase.rotationMin);
             BASE_DATA.add(service.actualPillarBase.rotationSec);
         }
-
         if( service.actualPillarBase.getRotationSide().equals("left") ){
             BASE_DATA.add("1");
         }
         else if( service.actualPillarBase.getRotationSide().equals("right") ){
             BASE_DATA.add("0");
+        }
+        if( service.actualPillarBase.controlPointId != null ){
+            BASE_DATA.add(service.actualPillarBase.controlPointId);
+        }
+        if( service.actualPillarBase.controlPointY != null ){
+            BASE_DATA.add(service.actualPillarBase.controlPointY);
+        }
+        if( service.actualPillarBase.controlPointX != null ){
+            BASE_DATA.add(service.actualPillarBase.controlPointX);
         }
     }
     private void setupMenu(){

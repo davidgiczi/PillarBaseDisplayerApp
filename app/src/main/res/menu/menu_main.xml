@@ -35,6 +35,11 @@
             android:title="@string/plate_base_option"
             app:showAsAction="never" />
         <item
+            android:id="@+id/control_point"
+            android:orderInCategory="100"
+            android:title="@string/control_point"
+            app:showAsAction="never" />
+        <item
             android:id="@+id/calc_foot_distance"
             android:orderInCategory="100"
             android:title="@string/calc_foot_distance_option"

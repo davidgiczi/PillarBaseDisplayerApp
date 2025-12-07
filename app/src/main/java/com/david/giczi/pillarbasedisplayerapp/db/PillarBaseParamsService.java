@@ -66,6 +66,11 @@ public class PillarBaseParamsService {
                     actualPillarBase.setRotationAngle(baseData.get(12));
                     actualPillarBase.setRotationMin(baseData.get(13));
                     actualPillarBase.setRotationSec(baseData.get(14));
+                    if( baseData.size() == 18 ){
+                        actualPillarBase.setControlPointId(baseData.get(15));
+                        actualPillarBase.setControlPointY(baseData.get(16));
+                        actualPillarBase.setControlPointX(baseData.get(17));
+                    }
                 } else if( MainActivity.BASE_TYPE[1].equals(baseData.get(0)) ){
                     actualPillarBase.setPerpendicularHoleDistance(baseData.get(7));
                     actualPillarBase.setParallelHoleDistance(baseData.get(8));
@@ -74,6 +79,11 @@ public class PillarBaseParamsService {
                     actualPillarBase.setRotationAngle(baseData.get(11));
                     actualPillarBase.setRotationMin(baseData.get(12));
                     actualPillarBase.setRotationSec(baseData.get(13));
+                    if( baseData.size() == 17 ){
+                        actualPillarBase.setControlPointId(baseData.get(14));
+                        actualPillarBase.setControlPointY(baseData.get(15));
+                        actualPillarBase.setControlPointX(baseData.get(16));
+                    }
                 }
                 if( baseData.get(baseData.size() - 1).equals("0") ){
                     actualPillarBase.setRotationSide("right");

@@ -47,14 +47,18 @@ public class PillarBaseParams {
     public String rotationSec;
     @ColumnInfo(name = "RotationSide")
     public String rotationSide;
-
     @ColumnInfo(name = "HoleReady")
     public boolean isHoleReady;
     @ColumnInfo(name = "AxisReady")
     public boolean isAxisReady;
-
     @ColumnInfo(name = "NumberOfMeasure")
     public int numberOfMeasure;
+    @ColumnInfo(name = "ControlPointId")
+    public String controlPointId;
+    @ColumnInfo(name = "ControlPointY")
+    public String controlPointY;
+    @ColumnInfo(name = "ControlPointX")
+    public String controlPointX;
 
 
 
@@ -151,6 +155,18 @@ public class PillarBaseParams {
         this.numberOfMeasure = numberOfMeasure;
     }
 
+    public void setControlPointId(String controlPointId) {
+        this.controlPointId = controlPointId;
+    }
+
+    public void setControlPointY(String controlPointY) {
+        this.controlPointY = controlPointY;
+    }
+
+    public void setControlPointX(String controlPointX) {
+        this.controlPointX = controlPointX;
+    }
+
     @NonNull
     @Override
     public String toString() {
@@ -177,6 +193,10 @@ public class PillarBaseParams {
                 ", isHoleReady=" + isHoleReady +
                 ", isAxisReady=" + isAxisReady +
                 ", numberOfMeasure=" + numberOfMeasure +
+                ", controlPointId='" + controlPointId + '\'' +
+                ", controlPointY='" + controlPointY + '\'' +
+                ", controlPointX='" + controlPointX + '\'' +
                 '}';
     }
 }
+

@@ -70,4 +70,6 @@
     <string name="save_pillar_center">Oh közép WGS mentése</string>
     <string name="abscissa">Abcissza [m]</string>
     <string name="ordinate">Ordináta [m]</string>
+    <string name="control_point">Kontroll pont</string>
+    <string name="control_point_id">Azonosító</string>
 </resources>

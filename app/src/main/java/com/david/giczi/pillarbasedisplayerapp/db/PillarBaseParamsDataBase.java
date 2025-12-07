@@ -8,11 +8,10 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
-
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Database(entities = {PillarBaseParams.class}, version = 2)
+@Database(entities = {PillarBaseParams.class}, version = 3)
 public abstract class PillarBaseParamsDataBase extends RoomDatabase {
 
 
@@ -45,4 +44,13 @@ public abstract class PillarBaseParamsDataBase extends RoomDatabase {
         }
     };
 
+    static final Migration MIGRATION_2_3 = new Migration(2, 3) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            // Add the new column "age" with a default value
+            database.execSQL("ALTER TABLE pillar_base_params ADD COLUMN ControlPointId TEXT");
+            database.execSQL("ALTER TABLE pillar_base_params ADD COLUMN ControlPointY TEXT");
+            database.execSQL("ALTER TABLE pillar_base_params ADD COLUMN ControlPointX TEXT");
+        }
+    };
 }
