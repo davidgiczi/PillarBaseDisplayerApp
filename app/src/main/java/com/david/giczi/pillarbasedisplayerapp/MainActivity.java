@@ -481,25 +481,77 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         PopupWindow controlPointInputDataWindow = new PopupWindow(container, 1000, 700, true);
         controlPointInputDataWindow.showAtLocation(binding.getRoot(), Gravity.CENTER, 0, -400);
         Button okButton =  container.findViewById(R.id.ok_button);
-        if( BASE_DATA.size() == 17 ){
-            ((EditText) container.findViewById(R.id.control_point_id_field)).setText(BASE_DATA.get(14));
-            ((EditText) container.findViewById(R.id.control_point_first_coordinate_field)).setText(BASE_DATA.get(15));
-            ((EditText) container.findViewById(R.id.control_point_second_coordinate_field)).setText(BASE_DATA.get(16));
-        }
-        else if( BASE_DATA.size() == 18 ){
-            ((EditText) container.findViewById(R.id.control_point_id_field)).setText(BASE_DATA.get(15));
-            ((EditText) container.findViewById(R.id.control_point_first_coordinate_field)).setText(BASE_DATA.get(16));
-            ((EditText) container.findViewById(R.id.control_point_second_coordinate_field)).setText(BASE_DATA.get(17));
+
+        if( service.actualPillarBase != null ){
+            ((EditText) container.findViewById(R.id.control_point_id_field))
+                    .setText(service.actualPillarBase.controlPointId);
+            ((EditText) container.findViewById(R.id.control_point_first_coordinate_field))
+                    .setText(service.actualPillarBase.controlPointY);
+            ((EditText) container.findViewById(R.id.control_point_second_coordinate_field))
+                    .setText(service.actualPillarBase.controlPointX);
         }
         okButton.setOnClickListener( b -> {
+         if( service.actualPillarBase == null ){
+             Toast.makeText(this, "Az adatok csak megnyitott projekt esetén menthetők.",
+                     Toast.LENGTH_LONG).show();
+             return;
+         }
          String controlPointId = ((EditText) container.findViewById(R.id.control_point_id_field))
                         .getText().toString().replace(",", ".");
          String controlPointY = ((EditText) container.findViewById(R.id.control_point_first_coordinate_field))
                     .getText().toString().replace(",", ".");
          String controlPointX = ((EditText) container.findViewById(R.id.control_point_second_coordinate_field))
                     .getText().toString().replace(",", ".");
+         inputControlPointDataDialog(controlPointId, controlPointY, controlPointX);
         controlPointInputDataWindow.dismiss();
         });
+    }
+
+    private void inputControlPointDataDialog(String controlPointId, String controlPointY, String controlPointX) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle("Kontroll pont adatok mentése");
+        builder.setMessage("Mented a pont adatait?" );
+
+        builder.setPositiveButton("Igen", (dialog, which) -> {
+            if( saveInputControlPointData(controlPointId, controlPointY, controlPointX) ){
+                Toast.makeText(this, "Kontroll pont adatok \"" +
+                        binding.baseNameTitle.getText() + "\" projektbe mentve.", Toast.LENGTH_LONG).show();
+                dialog.dismiss();
+            }
+        });
+        builder.setNegativeButton("Nem", (dialog, which) -> dialog.dismiss());
+
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    private boolean saveInputControlPointData(String controlPointId,
+                                              String controlPointY, String controlPointX){
+        if( controlPointId.isEmpty() && controlPointY.isEmpty() && controlPointX.isEmpty() ){
+            service.actualPillarBase.setControlPointId(null);
+            service.actualPillarBase.setControlPointY(null);
+            service.actualPillarBase.setControlPointX(null);
+            service.updatePillarBaseParams();
+            return true;
+        }
+        if( controlPointId.isEmpty() || isNotCorrectInputData(controlPointId) ){
+            Toast.makeText(this, "Hibás a bementi pont azonosítója. ", Toast.LENGTH_LONG).show();
+            return false;
+        }
+        else if( controlPointY.isEmpty() || isNotCorrectInputData(controlPointY) ){
+            Toast.makeText(this, "Hibás a bementi pont 1. koordiátája. ", Toast.LENGTH_LONG).show();
+            return false;
+        }
+        else if( controlPointX.isEmpty() || isNotCorrectInputData(controlPointX) ){
+            Toast.makeText(this, "Hibás a bementi pont 2. koordiátája. ", Toast.LENGTH_LONG).show();
+            return false;
+        }
+        service.actualPillarBase.setControlPointId(controlPointId);
+        service.actualPillarBase.setControlPointY(controlPointY);
+        service.actualPillarBase.setControlPointX(controlPointX);
+        service.updatePillarBaseParams();
+        return true;
     }
 
     public static boolean isNotCorrectInputData(String inputData){
@@ -636,7 +688,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         builder.setTitle("Oszlophely alap fájlok beolvasása");
-        builder.setMessage("Biztos, hogy beolvasod a(z) " + uriList.size() + " db fájlt." );
+        builder.setMessage("Biztos, hogy beolvasod a(z) " + uriList.size() + " db fájlt?" );
 
         builder.setPositiveButton("Igen", (dialog, which) -> {
          int numberOfInputFiles = readBaseFiles(uriList);
