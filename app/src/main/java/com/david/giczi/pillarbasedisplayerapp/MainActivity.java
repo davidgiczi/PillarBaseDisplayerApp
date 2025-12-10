@@ -117,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private Spinner openingProjectSpinner;
     private Spinner openingStatisticsSpinner;
     public static PillarLocationCalculator calcPillarLocationData;
-    private static final List<String> INPUT_CHARS = Arrays.asList(".", ",", "-");
+    private static final List<String> INVALID_INPUT_CHARS = Arrays.asList(" ", ".", ",", "-", ".-", "-.", ",-", "-," );
 
 
     @Override
@@ -535,16 +535,16 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             service.updatePillarBaseParams();
             return true;
         }
-        if( controlPointId.isEmpty() || isNotCorrectInputData(controlPointId) ){
+        if( controlPointId.isEmpty() || isInvalidInputChars(controlPointId) ){
             Toast.makeText(this, "Hibás a bementi pont azonosítója. ", Toast.LENGTH_LONG).show();
             return false;
         }
-        else if( controlPointY.isEmpty() || isNotCorrectInputData(controlPointY) ){
-            Toast.makeText(this, "Hibás a bementi pont 1. koordiátája. ", Toast.LENGTH_LONG).show();
+        else if( controlPointY.isEmpty() || isInvalidInputChars(controlPointY) ){
+            Toast.makeText(this, "Hibás a bementi pont 1. koordinátája. ", Toast.LENGTH_LONG).show();
             return false;
         }
-        else if( controlPointX.isEmpty() || isNotCorrectInputData(controlPointX) ){
-            Toast.makeText(this, "Hibás a bementi pont 2. koordiátája. ", Toast.LENGTH_LONG).show();
+        else if( controlPointX.isEmpty() || isInvalidInputChars(controlPointX) ){
+            Toast.makeText(this, "Hibás a bementi pont 2. koordinátája. ", Toast.LENGTH_LONG).show();
             return false;
         }
         service.actualPillarBase.setControlPointId(controlPointId);
@@ -554,8 +554,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         return true;
     }
 
-    public static boolean isNotCorrectInputData(String inputData){
-        return  inputData.length() == 1 && INPUT_CHARS.contains(inputData);
+    public static boolean isInvalidInputChars(String inputData){
+        if( inputData.length() == 1 && INVALID_INPUT_CHARS.contains(inputData) ){
+            return true;
+        }
+        else return inputData.length() == 2 && INVALID_INPUT_CHARS.contains(inputData);
     }
 
     @SuppressLint("InflateParams")
@@ -1084,28 +1087,28 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         footCalcWindow.showAtLocation(binding.getRoot(), Gravity.CENTER, 0, -400);
         Button calcButton = container.findViewById(R.id.btn_count);
         calcButton.setOnClickListener(v -> {
-            EditText inputFootDistance = container.findViewById(R.id.input_value_of_foot_distance);
-            if( inputFootDistance.getText().toString().isEmpty() ){
+            String inputFootDistance = container.findViewById(R.id.input_value_of_foot_distance).toString();
+            if( inputFootDistance.isEmpty() || isInvalidInputChars(inputFootDistance)){
                 Toast.makeText(container.getContext(), "A lábtávolság értékének megadása szükséges.",
                         Toast.LENGTH_LONG).show();
                 return;
             }
-            EditText inputIllesztesiSik = container.findViewById(R.id.input_value_illesztesi_sik);
-            if( inputIllesztesiSik.getText().toString().isEmpty() ){
+            String inputIllesztesiSik = container.findViewById(R.id.input_value_illesztesi_sik).toString();
+            if( inputIllesztesiSik.isEmpty() || isInvalidInputChars(inputIllesztesiSik)){
                 Toast.makeText(container.getContext(), "Az illesztési sík értékének megadása szükséges.",
                         Toast.LENGTH_LONG).show();
                 return;
             }
-            EditText inputSudarasodas = container.findViewById(R.id.input_value_sudarasodas);
-            if( inputSudarasodas.getText().toString().isEmpty() ){
+            String inputSudarasodas = container.findViewById(R.id.input_value_sudarasodas).toString();
+            if( inputSudarasodas.isEmpty() || isInvalidInputChars(inputSudarasodas)){
                 Toast.makeText(container.getContext(), "A sudarasodás értékének megadása szükséges.",
                         Toast.LENGTH_LONG).show();
                 return;
             }
 
-            double footDistance = Double.parseDouble(inputFootDistance.getText().toString()) / 1000.0 +
-                    (2 * Double.parseDouble(inputSudarasodas.getText().toString() )
-                            * Double.parseDouble(inputIllesztesiSik.getText().toString()) / 100.0) / 1000.0;
+            double footDistance = Double.parseDouble(inputFootDistance) / 1000.0 +
+                    (2 * Double.parseDouble(inputSudarasodas)
+                            * Double.parseDouble(inputIllesztesiSik) / 100.0) / 1000.0;
           ((TextView) container.findViewById(R.id.text_calc_foot_distance)).setText(R.string.value_of_foot_distance);
            TextView resultFootDistanceView = container.findViewById(R.id.result_foot_distance);
            String resultDistance = String.format(Locale.getDefault(), "%.3f", footDistance);
@@ -1282,54 +1285,66 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     private boolean isValidInputData(){
-        if(((TextView) findViewById(R.id.baseNameTitle)).getText().toString().isEmpty() ){
+        String baseName = ((TextView) findViewById(R.id.baseNameTitle)).getText().toString();
+        String inputPillarId = ((EditText) findViewById(R.id.input_pillar_id)).getText().toString();
+        String inputCenterPillarY = ((EditText) findViewById(R.id.input_y_coordinate)).getText().toString();
+        String inputCenterPillarX = ((EditText) findViewById(R.id.input_x_coordinate)).getText().toString();
+        String inputPrevNextPillarId = ((EditText) findViewById(R.id.input_next_prev_pillar_id)).getText().toString();
+        String inputPrevNextPillarY = ((EditText) findViewById(R.id.input_next_prev_y_coordinate)).getText().toString();
+        String inputPrevNextPillarX = ((EditText) findViewById(R.id.input_next_prev_x_coordinate)).getText().toString();
+        if( baseName.isEmpty() || isInvalidInputChars(baseName) ){
             Toast.makeText(this, "Az alap nevének megadása szükséges.", Toast.LENGTH_LONG).show();
             return false;
         }
-        else if( ((EditText) findViewById(R.id.input_pillar_id)).getText().toString().isEmpty() ){
+        else if( inputPillarId.isEmpty() || isInvalidInputChars(baseName) ){
             Toast.makeText(this, "Az oszlop azonosítójának megadása szükséges.",
                     Toast.LENGTH_LONG).show();
             return false;
         }
-        else if(((EditText) findViewById(R.id.input_y_coordinate)).getText().toString().isEmpty() ){
+        else if( inputCenterPillarY.isEmpty() || isInvalidInputChars(inputCenterPillarY) ){
             Toast.makeText(this, "Az oszlop Y koordinátájának megadása szükséges.",
                     Toast.LENGTH_LONG).show();
             return false;
         }
-        else if(((EditText) findViewById(R.id.input_x_coordinate)).getText().toString().isEmpty()){
+        else if( inputCenterPillarX.isEmpty() || isInvalidInputChars(inputCenterPillarX) ){
             Toast.makeText(this, "Az oszlop X koordinátájának megadása szükséges.",
                     Toast.LENGTH_LONG).show();
             return false;
         }
-        else if(((EditText) findViewById(R.id.input_next_prev_pillar_id)).getText().toString().isEmpty()){
+        else if( inputPrevNextPillarId.isEmpty() || isInvalidInputChars(inputPrevNextPillarId) ) {
             Toast.makeText(this, "Az előző/következő oszlop azonosítójának megadása szükséges.",
                     Toast.LENGTH_LONG).show();
             return false;
         }
-        else if(((EditText) findViewById(R.id.input_next_prev_y_coordinate)).getText().toString().isEmpty()){
+        else if( inputPrevNextPillarY.isEmpty() || isInvalidInputChars(inputPrevNextPillarY) ){
             Toast.makeText(this, "Az előző/következő oszlop Y koordinátájának megadása szükséges.",
                     Toast.LENGTH_LONG).show();
             return false;
         }
-        else if(((EditText) findViewById(R.id.input_next_prev_x_coordinate)).getText().toString().isEmpty()){
+        else if( inputPrevNextPillarX.isEmpty() || isInvalidInputChars(inputPrevNextPillarX) ){
             Toast.makeText(this, "Az előző/következő oszlop X koordinátájának megadása szükséges.",
                     Toast.LENGTH_LONG).show();
             return false;
         }
 
         if( IS_WEIGHT_BASE ){
-
-            if(((EditText) findViewById(R.id.input_distance_of_direction_points)).getText().toString().isEmpty()){
+            String inputDistanceForDirectionPoints = ((EditText)
+                findViewById(R.id.input_distance_of_direction_points)).getText().toString();
+            String inputFootDistancePerpendicularly = ((EditText)
+                 findViewById(R.id.input_foot_distance_perpendicularly)).getText().toString();
+            String inputFootDistanceParallel = ((EditText)
+                    findViewById(R.id.input_foot_distance_parallel)).getText().toString();
+            if( inputDistanceForDirectionPoints.isEmpty() || isInvalidInputChars(inputDistanceForDirectionPoints) ){
                 Toast.makeText(this, "Az iránypontok távolságának megadása szükséges.",
                         Toast.LENGTH_LONG).show();
                 return false;
             }
-            else if(((EditText) findViewById(R.id.input_foot_distance_perpendicularly)).getText().toString().isEmpty()){
+            else if(inputFootDistancePerpendicularly.isEmpty() || isInvalidInputChars(inputFootDistancePerpendicularly) ){
                 Toast.makeText(this, "A karra merőleges lábtávolság megadása szükséges.",
                         Toast.LENGTH_LONG).show();
                 return false;
             }
-            else if(((EditText) findViewById(R.id.input_foot_distance_parallel)).getText().toString().isEmpty()){
+            else if( inputFootDistanceParallel.isEmpty() || isInvalidInputChars(inputFootDistanceParallel) ){
                 Toast.makeText(this, "A karral párhuzamos lábtávolság megadása szükséges.",
                         Toast.LENGTH_LONG).show();
                 return false;
@@ -1337,13 +1352,17 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
         else {
 
-            if(((EditText) findViewById(R.id.input_foot_distance_perpendicularly)).getText().toString().isEmpty()){
+            String inputFootDistancePerpendicularly = ((EditText)
+                    findViewById(R.id.input_foot_distance_perpendicularly)).getText().toString();
+            String inpuFootDistanceParallel = ((EditText)
+                    findViewById(R.id.input_foot_distance_parallel)).getText().toString();
+            if( inputFootDistancePerpendicularly.isEmpty() || isInvalidInputChars(inputFootDistancePerpendicularly) ){
                 Toast.makeText(this, "A karra merőleges irány, " +
                                 "a gödör szélétől vett távolságának megadása szükséges.",
                         Toast.LENGTH_LONG).show();
                 return false;
             }
-            else if(((EditText) findViewById(R.id.input_foot_distance_parallel)).getText().toString().isEmpty()){
+            else if( inpuFootDistanceParallel.isEmpty() || isInvalidInputChars(inpuFootDistanceParallel) ){
                 Toast.makeText(this, "A karral párhuzamos irány, a gödör szélétől vett " +
                                 "távolságának megadása szükséges.",
                         Toast.LENGTH_LONG).show();
@@ -1351,13 +1370,19 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             }
 
         }
-
-        if(((EditText) findViewById(R.id.input_hole_distance_perpendicularly)).getText().toString().isEmpty()){
+        String inputHoleDistancePerpendicularly = ((EditText)
+                findViewById(R.id.input_hole_distance_perpendicularly)).getText().toString();
+        String inputHoleDistanceParallel = ((EditText)
+                findViewById(R.id.input_hole_distance_parallel)).getText().toString();
+        String inputAngle = ((EditText) findViewById(R.id.input_angle)).getText().toString();
+        String inputMinAngle = ((EditText) findViewById(R.id.input_min)).getText().toString();
+        String inputSecAngle = ((EditText) findViewById(R.id.input_sec)).getText().toString();
+        if( inputHoleDistancePerpendicularly.isEmpty() || isInvalidInputChars(inputHoleDistancePerpendicularly)){
             Toast.makeText(this, "A karra merőleges gödör oldalhosszának megadása szükséges.",
                     Toast.LENGTH_LONG).show();
             return false;
         }
-        else if(((EditText) findViewById(R.id.input_hole_distance_parallel)).getText().toString().isEmpty()){
+        else if( inputHoleDistanceParallel.isEmpty() || isInvalidInputChars(inputHoleDistanceParallel) ){
             Toast.makeText(this, "A karral párhuzamos gödör oldalhosszának megadása szükséges.",
                     Toast.LENGTH_LONG).show();
             return false;
@@ -1369,32 +1394,32 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                         Toast.LENGTH_LONG).show();
                 return false;
         }
-        else if(((EditText) findViewById(R.id.input_angle)).getText().toString().isEmpty()){
+        else if( inputAngle.isEmpty() || isInvalidInputChars(inputAngle) ){
             Toast.makeText(this, "A nyomvonal által közbezárt szög értékének megadása szükséges.",
                     Toast.LENGTH_LONG).show();
             return false;
         }
-        else if(((EditText) findViewById(R.id.input_min)).getText().toString().isEmpty()){
+        else if( inputMinAngle.isEmpty() || isInvalidInputChars(inputMinAngle) ){
             Toast.makeText(this, "A nyomvonal által közbezárt szög perc értékének megadása szükséges.",
                     Toast.LENGTH_LONG).show();
             return false;
         }
-        else if(((EditText) findViewById(R.id.input_sec)).getText().toString().isEmpty() ){
+        else if( inputSecAngle.isEmpty() || isInvalidInputChars(inputSecAngle) ){
             Toast.makeText(this, "A nyomvonal által közbezárt szög másodperc értékének megadása szükséges.",
                     Toast.LENGTH_LONG).show();
             return false;
         }
-        else if(Integer.parseInt(((EditText) findViewById(R.id.input_angle)).getText().toString()) > 359){
+        else if(Integer.parseInt(inputAngle) > 359){
             Toast.makeText(this, "A nyomvonal által közbezárt szög fok értéke 360-nál kisebb lehet.",
                     Toast.LENGTH_LONG).show();
             return false;
         }
-        else if(Integer.parseInt(((EditText) findViewById(R.id.input_min)).getText().toString()) > 59){
+        else if(Integer.parseInt(inputMinAngle) > 59){
             Toast.makeText(this, "A nyomvonal által közbezárt szög perc értéke 60-nál kisebb lehet.",
                     Toast.LENGTH_LONG).show();
             return false;
         }
-        else if(Integer.parseInt(((EditText) findViewById(R.id.input_sec)).getText().toString()) > 59 ) {
+        else if(Integer.parseInt(inputSecAngle) > 59 ) {
             Toast.makeText(this, "A nyomvonal által közbezárt szög másodperc értéke 60-nál kisebb lehet.",
                     Toast.LENGTH_LONG).show();
             return false;

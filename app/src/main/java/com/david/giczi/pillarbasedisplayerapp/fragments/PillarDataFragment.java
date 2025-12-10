@@ -59,27 +59,28 @@ public class PillarDataFragment extends Fragment {
 
     private void displayPillarLocationData(){
         getParentFragmentManager().setFragmentResultListener("results", this, (requestKey, result) -> {
-            String centerX = Objects.requireNonNull(result.get("centerX")).toString();
-            String centerY = Objects.requireNonNull(result.get("centerY")).toString();
-            String directionX = Objects.requireNonNull(result.get("directionX")).toString();
-            String directionY = Objects.requireNonNull(result.get("directionY")).toString();
+            String measCenterX = Objects.requireNonNull(result.get("centerX")).toString();
+            String measCenterY = Objects.requireNonNull(result.get("centerY")).toString();
+            String measDirectionX = Objects.requireNonNull(result.get("directionX")).toString();
+            String measDirectionY = Objects.requireNonNull(result.get("directionY")).toString();
             String basePointY =  fragmentDataBinding.inputYCoordinate.getText().toString();
             String basePointX = fragmentDataBinding.inputXCoordinate.getText().toString();
-            if( basePointY.isEmpty() && basePointX.isEmpty() ){
-                fragmentDataBinding.inputYCoordinate.setText(centerX);
-                fragmentDataBinding.inputXCoordinate.setText(centerY);
-                fragmentDataBinding.inputNextPrevYCoordinate.setText(directionX);
-                fragmentDataBinding.inputNextPrevXCoordinate.setText(directionY);
+            if( (basePointY.isEmpty() || MainActivity.isInvalidInputChars(basePointY)) &&
+                    (basePointX.isEmpty() || MainActivity.isInvalidInputChars(basePointX)) ){
+                fragmentDataBinding.inputYCoordinate.setText(measCenterX);
+                fragmentDataBinding.inputXCoordinate.setText(measCenterY);
+                fragmentDataBinding.inputNextPrevYCoordinate.setText(measDirectionX);
+                fragmentDataBinding.inputNextPrevXCoordinate.setText(measDirectionY);
                 return;
             }
             showCalculatedPillarBaseDataDialog(new Point("BasePoint",
                             Double.parseDouble(basePointY), Double.parseDouble(basePointX)),
-                    centerX, centerY, directionX, directionY);
+                    measCenterX, measCenterY, measDirectionX, measDirectionY);
         });
     }
 
-    private void showCalculatedPillarBaseDataDialog(Point basePoint, String centerX, String centerY,
-                                                    String directionX, String directionY) {
+    private void showCalculatedPillarBaseDataDialog(Point basePoint, String measCenterX, String measCenterY,
+                                                    String measDirectionX, String measDirectionY) {
         String ordinate = MainActivity.calcPillarLocationData.getOrdinateAsString(basePoint);
         String abscissa = MainActivity.calcPillarLocationData.getAbscissaAsString(basePoint);
         if( ordinate.startsWith("NaN") || abscissa.startsWith("NaN")){
@@ -108,19 +109,58 @@ public class PillarDataFragment extends Fragment {
         titleBuilder.append(abscissaSpan)
                         .append("\n")
                                 .append(ordinateSpan);
+        String infoForBasePosition =
+                getInfoForPillarBasePositionByControlPoint(measCenterX, measCenterY, measDirectionX, measDirectionY);
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setTitle(titleBuilder);
         builder.setMessage("Hozzáadja a mért adatokat?");
 
         builder.setPositiveButton("Igen", (dialog, which) -> {
-            fragmentDataBinding.inputYCoordinate.setText(centerX);
-            fragmentDataBinding.inputXCoordinate.setText(centerY);
-            fragmentDataBinding.inputNextPrevYCoordinate.setText(directionX);
-            fragmentDataBinding.inputNextPrevXCoordinate.setText(directionY);
+            fragmentDataBinding.inputYCoordinate.setText(measCenterX);
+            fragmentDataBinding.inputXCoordinate.setText(measCenterY);
+            fragmentDataBinding.inputNextPrevYCoordinate.setText(measDirectionX);
+            fragmentDataBinding.inputNextPrevXCoordinate.setText(measDirectionY);
         });
         builder.setNegativeButton("Nem", (dialog, which) -> dialog.dismiss());
         AlertDialog alert = builder.create();
         alert.show();
+    }
+
+    private String getInfoForPillarBasePositionByControlPoint(String measCenterX, String measCenterY,
+                                                              String measDirectionX, String measDirectionY){
+     String controlPointY = ((MainActivity) requireActivity()).service.actualPillarBase.centerPillarY;
+     String controlPointX = ((MainActivity) requireActivity()).service.actualPillarBase.centerPillarX;
+        if( controlPointY == null || controlPointX == null ){
+            return "Nincs oh kontrollpont.";
+        }
+    String centerPillarId = fragmentDataBinding.inputPillarId.getText().toString();
+    String centerPillarY= fragmentDataBinding.inputYCoordinate.getText().toString();
+    String centerPillarX= fragmentDataBinding.inputXCoordinate.getText().toString();
+    String nextPillarId = fragmentDataBinding.inputNextPrevPillarId.getText().toString();
+    String nextPillarY = fragmentDataBinding.inputNextPrevYCoordinate.getText().toString();
+    String nextPillarX = fragmentDataBinding.inputNextPrevXCoordinate.getText().toString();
+    if( centerPillarId.isEmpty() || MainActivity.isInvalidInputChars(centerPillarId) ){
+        return "Nem megfelelő az oh alap azonosítója.";
+    }
+    else if(  centerPillarY.isEmpty() || MainActivity.isInvalidInputChars(centerPillarY) ||
+            centerPillarX.isEmpty() || MainActivity.isInvalidInputChars(centerPillarX) ){
+        return "Nem megfelelő az oh alap elméleti koordinátája";
+    }
+    else if( nextPillarId.isEmpty() || MainActivity.isInvalidInputChars(nextPillarId) ){
+        return "Nem megfelelő az előző/következő oh alap azonosítója.";
+    }
+    else if( nextPillarY.isEmpty() || MainActivity.isInvalidInputChars(nextPillarY) ||
+            nextPillarX.isEmpty() || MainActivity.isInvalidInputChars(nextPillarX)){
+        return "Nem megfelelő az előző/következő oh alap elméleti koordinátája";
+    }
+    Point controlPoint = new Point(((MainActivity) requireActivity()).service.actualPillarBase.controlPointId,
+            Double.parseDouble(controlPointX), Double.parseDouble(controlPointY));
+    Point centerPillarPoint = new Point(centerPillarId, Double.parseDouble(centerPillarY), Double.parseDouble(centerPillarX));
+    Point nextPillarPoint = new Point(nextPillarId, Double.parseDouble(nextPillarY), Double.parseDouble(nextPillarX));
+    Point measCenterPoint = new Point("MeasCenterPoint", Double.parseDouble(measCenterX), Double.parseDouble(measCenterY));
+    Point measDirectionPoint = new Point("MeasDirectionPoint", Double.parseDouble(measCenterX), Double.parseDouble(measCenterY));
+
+        return null;
     }
 
     @Override
@@ -212,6 +252,16 @@ public class PillarDataFragment extends Fragment {
                 fragmentDataBinding.inputSec.setText(inputData.get(13));
             }
         }
+    }
+
+    public String convertAngleMinSecFormat(double radianAngle){
+        double angleData = Math.toDegrees(radianAngle);
+        int angle = (int) angleData;
+        int min = (int) ((angleData - angle) * 60);
+        int sec = ((int) ((angleData - angle) * 3600 - min * 60));
+        return (0 > angleData ? "-" :  "") + Math.abs(angle) + "° "
+                + (9 < Math.abs(min) ? Math.abs(min) : "0" + Math.abs(min)) + "' "
+                + (9 < Math.abs(sec) ? Math.abs(sec) : "0" + Math.abs(sec)) + "\"";
     }
 
 }

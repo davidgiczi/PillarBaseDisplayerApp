@@ -2,6 +2,8 @@ package com.david.giczi.pillarbasedisplayerapp.service;
 
 import androidx.annotation.NonNull;
 
+import com.david.giczi.pillarbasedisplayerapp.MainActivity;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,22 +34,26 @@ public class PillarLocationCalculator {
     public void addCenterPillarMeasData(String foot1Y, String foot1X, String foot2Y, String foot2X,
         String foot3Y, String foot3X, String foot4Y, String foot4X){
 
-        if( !foot1Y.isEmpty() && !foot1X.isEmpty() ){
+        if( !foot1Y.isEmpty() && !MainActivity.isInvalidInputChars(foot1Y) &&
+                !foot1X.isEmpty() && !MainActivity.isInvalidInputChars(foot1X) ){
             Point foot1Point = new Point("1", Double.parseDouble(foot1Y.replace(",", ".")),
                     Double.parseDouble(foot1X.replace(",", ".")));
             centerPillarMeasData.add(foot1Point);
         }
-        if( !foot2Y.isEmpty() && !foot2X.isEmpty() ){
+        if( !foot2Y.isEmpty() && !MainActivity.isInvalidInputChars(foot2Y) &&
+                !foot2X.isEmpty() && !MainActivity.isInvalidInputChars(foot2X) ){
             Point foot2Point = new Point("2", Double.parseDouble(foot2Y.replace(",", ".")),
                     Double.parseDouble(foot2X.replace(",", ".")));
             centerPillarMeasData.add(foot2Point);
         }
-        if( !foot3Y.isEmpty() && !foot3X.isEmpty() ){
+        if( !foot3Y.isEmpty() && !MainActivity.isInvalidInputChars(foot3Y) &&
+                !foot3X.isEmpty() && !MainActivity.isInvalidInputChars(foot3X) ){
             Point foot3Point = new Point("3", Double.parseDouble(foot3Y.replace(",", ".")),
                     Double.parseDouble(foot3X.replace(",", ".")));
             centerPillarMeasData.add(foot3Point);
         }
-        if( !foot4Y.isEmpty() && !foot4X.isEmpty() ){
+        if( !foot4Y.isEmpty() && !MainActivity.isInvalidInputChars(foot4Y) &&
+                !foot4X.isEmpty() && !MainActivity.isInvalidInputChars(foot4X) ){
             Point foot4Point = new Point("4", Double.parseDouble(foot4Y.replace(",", ".")),
                     Double.parseDouble(foot4X.replace(",", ".")));
             centerPillarMeasData.add(foot4Point);
@@ -57,22 +63,26 @@ public class PillarLocationCalculator {
     public void addDirectionPillarMeasData(String foot1Y, String foot1X, String foot2Y, String foot2X,
                                         String foot3Y, String foot3X, String foot4Y, String foot4X){
 
-        if( !foot1Y.isEmpty() && !foot1X.isEmpty() ){
+        if( !foot1Y.isEmpty() && !MainActivity.isInvalidInputChars(foot1Y) &&
+                !foot1X.isEmpty() && !MainActivity.isInvalidInputChars(foot1X) ){
             Point foot1Point = new Point("1", Double.parseDouble(foot1Y.replace(",", ".")),
                     Double.parseDouble(foot1X.replace(",", ".")));
             directionPillarMeasData.add(foot1Point);
         }
-        if( !foot2Y.isEmpty() && !foot2X.isEmpty() ){
+        if( !foot2Y.isEmpty() && !MainActivity.isInvalidInputChars(foot2Y) &&
+                !foot2X.isEmpty() && !MainActivity.isInvalidInputChars(foot2X) ){
             Point foot2Point = new Point("2", Double.parseDouble(foot2Y.replace(",", ".")),
                     Double.parseDouble(foot2X.replace(",", ".")));
             directionPillarMeasData.add(foot2Point);
         }
-        if( !foot3Y.isEmpty() && !foot3X.isEmpty() ){
+        if( !foot3Y.isEmpty() && !MainActivity.isInvalidInputChars(foot3Y) &&
+                !foot3X.isEmpty() && !MainActivity.isInvalidInputChars(foot3X) ){
             Point foot3Point = new Point("3", Double.parseDouble(foot3Y.replace(",", ".")),
                     Double.parseDouble(foot3X.replace(",", ".")));
             directionPillarMeasData.add(foot3Point);
         }
-        if( !foot4Y.isEmpty() && !foot4X.isEmpty() ){
+        if( !foot4Y.isEmpty() && !MainActivity.isInvalidInputChars(foot4Y) &&
+                !foot4X.isEmpty() && !MainActivity.isInvalidInputChars(foot4X) ){
             Point foot4Point = new Point("4", Double.parseDouble(foot4Y.replace(",", ".")),
                     Double.parseDouble(foot4X.replace(",", ".")));
             directionPillarMeasData.add(foot4Point);
