@@ -156,13 +156,13 @@ public class PillarLocationCalculator {
     }
 
     public void setAbscissa_distance(String abscissa_distance) {
-        if( !abscissa_distance.isEmpty() ){
+        if( !abscissa_distance.isEmpty() && !MainActivity.isInvalidInputChars(abscissa_distance)){
             this.abscissa_distance = Double.parseDouble(abscissa_distance);
         }
     }
 
     public void setOrdinate_distance(String ordinate_distance) {
-        if( !ordinate_distance.isEmpty() ){
+        if( !ordinate_distance.isEmpty() && !MainActivity.isInvalidInputChars(ordinate_distance)){
             this.ordinate_distance = Double.parseDouble(ordinate_distance);
         }
     }

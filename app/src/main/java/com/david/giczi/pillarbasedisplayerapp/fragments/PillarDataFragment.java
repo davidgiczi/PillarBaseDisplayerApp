@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment;
 import com.david.giczi.pillarbasedisplayerapp.MainActivity;
 import com.david.giczi.pillarbasedisplayerapp.R;
 import com.david.giczi.pillarbasedisplayerapp.databinding.FragmentDataBinding;
+import com.david.giczi.pillarbasedisplayerapp.db.PillarBaseParamsService;
 import com.david.giczi.pillarbasedisplayerapp.service.Point;
 
 import java.util.List;
@@ -109,8 +110,7 @@ public class PillarDataFragment extends Fragment {
         titleBuilder.append(abscissaSpan)
                         .append("\n")
                                 .append(ordinateSpan);
-        String infoForBasePosition =
-                getInfoForPillarBasePositionByControlPoint(measCenterX, measCenterY, measDirectionX, measDirectionY);
+        String infoForBasePosition = getInfoForPillarBasePositionByControlPoint(measCenterX, measCenterY);
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setTitle(titleBuilder);
         builder.setMessage("Hozzáadja a mért adatokat?");
@@ -126,39 +126,23 @@ public class PillarDataFragment extends Fragment {
         alert.show();
     }
 
-    private String getInfoForPillarBasePositionByControlPoint(String measCenterX, String measCenterY,
-                                                              String measDirectionX, String measDirectionY){
-     String controlPointY = ((MainActivity) requireActivity()).service.actualPillarBase.centerPillarY;
-     String controlPointX = ((MainActivity) requireActivity()).service.actualPillarBase.centerPillarX;
+    private String getInfoForPillarBasePositionByControlPoint(String measCenterX, String measCenterY){
+     PillarBaseParamsService service = ((MainActivity) requireActivity()).service;
+     String controlPointY = service.actualPillarBase.centerPillarY;
+     String controlPointX = service.actualPillarBase.centerPillarX;
         if( controlPointY == null || controlPointX == null ){
-            return "Nincs oh kontrollpont.";
+            return "Nincs " + service.actualPillarBase.centerPillarId +  ".oh kontrollpont.";
         }
-    String centerPillarId = fragmentDataBinding.inputPillarId.getText().toString();
-    String centerPillarY= fragmentDataBinding.inputYCoordinate.getText().toString();
-    String centerPillarX= fragmentDataBinding.inputXCoordinate.getText().toString();
-    String nextPillarId = fragmentDataBinding.inputNextPrevPillarId.getText().toString();
-    String nextPillarY = fragmentDataBinding.inputNextPrevYCoordinate.getText().toString();
-    String nextPillarX = fragmentDataBinding.inputNextPrevXCoordinate.getText().toString();
-    if( centerPillarId.isEmpty() || MainActivity.isInvalidInputChars(centerPillarId) ){
-        return "Nem megfelelő az oh alap azonosítója.";
-    }
-    else if(  centerPillarY.isEmpty() || MainActivity.isInvalidInputChars(centerPillarY) ||
-            centerPillarX.isEmpty() || MainActivity.isInvalidInputChars(centerPillarX) ){
-        return "Nem megfelelő az oh alap elméleti koordinátája";
-    }
-    else if( nextPillarId.isEmpty() || MainActivity.isInvalidInputChars(nextPillarId) ){
-        return "Nem megfelelő az előző/következő oh alap azonosítója.";
-    }
-    else if( nextPillarY.isEmpty() || MainActivity.isInvalidInputChars(nextPillarY) ||
-            nextPillarX.isEmpty() || MainActivity.isInvalidInputChars(nextPillarX)){
-        return "Nem megfelelő az előző/következő oh alap elméleti koordinátája";
-    }
-    Point controlPoint = new Point(((MainActivity) requireActivity()).service.actualPillarBase.controlPointId,
+    Point controlPoint = new Point(service.actualPillarBase.controlPointId,
             Double.parseDouble(controlPointX), Double.parseDouble(controlPointY));
-    Point centerPillarPoint = new Point(centerPillarId, Double.parseDouble(centerPillarY), Double.parseDouble(centerPillarX));
-    Point nextPillarPoint = new Point(nextPillarId, Double.parseDouble(nextPillarY), Double.parseDouble(nextPillarX));
-    Point measCenterPoint = new Point("MeasCenterPoint", Double.parseDouble(measCenterX), Double.parseDouble(measCenterY));
-    Point measDirectionPoint = new Point("MeasDirectionPoint", Double.parseDouble(measCenterX), Double.parseDouble(measCenterY));
+    Point centerPoint = new Point(service.actualPillarBase.centerPillarId,
+                                Double.parseDouble(service.actualPillarBase.centerPillarY),
+                                Double.parseDouble(service.actualPillarBase.centerPillarX));
+    Point nextPoint = new Point(service.actualPillarBase.directionPillarId,
+                                Double.parseDouble(service.actualPillarBase.directionPillarY),
+                                Double.parseDouble(service.actualPillarBase.directionPillarX));
+    Point measCenterPoint = new Point("MeasCenterPoint", Double.parseDouble(measCenterX),
+                                Double.parseDouble(measCenterY));
 
         return null;
     }
