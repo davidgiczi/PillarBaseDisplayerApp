@@ -19,6 +19,7 @@ import com.david.giczi.pillarbasedisplayerapp.MainActivity;
 import com.david.giczi.pillarbasedisplayerapp.R;
 import com.david.giczi.pillarbasedisplayerapp.databinding.FragmentDataBinding;
 import com.david.giczi.pillarbasedisplayerapp.db.PillarBaseParamsService;
+import com.david.giczi.pillarbasedisplayerapp.service.AzimuthAndDistance;
 import com.david.giczi.pillarbasedisplayerapp.service.Point;
 
 import java.util.List;
@@ -106,14 +107,19 @@ public class PillarDataFragment extends Fragment {
             abscissaSpan.setSpan(new ForegroundColorSpan(ContextCompat.getColor(requireContext(), R.color.red)),
                     10, abscissaSpan.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
+        SpannableString infoForBasePosition = getInfoForPillarBasePositionByControlPoint(measCenterX, measCenterY);
         SpannableStringBuilder titleBuilder = new SpannableStringBuilder();
         titleBuilder.append(abscissaSpan)
                         .append("\n")
-                                .append(ordinateSpan);
-        String infoForBasePosition = getInfoForPillarBasePositionByControlPoint(measCenterX, measCenterY);
+                        .append(ordinateSpan);
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setTitle(titleBuilder);
-        builder.setMessage("Hozzáadja a mért adatokat?");
+        SpannableStringBuilder messageBuilder = new SpannableStringBuilder();
+        messageBuilder.append(infoForBasePosition)
+                        .append("\n")
+                        .append("\n")
+                        .append("Hozzáadja a mért adatokat?");
+        builder.setMessage(messageBuilder);
 
         builder.setPositiveButton("Igen", (dialog, which) -> {
             fragmentDataBinding.inputYCoordinate.setText(measCenterX);
@@ -126,12 +132,13 @@ public class PillarDataFragment extends Fragment {
         alert.show();
     }
 
-    private String getInfoForPillarBasePositionByControlPoint(String measCenterX, String measCenterY){
+    private SpannableString getInfoForPillarBasePositionByControlPoint(String measCenterX, String measCenterY){
      PillarBaseParamsService service = ((MainActivity) requireActivity()).service;
      String controlPointY = service.actualPillarBase.centerPillarY;
      String controlPointX = service.actualPillarBase.centerPillarX;
         if( controlPointY == null || controlPointX == null ){
-            return "Nincs " + service.actualPillarBase.centerPillarId +  ".oh kontrollpont.";
+            return new SpannableString("Nincs " +
+                    service.actualPillarBase.centerPillarId +  ".oh kontrollpont.");
         }
     Point controlPoint = new Point(service.actualPillarBase.controlPointId,
             Double.parseDouble(controlPointX), Double.parseDouble(controlPointY));
@@ -143,8 +150,51 @@ public class PillarDataFragment extends Fragment {
                                 Double.parseDouble(service.actualPillarBase.directionPillarX));
     Point measCenterPoint = new Point("MeasCenterPoint", Double.parseDouble(measCenterX),
                                 Double.parseDouble(measCenterY));
-
-        return null;
+    AzimuthAndDistance centerToNextPoint = new AzimuthAndDistance(centerPoint, nextPoint);
+    AzimuthAndDistance centerToControlPoint = new AzimuthAndDistance(centerPoint, controlPoint);
+    AzimuthAndDistance measCenterToNextPoint = new AzimuthAndDistance(measCenterPoint, nextPoint);
+    AzimuthAndDistance measCenterToControlPoint = new AzimuthAndDistance(measCenterPoint, controlPoint);
+    double teoGammaAngle = centerToNextPoint.calcAzimuth() - centerToControlPoint.calcAzimuth();
+    double measGammaAngle = measCenterToNextPoint.calcAzimuth() - measCenterToControlPoint.calcAzimuth();
+    double deltaGammaAngle =  teoGammaAngle - measGammaAngle;
+    SpannableString infoText;
+    if( 0 > teoGammaAngle ){
+        teoGammaAngle += 2 * Math.PI;
+    }
+    if( 0 > measGammaAngle ){
+        measGammaAngle += 2 * Math.PI;
+    }
+    if( teoGammaAngle > 0  && Math.PI > teoGammaAngle && measGammaAngle > 0 && Math.PI > measGammaAngle ){
+        infoText = new SpannableString("BAL oldali törésszög, ΔΥ= " +
+                MainActivity.convertAngleMinSecFormat(deltaGammaAngle));
+        if( Math.PI / 90 > Math.abs(deltaGammaAngle) ){
+            infoText.setSpan(new ForegroundColorSpan(ContextCompat.getColor(requireContext(), R.color.green)),
+                    22, infoText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+        else {
+            infoText.setSpan(new ForegroundColorSpan(ContextCompat.getColor(requireContext(), R.color.red)),
+                    22, infoText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+    }
+    else if( teoGammaAngle > Math.PI && measGammaAngle > Math.PI){
+        infoText = new SpannableString("JOBB oldali törésszög, ΔΥ= " +
+                MainActivity.convertAngleMinSecFormat(deltaGammaAngle));
+        if( Math.PI / 90 > Math.abs(deltaGammaAngle) ){
+            infoText.setSpan(new ForegroundColorSpan(ContextCompat.getColor(requireContext(), R.color.green)),
+                    23, infoText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+        else{
+            infoText.setSpan(new ForegroundColorSpan(ContextCompat.getColor(requireContext(), R.color.red)),
+                    23, infoText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+    }
+    else {
+        infoText = new SpannableString("Hibás törésszög, ΔΥ= " +
+                                MainActivity.convertAngleMinSecFormat(deltaGammaAngle));
+        infoText.setSpan(new ForegroundColorSpan(ContextCompat.getColor(requireContext(), R.color.red)),
+                0, infoText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+    }
+        return infoText;
     }
 
     @Override
@@ -236,16 +286,6 @@ public class PillarDataFragment extends Fragment {
                 fragmentDataBinding.inputSec.setText(inputData.get(13));
             }
         }
-    }
-
-    public String convertAngleMinSecFormat(double radianAngle){
-        double angleData = Math.toDegrees(radianAngle);
-        int angle = (int) angleData;
-        int min = (int) ((angleData - angle) * 60);
-        int sec = ((int) ((angleData - angle) * 3600 - min * 60));
-        return (0 > angleData ? "-" :  "") + Math.abs(angle) + "° "
-                + (9 < Math.abs(min) ? Math.abs(min) : "0" + Math.abs(min)) + "' "
-                + (9 < Math.abs(sec) ? Math.abs(sec) : "0" + Math.abs(sec)) + "\"";
     }
 
 }

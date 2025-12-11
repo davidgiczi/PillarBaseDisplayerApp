@@ -66,10 +66,10 @@ public class PillarBaseParamsService {
                     actualPillarBase.setRotationAngle(baseData.get(12));
                     actualPillarBase.setRotationMin(baseData.get(13));
                     actualPillarBase.setRotationSec(baseData.get(14));
-                    if( baseData.size() == 18 ){
-                        actualPillarBase.setControlPointId(baseData.get(15));
-                        actualPillarBase.setControlPointY(baseData.get(16));
-                        actualPillarBase.setControlPointX(baseData.get(17));
+                    if( baseData.size() == 19 ){
+                        actualPillarBase.setControlPointId(baseData.get(16));
+                        actualPillarBase.setControlPointY(baseData.get(17));
+                        actualPillarBase.setControlPointX(baseData.get(18));
                     }
                 } else if( MainActivity.BASE_TYPE[1].equals(baseData.get(0)) ){
                     actualPillarBase.setPerpendicularHoleDistance(baseData.get(7));
@@ -79,19 +79,24 @@ public class PillarBaseParamsService {
                     actualPillarBase.setRotationAngle(baseData.get(11));
                     actualPillarBase.setRotationMin(baseData.get(12));
                     actualPillarBase.setRotationSec(baseData.get(13));
-                    if( baseData.size() == 17 ){
-                        actualPillarBase.setControlPointId(baseData.get(14));
-                        actualPillarBase.setControlPointY(baseData.get(15));
-                        actualPillarBase.setControlPointX(baseData.get(16));
+                    if( baseData.size() == 18 ){
+                        actualPillarBase.setControlPointId(baseData.get(15));
+                        actualPillarBase.setControlPointY(baseData.get(16));
+                        actualPillarBase.setControlPointX(baseData.get(17));
                     }
                 }
-                if( baseData.get(baseData.size() - 1).equals("0") ){
+                if( baseData.size() == 18 && baseData.get(14).equals("0") ){
+                 actualPillarBase.setRotationSide("right");
+                }
+                else if( baseData.size() == 18 && baseData.get(14).equals("1") ) {
+                actualPillarBase.setRotationSide("left");
+                 }
+                else if( baseData.size() == 19 && baseData.get(15).equals("0") ){
                     actualPillarBase.setRotationSide("right");
                 }
-                else if( baseData.get(baseData.size() - 1).equals("1") ) {
+                else if( baseData.size() == 19 && baseData.get(15).equals("1") ) {
                     actualPillarBase.setRotationSide("left");
                 }
-
                 PillarBaseParamsDataBase.databaseExecutor.execute(() ->
                          paramsDAO.insertPillarBaseParams(actualPillarBase));
     }

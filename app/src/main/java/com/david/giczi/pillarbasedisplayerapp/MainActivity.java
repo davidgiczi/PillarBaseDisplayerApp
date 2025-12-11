@@ -25,6 +25,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -1012,6 +1013,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
 
     private void readPillarBaseParamsFromDatabase(){
+        Log.d("ActualPillarbase", service.actualPillarBase.toString());
         BASE_DATA.clear();
         BASE_DATA.add(service.actualPillarBase.baseType);
         BASE_DATA.add(service.actualPillarBase.centerPillarId);
@@ -1506,5 +1508,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
+    }
+    public static String convertAngleMinSecFormat(double radianAngle){
+        double angleData = Math.toDegrees(radianAngle);
+        int angle = (int) angleData;
+        int min = (int) ((angleData - angle) * 60);
+        int sec = ((int) ((angleData - angle) * 3600 - min * 60));
+        return (0 > angleData ? "-" :  "") + Math.abs(angle) + "° "
+                + (9 < Math.abs(min) ? Math.abs(min) : "0" + Math.abs(min)) + "' "
+                + (9 < Math.abs(sec) ? Math.abs(sec) : "0" + Math.abs(sec)) + "\"";
     }
 }
