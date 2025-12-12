@@ -25,7 +25,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -1013,7 +1012,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
 
     private void readPillarBaseParamsFromDatabase(){
-        Log.d("ActualPillarbase", service.actualPillarBase.toString());
         BASE_DATA.clear();
         BASE_DATA.add(service.actualPillarBase.baseType);
         BASE_DATA.add(service.actualPillarBase.centerPillarId);
@@ -1473,10 +1471,17 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         else if(((RadioButton) findViewById(R.id.radio_left)).isChecked()){
             BASE_DATA.add("1");
         }
-
+        if( service.actualPillarBase.controlPointId != null ){
+            BASE_DATA.add(service.actualPillarBase.controlPointId);
+        }
+        if( service.actualPillarBase.controlPointY != null ){
+            BASE_DATA.add(service.actualPillarBase.controlPointY);
+        }
+        if( service.actualPillarBase.controlPointX != null ){
+            BASE_DATA.add(service.actualPillarBase.controlPointX);
+        }
         IS_SAVE_RTK_FILE = ((CheckBox) findViewById(R.id.save_rtk_format)).isChecked();
         IS_SAVE_TPS_FILE = ((CheckBox) findViewById(R.id.save_tps_format)).isChecked();
-
     }
 
     @Override
