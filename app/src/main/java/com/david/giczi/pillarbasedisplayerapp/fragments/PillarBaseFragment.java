@@ -21,6 +21,7 @@ import androidx.fragment.app.Fragment;
 import com.david.giczi.pillarbasedisplayerapp.MainActivity;
 import com.david.giczi.pillarbasedisplayerapp.R;
 import com.david.giczi.pillarbasedisplayerapp.databinding.FragmentBaseBinding;
+import com.david.giczi.pillarbasedisplayerapp.db.PillarBaseParamsService;
 import com.david.giczi.pillarbasedisplayerapp.service.AzimuthAndDistance;
 import com.david.giczi.pillarbasedisplayerapp.service.Point;
 import com.david.giczi.pillarbasedisplayerapp.service.PolarPoint;
@@ -190,7 +191,14 @@ public class PillarBaseFragment extends Fragment {
 
 
     private void drawPillarBasePointId(Point pillarBasePoint){
-        paint.setColor(ContextCompat.getColor(requireContext(), R.color.red));
+        if( pillarBasePoint.getPointID()
+                .equals(transformedPillarBasePoints.get(transformedPillarBasePoints.size() - 1).getPointID())){
+            paint.setColor(Color.BLUE);
+        }
+        else{
+            paint.setColor(ContextCompat.getColor(requireContext(), R.color.red));
+        }
+
         paint.setStyle(Paint.Style.FILL);
         paint.setTypeface(Typeface.DEFAULT_BOLD);
         paint.setTextSize(40);
@@ -208,17 +216,38 @@ public class PillarBaseFragment extends Fragment {
         paint.setStyle(Paint.Style.FILL);
         paint.setTypeface(Typeface.DEFAULT_BOLD);
         paint.setTextSize(40);
-        canvas.drawText("M= 1:" + (int) SCALE,
-                3 * MM, getResources().getDisplayMetrics().heightPixels - 8 * MM, paint);
         String[] centerIdValues = centerPoint.getPointID().split("\\s+");
         String[] directionIdValues = directionPoint.getPointID().split("\\s+");
-        canvas.drawText((centerIdValues.length == 2 ?
-                        centerIdValues[0] + centerIdValues[1] : centerPoint.getPointID() )+ ". és "
-                        + (directionIdValues.length == 2 ?
-                       directionIdValues[0] + directionIdValues[1] : directionPoint.getPointID())
-                        + ". oszlopok távolsága: " +
-        String.format(Locale.getDefault(), "%.3fm", mainLineDistance.calcDistance()).replace(",", "."),
-               3 * MM, getResources().getDisplayMetrics().heightPixels - 3 * MM, paint);
+        String angleInfoByControlPoint = getAngleInfoByControlPoint();
+        String distanceInfoByControlPoint = getDistanceInfoByControlPoint();
+        if( angleInfoByControlPoint == null && distanceInfoByControlPoint == null) {
+            canvas.drawText("M= 1:" + (int) SCALE,
+                    3 * MM, getResources().getDisplayMetrics().heightPixels - 8 * MM, paint);
+            canvas.drawText((centerIdValues.length == 2 ?
+                            centerIdValues[0] + centerIdValues[1] : centerPoint.getPointID()) + ". és "
+                            + (directionIdValues.length == 2 ?
+                            directionIdValues[0] + directionIdValues[1] : directionPoint.getPointID())
+                            + ". oszlopok távolsága: " +
+                            String.format(Locale.getDefault(), "%.3fm", mainLineDistance.calcDistance()).replace(",", "."),
+                    3 * MM, getResources().getDisplayMetrics().heightPixels - 3 * MM, paint);
+        }
+        else{
+            canvas.drawText("M= 1:" + (int) SCALE,
+                    3 * MM, getResources().getDisplayMetrics().heightPixels - 18 * MM, paint);
+            canvas.drawText((centerIdValues.length == 2 ?
+                            centerIdValues[0] + centerIdValues[1] : centerPoint.getPointID()) + ". és "
+                            + (directionIdValues.length == 2 ?
+                            directionIdValues[0] + directionIdValues[1] : directionPoint.getPointID())
+                            + ". oszlopok távolsága: " +
+                            String.format(Locale.getDefault(), "%.3fm", mainLineDistance.calcDistance()).replace(",", "."),
+                    3 * MM, getResources().getDisplayMetrics().heightPixels - 13 * MM, paint);
+            assert distanceInfoByControlPoint != null;
+            canvas.drawText(distanceInfoByControlPoint, 3 * MM,
+                    getResources().getDisplayMetrics().heightPixels - 8 * MM, paint);
+            assert angleInfoByControlPoint != null;
+            canvas.drawText(angleInfoByControlPoint, 3 * MM,
+                    getResources().getDisplayMetrics().heightPixels - 3 * MM, paint);
+        }
         paint.setColor(ContextCompat.getColor(requireContext(), R.color.firebrick));
         for(int i = 1; i < transformedPillarBasePoints.size() - 1; i++){
             String[] idValues = transformedPillarBasePoints.get(i).getPointID().split("\\s+");
@@ -227,6 +256,54 @@ public class PillarBaseFragment extends Fragment {
                     (float)  (transformedPillarBasePoints.get(i).getX_coord() - 2 * MM),
                     (float) (transformedPillarBasePoints.get(i).getY_coord() - 2 * MM), paint);
         }
+    }
+
+    private String getDistanceInfoByControlPoint(){
+        PillarBaseParamsService service = ((MainActivity) requireActivity()).service;
+        if( service.actualPillarBase.controlPointX == null || service.actualPillarBase.controlPointY == null){
+            return null;
+        }
+        Point controlPoint = new Point(service.actualPillarBase.controlPointId,
+                Double.parseDouble(service.actualPillarBase.controlPointY),
+                Double.parseDouble(service.actualPillarBase.controlPointX));
+        Point centerPoint = new Point(service.actualPillarBase.centerPillarId,
+                Double.parseDouble(service.actualPillarBase.centerPillarY),
+                Double.parseDouble(service.actualPillarBase.centerPillarX));
+        return centerPoint.getPointID() + ". és " + controlPoint.getPointID() + ". oszlopok távolsága: " +
+                String.format(Locale.getDefault(), "%.3fm",
+                        new AzimuthAndDistance(centerPoint, controlPoint).calcDistance())
+                        .replace(",", ".");
+    }
+
+    private String getAngleInfoByControlPoint(){
+        PillarBaseParamsService service = ((MainActivity) requireActivity()).service;
+        if( service.actualPillarBase.controlPointX == null || service.actualPillarBase.controlPointY == null){
+            return null;
+        }
+        Point controlPoint = new Point(service.actualPillarBase.controlPointId,
+                Double.parseDouble(service.actualPillarBase.controlPointY),
+                Double.parseDouble(service.actualPillarBase.controlPointX));
+        Point centerPoint = new Point(service.actualPillarBase.centerPillarId,
+                Double.parseDouble(service.actualPillarBase.centerPillarY),
+                Double.parseDouble(service.actualPillarBase.centerPillarX));
+        Point nextPoint = new Point(service.actualPillarBase.directionPillarId,
+                Double.parseDouble(service.actualPillarBase.directionPillarY),
+                Double.parseDouble(service.actualPillarBase.directionPillarX));
+        if( centerPoint.equals(controlPoint) || centerPoint.equals(nextPoint) ){
+            return null;
+        }
+        AzimuthAndDistance centerToNextPoint = new AzimuthAndDistance(centerPoint, nextPoint);
+        AzimuthAndDistance centerToControlPoint = new AzimuthAndDistance(centerPoint, controlPoint);
+        double teoGammaAngle = centerToNextPoint.calcAzimuth() - centerToControlPoint.calcAzimuth();
+        if( 0 > teoGammaAngle ){
+            teoGammaAngle += 2 * Math.PI;
+        }
+        if( teoGammaAngle > 0  && Math.PI > teoGammaAngle ){
+            return  "BAL oldali törésszög, Υ= " +
+                    MainActivity.convertAngleMinSecFormat(teoGammaAngle);
+        }
+        return  "JOBB oldali törésszög, Υ= " +
+                MainActivity.convertAngleMinSecFormat(2 * Math.PI - teoGammaAngle);
     }
     private boolean isPillarIdIncreased(){
         String[] centerIdValues = transformedPillarBasePoints.get(0).getPointID().split("\\s+");

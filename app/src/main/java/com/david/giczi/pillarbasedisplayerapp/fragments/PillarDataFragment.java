@@ -107,18 +107,13 @@ public class PillarDataFragment extends Fragment {
             abscissaSpan.setSpan(new ForegroundColorSpan(ContextCompat.getColor(requireContext(), R.color.red)),
                     10, abscissaSpan.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
-        SpannableString infoForBasePosition = getInfoForPillarBasePositionByControlPoint(measCenterX, measCenterY);
+        SpannableStringBuilder messageBuilder = getInfoForPillarBasePositionByControlPoint(measCenterX, measCenterY);
         SpannableStringBuilder titleBuilder = new SpannableStringBuilder();
         titleBuilder.append(abscissaSpan)
                         .append("\n")
                         .append(ordinateSpan);
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setTitle(titleBuilder);
-        SpannableStringBuilder messageBuilder = new SpannableStringBuilder();
-        messageBuilder.append(infoForBasePosition)
-                        .append("\n")
-                        .append("\n")
-                        .append("Hozzáadja a mért adatokat?");
         builder.setMessage(messageBuilder);
 
         builder.setPositiveButton("Igen", (dialog, which) -> {
@@ -132,22 +127,31 @@ public class PillarDataFragment extends Fragment {
         alert.show();
     }
 
-    private SpannableString getInfoForPillarBasePositionByControlPoint(String measCenterX, String measCenterY){
+    private SpannableStringBuilder getInfoForPillarBasePositionByControlPoint(String measCenterX, String measCenterY){
      PillarBaseParamsService service = ((MainActivity) requireActivity()).service;
-     String controlPointY = service.actualPillarBase.centerPillarY;
-     String controlPointX = service.actualPillarBase.centerPillarX;
+     String controlPointY = service.actualPillarBase.controlPointY;
+     String controlPointX = service.actualPillarBase.controlPointX;
         if( controlPointY == null || controlPointX == null ){
-            return new SpannableString("Nincs " +
-                    service.actualPillarBase.centerPillarId +  ".oh kontrollpont.");
+            return new SpannableStringBuilder("Hiba: Nincs " +
+                    service.actualPillarBase.centerPillarId +  ".oh kontrollpont.")
+                        .append("\n")
+                        .append("\n")
+                        .append("Hozzáadja a mért adatokat?");
         }
     Point controlPoint = new Point(service.actualPillarBase.controlPointId,
-            Double.parseDouble(controlPointX), Double.parseDouble(controlPointY));
+            Double.parseDouble(controlPointY), Double.parseDouble(controlPointX));
     Point centerPoint = new Point(service.actualPillarBase.centerPillarId,
                                 Double.parseDouble(service.actualPillarBase.centerPillarY),
                                 Double.parseDouble(service.actualPillarBase.centerPillarX));
     Point nextPoint = new Point(service.actualPillarBase.directionPillarId,
                                 Double.parseDouble(service.actualPillarBase.directionPillarY),
                                 Double.parseDouble(service.actualPillarBase.directionPillarX));
+    if( centerPoint.equals(controlPoint) || centerPoint.equals(nextPoint) ){
+        return new SpannableStringBuilder("Hiba: Egyező pontok.")
+                .append("\n")
+                .append("\n")
+                .append("Hozzáadja a mért adatokat?");
+    }
     Point measCenterPoint = new Point("MeasCenterPoint", Double.parseDouble(measCenterX),
                                 Double.parseDouble(measCenterY));
     AzimuthAndDistance centerToNextPoint = new AzimuthAndDistance(centerPoint, nextPoint);
@@ -188,13 +192,23 @@ public class PillarDataFragment extends Fragment {
                     23, infoText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
     }
+    else if( teoGammaAngle == Math.PI && measGammaAngle == Math.PI ){
+        infoText = new SpannableString("180°-os törésszög, ΔΥ= " +
+                MainActivity.convertAngleMinSecFormat(deltaGammaAngle));
+        infoText.setSpan(new ForegroundColorSpan(ContextCompat.getColor(requireContext(), R.color.green)),
+                19, infoText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+    }
     else {
         infoText = new SpannableString("Hibás törésszög, ΔΥ= " +
                                 MainActivity.convertAngleMinSecFormat(deltaGammaAngle));
         infoText.setSpan(new ForegroundColorSpan(ContextCompat.getColor(requireContext(), R.color.red)),
                 0, infoText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
     }
-        return infoText;
+        return  new SpannableStringBuilder().append(service.actualPillarBase.controlPointId).append(". oh → ")
+                                            .append(service.actualPillarBase.centerPillarId).append(". oh → ")
+                                            .append(service.actualPillarBase.directionPillarId).append("\n")
+                                            .append(infoText).append("\n").append("\n")
+                                            .append("Hozzáadja a mért adatokat?");
     }
 
     @Override
