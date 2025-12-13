@@ -61,36 +61,36 @@ public class PillarDataFragment extends Fragment {
 
     private void displayPillarLocationData(){
         getParentFragmentManager().setFragmentResultListener("results", this, (requestKey, result) -> {
-            String measCenterX = Objects.requireNonNull(result.get("centerX")).toString();
-            String measCenterY = Objects.requireNonNull(result.get("centerY")).toString();
-            String measDirectionX = Objects.requireNonNull(result.get("directionX")).toString();
-            String measDirectionY = Objects.requireNonNull(result.get("directionY")).toString();
-            String basePointY =  fragmentDataBinding.inputYCoordinate.getText().toString();
-            String basePointX = fragmentDataBinding.inputXCoordinate.getText().toString();
-            if( (basePointY.isEmpty() || MainActivity.isInvalidInputChars(basePointY)) &&
-                    (basePointX.isEmpty() || MainActivity.isInvalidInputChars(basePointX)) ){
-                fragmentDataBinding.inputYCoordinate.setText(measCenterX);
-                fragmentDataBinding.inputXCoordinate.setText(measCenterY);
+            String calcCenterX = Objects.requireNonNull(result.get("calcCenterX")).toString();
+            String calcCenterY = Objects.requireNonNull(result.get("calcCenterY")).toString();
+            String measCenterX =  Objects.requireNonNull(result.get("measCenterX")).toString();
+            String measCenterY = Objects.requireNonNull(result.get("measCenterY")).toString();
+            String measDirectionX = Objects.requireNonNull(result.get("measDirectionX")).toString();
+            String measDirectionY = Objects.requireNonNull(result.get("measDirectionY")).toString();
+            if( fragmentDataBinding.inputYCoordinate.getText().toString().isEmpty()  &&
+                     fragmentDataBinding.inputXCoordinate.getText().toString().isEmpty() ){
+                fragmentDataBinding.inputYCoordinate.setText(calcCenterX);
+                fragmentDataBinding.inputXCoordinate.setText(calcCenterY);
                 fragmentDataBinding.inputNextPrevYCoordinate.setText(measDirectionX);
                 fragmentDataBinding.inputNextPrevXCoordinate.setText(measDirectionY);
                 return;
             }
-            showCalculatedPillarBaseDataDialog(new Point("BasePoint",
-                            Double.parseDouble(basePointY), Double.parseDouble(basePointX)),
+            showCalculatedPillarBaseDataDialog(new Point("CalcBasePoint",
+                            Double.parseDouble(calcCenterX), Double.parseDouble(calcCenterY)),
                     measCenterX, measCenterY, measDirectionX, measDirectionY);
         });
     }
 
-    private void showCalculatedPillarBaseDataDialog(Point basePoint, String measCenterX, String measCenterY,
+    private void showCalculatedPillarBaseDataDialog(Point calcBasePoint, String measCenterX, String measCenterY,
                                                     String measDirectionX, String measDirectionY) {
-        String ordinate = MainActivity.calcPillarLocationData.getOrdinateAsString(basePoint);
-        String abscissa = MainActivity.calcPillarLocationData.getAbscissaAsString(basePoint);
+        String ordinate = MainActivity.calcPillarLocationData.getOrdinateAsString(calcBasePoint);
+        String abscissa = MainActivity.calcPillarLocationData.getAbscissaAsString(calcBasePoint);
         if( ordinate.startsWith("NaN") || abscissa.startsWith("NaN")){
             Toast.makeText(getContext(), "A kezdő-, és végpont nem lehet egyező.", Toast.LENGTH_SHORT).show();
             return;
         }
         SpannableString ordinateSpan = new SpannableString("Merőlegesen: " + ordinate);
-        if( MainActivity.calcPillarLocationData.isOkOrdinateValue(basePoint) ){
+        if( MainActivity.calcPillarLocationData.isOkOrdinateValue(calcBasePoint) ){
             ordinateSpan.setSpan(new ForegroundColorSpan(ContextCompat.getColor(requireContext(), R.color.green)),
                     13, ordinateSpan.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
@@ -99,7 +99,7 @@ public class PillarDataFragment extends Fragment {
                     13, ordinateSpan.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
         SpannableString abscissaSpan = new SpannableString("Vonalban: " + abscissa);
-        if( MainActivity.calcPillarLocationData.isOkAbscissaValue(basePoint) ){
+        if( MainActivity.calcPillarLocationData.isOkAbscissaValue(calcBasePoint) ){
             abscissaSpan.setSpan(new ForegroundColorSpan(ContextCompat.getColor(requireContext(), R.color.green)),
                     10, abscissaSpan.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
@@ -107,7 +107,7 @@ public class PillarDataFragment extends Fragment {
             abscissaSpan.setSpan(new ForegroundColorSpan(ContextCompat.getColor(requireContext(), R.color.red)),
                     10, abscissaSpan.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
-        SpannableStringBuilder messageBuilder = getInfoForPillarBasePositionByControlPoint(measCenterX, measCenterY);
+        SpannableStringBuilder messageBuilder = getInfoForPillarBasePositionByControlPoint(calcBasePoint);
         SpannableStringBuilder titleBuilder = new SpannableStringBuilder();
         titleBuilder.append(abscissaSpan)
                         .append("\n")
@@ -127,7 +127,7 @@ public class PillarDataFragment extends Fragment {
         alert.show();
     }
 
-    private SpannableStringBuilder getInfoForPillarBasePositionByControlPoint(String measCenterX, String measCenterY){
+    private SpannableStringBuilder getInfoForPillarBasePositionByControlPoint(Point calcBasePoint){
      PillarBaseParamsService service = ((MainActivity) requireActivity()).service;
      String controlPointY = service.actualPillarBase.controlPointY;
      String controlPointX = service.actualPillarBase.controlPointX;
@@ -152,12 +152,10 @@ public class PillarDataFragment extends Fragment {
                 .append("\n")
                 .append("Hozzáadja a mért adatokat?");
     }
-    Point measCenterPoint = new Point("MeasCenterPoint", Double.parseDouble(measCenterX),
-                                Double.parseDouble(measCenterY));
     AzimuthAndDistance centerToNextPoint = new AzimuthAndDistance(centerPoint, nextPoint);
     AzimuthAndDistance centerToControlPoint = new AzimuthAndDistance(centerPoint, controlPoint);
-    AzimuthAndDistance measCenterToNextPoint = new AzimuthAndDistance(measCenterPoint, nextPoint);
-    AzimuthAndDistance measCenterToControlPoint = new AzimuthAndDistance(measCenterPoint, controlPoint);
+    AzimuthAndDistance measCenterToNextPoint = new AzimuthAndDistance(calcBasePoint, nextPoint);
+    AzimuthAndDistance measCenterToControlPoint = new AzimuthAndDistance(calcBasePoint, controlPoint);
     double teoGammaAngle = centerToNextPoint.calcAzimuth() - centerToControlPoint.calcAzimuth();
     double measGammaAngle = measCenterToNextPoint.calcAzimuth() - measCenterToControlPoint.calcAzimuth();
     double deltaGammaAngle =  teoGammaAngle - measGammaAngle;
@@ -206,7 +204,8 @@ public class PillarDataFragment extends Fragment {
     }
         return  new SpannableStringBuilder().append(service.actualPillarBase.controlPointId).append(". oh → ")
                                             .append(service.actualPillarBase.centerPillarId).append(". oh → ")
-                                            .append(service.actualPillarBase.directionPillarId).append("\n")
+                                            .append(service.actualPillarBase.directionPillarId).append(". oh")
+                                            .append("\n")
                                             .append(infoText).append("\n").append("\n")
                                             .append("Hozzáadja a mért adatokat?");
     }
@@ -237,10 +236,10 @@ public class PillarDataFragment extends Fragment {
             fragmentDataBinding.inputHoleDistancePerpendicularly.setText(inputData.get(10));
             fragmentDataBinding.inputHoleDistanceParallel.setText(inputData.get(11));
 
-            if(inputData.size() == 16 && "1".equals(inputData.get(15))){
+            if( "1".equals(inputData.get(15)) ){
                 fragmentDataBinding.radioLeft.setChecked(true);
             }
-            else if(inputData.size() == 16 && "0".equals(inputData.get(15))){
+            else if( "0".equals(inputData.get(15)) ){
                 fragmentDataBinding.radioRight.setChecked(true);
             }
             else {
@@ -272,10 +271,10 @@ public class PillarDataFragment extends Fragment {
             fragmentDataBinding.inputFootDistancePerpendicularly.setText(inputData.get(9));
             fragmentDataBinding.inputFootDistanceParallel.setText(inputData.get(10));
 
-            if(inputData.size() == 15 && "1".equals(inputData.get(14))){
+            if("1".equals(inputData.get(14)) ){
                 fragmentDataBinding.radioLeft.setChecked(true);
             }
-           else if(inputData.size() == 15 && "0".equals(inputData.get(14))){
+           else if( "0".equals(inputData.get(14)) ){
                 fragmentDataBinding.radioRight.setChecked(true);
             }
             else {

@@ -13,8 +13,8 @@ public class PillarLocationCalculator {
 
     public String centerX;
     public String centerY;
-    private double aveCenterX;
-    private double aveCenterY;
+    public double aveCenterX;
+    public double aveCenterY;
     public String directionX;
     public String directionY;
     private Double aveDirectionX;
@@ -22,7 +22,7 @@ public class PillarLocationCalculator {
     private final List<Point> centerPillarMeasData;
     private final List<Point> directionPillarMeasData;
     private Double abscissa_distance;
-    private Double ordinate_distance;
+    private double ordinate_distance;
     private final DecimalFormat df;
 
     public PillarLocationCalculator() {
@@ -109,30 +109,63 @@ public class PillarLocationCalculator {
                     .summaryStatistics().getAverage();
 
             if( aveDirectionX != null && abscissa_distance == null ){
-                centerX = df.format((aveCenterX + aveDirectionX) / 2.0).replace(",", ".");
-                centerY = df.format((aveCenterY + aveDirectionY) / 2.0).replace(",", ".");
+                Point startPoint = new Point("StartPoint", aveCenterX, aveCenterY);
+                Point endPoint = new Point("EndPoint", aveDirectionX, aveDirectionY);
+                AzimuthAndDistance mainLineData = new AzimuthAndDistance(startPoint, endPoint);
+                Point abscissaPoint = new Point("AbscissaPoint",
+                        (aveCenterX + aveDirectionX) / 2.0, (aveCenterY + aveDirectionY) / 2.0);
+                if( ordinate_distance == 0 ){
+                    centerX = df.format(abscissaPoint.getX_coord()).replace(",", ".");
+                    centerY = df.format(abscissaPoint.getY_coord()).replace(",", ".");
+                }
+                else {
+                    PolarPoint resultPoint = new PolarPoint(abscissaPoint, ordinate_distance,
+                            ordinate_distance > 0 ? mainLineData.calcAzimuth() - Math.PI / 2.0 :
+                                    mainLineData.calcAzimuth() + Math.PI / 2.0, "ResultPoint");
+                    centerX = df.format(resultPoint.calcPolarPoint().getX_coord()).replace(",", ".");
+                    centerY = df.format(resultPoint.calcPolarPoint().getY_coord()).replace(",", ".");
+                }
             }
             else if( aveDirectionX != null ){
-                Point startPoint = new Point("start", aveCenterX, aveCenterY);
-                Point endPoint = new Point("end", aveDirectionX, aveDirectionY);
-                AzimuthAndDistance centerPointData = new AzimuthAndDistance(startPoint, endPoint);
-                PolarPoint centerPoint = new PolarPoint(startPoint, abscissa_distance, centerPointData.calcAzimuth(), "center");
-                centerX = df.format(centerPoint.calcPolarPoint().getX_coord()).replace(",", ".");
-                centerY = df.format(centerPoint.calcPolarPoint().getY_coord()).replace(",", ".");
+                Point startPoint = new Point("StartPoint", aveCenterX, aveCenterY);
+                Point endPoint = new Point("EndPoint", aveDirectionX, aveDirectionY);
+                AzimuthAndDistance mainLineData = new AzimuthAndDistance(startPoint, endPoint);
+                PolarPoint abscissaPoint = new PolarPoint(startPoint, abscissa_distance,
+                        mainLineData.calcAzimuth(), "AbscissaPoint");
+                if( ordinate_distance == 0 ){
+                    centerX = df.format(abscissaPoint.calcPolarPoint().getX_coord()).replace(",", ".");
+                    centerY = df.format(abscissaPoint.calcPolarPoint().getY_coord()).replace(",", ".");
+                }
+                else{
+                    PolarPoint resultPoint = new PolarPoint(abscissaPoint.calcPolarPoint(), ordinate_distance,
+                            ordinate_distance > 0 ? mainLineData.calcAzimuth() - Math.PI / 2.0 :
+                                    mainLineData.calcAzimuth() + Math.PI / 2.0, "ResultPoint");
+                    centerX = df.format(resultPoint.calcPolarPoint().getX_coord()).replace(",", ".");
+                    centerY = df.format(resultPoint.calcPolarPoint().getY_coord()).replace(",", ".");
+                }
             }
             else if( centerPillarMeasData.size() == 4 && abscissa_distance != null ) {
                 aveDirectionX = (centerPillarMeasData.get(1).getX_coord() + centerPillarMeasData.get(2).getX_coord()) / 2.0;
                 aveDirectionY = (centerPillarMeasData.get(1).getY_coord() + centerPillarMeasData.get(2).getY_coord()) / 2.0;
-                Point startPoint = new Point("start", aveCenterX, aveCenterY);
-                Point endPoint = new Point("end", aveDirectionX, aveDirectionY);
-                AzimuthAndDistance centerPointData = new AzimuthAndDistance(startPoint, endPoint);
-                PolarPoint centerPoint = new PolarPoint(startPoint, abscissa_distance, centerPointData.calcAzimuth(), "center");
-                centerX = df.format(centerPoint.calcPolarPoint().getX_coord()).replace(",", ".");
-                centerY = df.format(centerPoint.calcPolarPoint().getY_coord()).replace(",", ".");
+                Point startPoint = new Point("StartPoint", aveCenterX, aveCenterY);
+                Point endPoint = new Point("EndPoint", aveDirectionX, aveDirectionY);
+                AzimuthAndDistance mainLineData = new AzimuthAndDistance(startPoint, endPoint);
+                PolarPoint abscissaPoint = new PolarPoint(startPoint, abscissa_distance,
+                        mainLineData.calcAzimuth(), "AbscissaPoint");
+                if( ordinate_distance == 0 ){
+                    centerX = df.format(abscissaPoint.calcPolarPoint().getX_coord()).replace(",", ".");
+                    centerY = df.format(abscissaPoint.calcPolarPoint().getY_coord()).replace(",", ".");
+                }
+                else{
+                    PolarPoint resultPoint = new PolarPoint(abscissaPoint.calcPolarPoint(), ordinate_distance,
+                            ordinate_distance > 0 ? mainLineData.calcAzimuth() - Math.PI / 2.0 :
+                                    mainLineData.calcAzimuth() + Math.PI / 2.0, "ResultPoint");
+                    centerX = df.format(resultPoint.calcPolarPoint().getX_coord()).replace(",", ".");
+                    centerY = df.format(resultPoint.calcPolarPoint().getY_coord()).replace(",", ".");
+                }
                 directionX = df.format(abscissa_distance == 0 ? aveDirectionX : aveCenterX).replace(",", ".");
                 directionY = df.format(abscissa_distance == 0 ? aveDirectionY : aveCenterY).replace(",", ".");
             }
-
         }
         else if( centerPillarMeasData.size() == 3 && abscissa_distance != null ){
             aveCenterX = (centerPillarMeasData.get(0).getX_coord() + centerPillarMeasData.get(2).getX_coord()) / 2.0;
@@ -143,16 +176,25 @@ public class PillarLocationCalculator {
             if( aveDirectionY == null ){
                 aveDirectionY = (centerPillarMeasData.get(1).getY_coord() + centerPillarMeasData.get(2).getY_coord()) / 2.0;
             }
-            Point startPoint = new Point("start", aveCenterX, aveCenterY);
-            Point endPoint = new Point("end", aveDirectionX, aveDirectionY);
-            AzimuthAndDistance centerPointData = new AzimuthAndDistance(startPoint, endPoint);
-            PolarPoint centerPoint = new PolarPoint(startPoint, abscissa_distance, centerPointData.calcAzimuth(), "center");
-            centerX = df.format(centerPoint.calcPolarPoint().getX_coord()).replace(",", ".");
-            centerY = df.format(centerPoint.calcPolarPoint().getY_coord()).replace(",", ".");
+            Point startPoint = new Point("StartPoint", aveCenterX, aveCenterY);
+            Point endPoint = new Point("EndPoint", aveDirectionX, aveDirectionY);
+            AzimuthAndDistance mainLineData = new AzimuthAndDistance(startPoint, endPoint);
+            PolarPoint abscissaPoint = new PolarPoint(startPoint, abscissa_distance,
+                    mainLineData.calcAzimuth(), "AbscissaPoint");
+            if( ordinate_distance == 0 ){
+                centerX = df.format(abscissaPoint.calcPolarPoint().getX_coord()).replace(",", ".");
+                centerY = df.format(abscissaPoint.calcPolarPoint().getY_coord()).replace(",", ".");
+            }
+            else{
+                PolarPoint resultPoint = new PolarPoint(abscissaPoint.calcPolarPoint(), ordinate_distance,
+                        ordinate_distance > 0 ? mainLineData.calcAzimuth() - Math.PI / 2.0 :
+                                mainLineData.calcAzimuth() + Math.PI / 2.0, "ResultPoint");
+                centerX = df.format(resultPoint.calcPolarPoint().getX_coord()).replace(",", ".");
+                centerY = df.format(resultPoint.calcPolarPoint().getY_coord()).replace(",", ".");
+            }
             directionX = df.format(abscissa_distance == 0 ? aveDirectionX : aveCenterX).replace(",", ".");
             directionY = df.format(abscissa_distance == 0 ? aveDirectionY : aveCenterY).replace(",", ".");
         }
-
     }
 
     public void setAbscissa_distance(String abscissa_distance) {
@@ -196,11 +238,7 @@ public class PillarLocationCalculator {
                 new AzimuthAndDistance(startPoint, basePoint).calcAzimuth();
         double distance = new AzimuthAndDistance(startPoint, basePoint).calcDistance();
 
-        if( this.ordinate_distance == null ){
-            return Math.sin(alfa) * distance;
-        }
-
-        return this.ordinate_distance - Math.sin(alfa) * distance;
+        return  Math.sin(alfa) * distance;
     }
 
     private double getAbscissaValue(Point startPoint, Point endPoint, Point basePoint) {
@@ -218,7 +256,7 @@ public class PillarLocationCalculator {
             return new AzimuthAndDistance(startPoint, endPoint).calcDistance() / 2.0
                     - Math.cos(alfa) * distance;
         }
-        return this.abscissa_distance - Math.cos(alfa) * distance;
+        return  Math.cos(alfa) * distance;
     }
 
     private String getAbscissaErrorMargin(Point startPoint, Point endPoint){
