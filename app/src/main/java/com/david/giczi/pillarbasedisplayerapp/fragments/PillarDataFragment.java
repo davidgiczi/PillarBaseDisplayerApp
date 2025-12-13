@@ -63,12 +63,13 @@ public class PillarDataFragment extends Fragment {
         getParentFragmentManager().setFragmentResultListener("results", this, (requestKey, result) -> {
             String calcCenterX = Objects.requireNonNull(result.get("calcCenterX")).toString();
             String calcCenterY = Objects.requireNonNull(result.get("calcCenterY")).toString();
-            String measCenterX =  Objects.requireNonNull(result.get("measCenterX")).toString();
-            String measCenterY = Objects.requireNonNull(result.get("measCenterY")).toString();
             String measDirectionX = Objects.requireNonNull(result.get("measDirectionX")).toString();
             String measDirectionY = Objects.requireNonNull(result.get("measDirectionY")).toString();
             if( fragmentDataBinding.inputYCoordinate.getText().toString().isEmpty()  &&
-                     fragmentDataBinding.inputXCoordinate.getText().toString().isEmpty() ){
+                fragmentDataBinding.inputXCoordinate.getText().toString().isEmpty()  &&
+                fragmentDataBinding.inputNextPrevYCoordinate.getText().toString().isEmpty() &&
+                fragmentDataBinding.inputNextPrevYCoordinate.getText().toString().isEmpty() ){
+
                 fragmentDataBinding.inputYCoordinate.setText(calcCenterX);
                 fragmentDataBinding.inputXCoordinate.setText(calcCenterY);
                 fragmentDataBinding.inputNextPrevYCoordinate.setText(measDirectionX);
@@ -77,14 +78,21 @@ public class PillarDataFragment extends Fragment {
             }
             showCalculatedPillarBaseDataDialog(new Point("CalcBasePoint",
                             Double.parseDouble(calcCenterX), Double.parseDouble(calcCenterY)),
-                    measCenterX, measCenterY, measDirectionX, measDirectionY);
+                            calcCenterX, calcCenterY, measDirectionX, measDirectionY);
         });
     }
 
-    private void showCalculatedPillarBaseDataDialog(Point calcBasePoint, String measCenterX, String measCenterY,
-                                                    String measDirectionX, String measDirectionY) {
-        String ordinate = MainActivity.calcPillarLocationData.getOrdinateAsString(calcBasePoint);
-        String abscissa = MainActivity.calcPillarLocationData.getAbscissaAsString(calcBasePoint);
+    private void showCalculatedPillarBaseDataDialog(Point calcBasePoint,
+              String calcCenterX, String calcCenterY, String measDirectionX, String measDirectionY) {
+        PillarBaseParamsService service = ((MainActivity) requireActivity()).service;
+        Point startPoint = new Point(service.actualPillarBase.centerPillarId,
+                Double.parseDouble(service.actualPillarBase.centerPillarY),
+                Double.parseDouble(service.actualPillarBase.centerPillarX));
+        Point endPoint = new Point(service.actualPillarBase.directionPillarId,
+                Double.parseDouble(service.actualPillarBase.directionPillarY),
+                Double.parseDouble(service.actualPillarBase.directionPillarX));
+        String ordinate = MainActivity.calcPillarLocationData.getOrdinateAsString(startPoint, endPoint, calcBasePoint);
+        String abscissa = MainActivity.calcPillarLocationData.getAbscissaAsString(startPoint, endPoint, calcBasePoint);
         if( ordinate.startsWith("NaN") || abscissa.startsWith("NaN")){
             Toast.makeText(getContext(), "A kezdő-, és végpont nem lehet egyező.", Toast.LENGTH_SHORT).show();
             return;
@@ -117,8 +125,8 @@ public class PillarDataFragment extends Fragment {
         builder.setMessage(messageBuilder);
 
         builder.setPositiveButton("Igen", (dialog, which) -> {
-            fragmentDataBinding.inputYCoordinate.setText(measCenterX);
-            fragmentDataBinding.inputXCoordinate.setText(measCenterY);
+            fragmentDataBinding.inputYCoordinate.setText(calcCenterX);
+            fragmentDataBinding.inputXCoordinate.setText(calcCenterY);
             fragmentDataBinding.inputNextPrevYCoordinate.setText(measDirectionX);
             fragmentDataBinding.inputNextPrevXCoordinate.setText(measDirectionY);
         });

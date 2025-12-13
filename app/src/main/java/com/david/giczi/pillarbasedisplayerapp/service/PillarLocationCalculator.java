@@ -209,18 +209,14 @@ public class PillarLocationCalculator {
         }
     }
 
-    public String getOrdinateAsString(Point basePoint){
-        Point startPoint = new Point("AveStart", aveCenterX, aveCenterY);
-        Point endPoint = new Point("AveEnd", aveDirectionX, aveDirectionY);
+    public String getOrdinateAsString(Point startPoint, Point endPoint, Point basePoint){
         double ordinate = getOrdinateValue(startPoint, endPoint, basePoint);
         return (ordinate > 0 ? "+" : "") +
                 String.format(Locale.getDefault(),"%.3fm", ordinate)
                         .replace(",", ".") + " " +
                 getOrdinateErrorMargin(startPoint, endPoint);
     }
-    public String getAbscissaAsString(Point basePoint){
-        Point startPoint = new Point("AveStart", aveCenterX, aveCenterY);
-        Point endPoint = new Point("AveEnd", aveDirectionX, aveDirectionY);
+    public String getAbscissaAsString(Point startPoint, Point endPoint, Point basePoint){
         double abscissa = getAbscissaValue(startPoint, endPoint, basePoint);
         return  (abscissa > 0 ? "+" :  "")  +
                 String.format(Locale.getDefault(), "%.3fm", abscissa)
@@ -238,7 +234,7 @@ public class PillarLocationCalculator {
                 new AzimuthAndDistance(startPoint, basePoint).calcAzimuth();
         double distance = new AzimuthAndDistance(startPoint, basePoint).calcDistance();
 
-        return  Math.sin(alfa) * distance;
+        return this.ordinate_distance - Math.sin(alfa) * distance;
     }
 
     private double getAbscissaValue(Point startPoint, Point endPoint, Point basePoint) {
@@ -256,7 +252,7 @@ public class PillarLocationCalculator {
             return new AzimuthAndDistance(startPoint, endPoint).calcDistance() / 2.0
                     - Math.cos(alfa) * distance;
         }
-        return  Math.cos(alfa) * distance;
+        return this.abscissa_distance - Math.cos(alfa) * distance;
     }
 
     private String getAbscissaErrorMargin(Point startPoint, Point endPoint){

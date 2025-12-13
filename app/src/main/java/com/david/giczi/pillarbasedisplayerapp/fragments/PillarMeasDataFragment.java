@@ -85,8 +85,6 @@ public class PillarMeasDataFragment extends Fragment {
             Bundle resultData = new Bundle();
             resultData.putString("calcCenterX", MainActivity.calcPillarLocationData.centerX);
             resultData.putString("calcCenterY", MainActivity.calcPillarLocationData.centerY);
-            resultData.putString("measCenterX", String.valueOf(MainActivity.calcPillarLocationData.aveCenterX));
-            resultData.putString("measCenterY", String.valueOf(MainActivity.calcPillarLocationData.aveCenterY));
             resultData.putString("measDirectionX", MainActivity.calcPillarLocationData.directionX);
             resultData.putString("measDirectionY", MainActivity.calcPillarLocationData.directionY);
             getParentFragmentManager().setFragmentResult("results", resultData);
