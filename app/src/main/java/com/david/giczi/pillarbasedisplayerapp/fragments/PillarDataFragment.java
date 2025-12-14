@@ -83,7 +83,7 @@ public class PillarDataFragment extends Fragment {
     }
 
     private void showCalculatedPillarBaseDataDialog(Point calcBasePoint,
-              String calcCenterX, String calcCenterY, String measDirectionX, String measDirectionY) {
+        String calcCenterX, String calcCenterY, String measDirectionX, String measDirectionY) {
         PillarBaseParamsService service = ((MainActivity) requireActivity()).service;
         Point startPoint = new Point(service.actualPillarBase.centerPillarId,
                 Double.parseDouble(service.actualPillarBase.centerPillarY),
@@ -98,7 +98,7 @@ public class PillarDataFragment extends Fragment {
             return;
         }
         SpannableString ordinateSpan = new SpannableString("Merőlegesen: " + ordinate);
-        if( MainActivity.calcPillarLocationData.isOkOrdinateValue(calcBasePoint) ){
+        if( MainActivity.calcPillarLocationData.isOkOrdinateValue(startPoint, endPoint, calcBasePoint) ){
             ordinateSpan.setSpan(new ForegroundColorSpan(ContextCompat.getColor(requireContext(), R.color.green)),
                     13, ordinateSpan.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
@@ -107,7 +107,7 @@ public class PillarDataFragment extends Fragment {
                     13, ordinateSpan.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
         SpannableString abscissaSpan = new SpannableString("Vonalban: " + abscissa);
-        if( MainActivity.calcPillarLocationData.isOkAbscissaValue(calcBasePoint) ){
+        if( MainActivity.calcPillarLocationData.isOkAbscissaValue(startPoint, endPoint, calcBasePoint) ){
             abscissaSpan.setSpan(new ForegroundColorSpan(ContextCompat.getColor(requireContext(), R.color.green)),
                     10, abscissaSpan.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
@@ -140,7 +140,7 @@ public class PillarDataFragment extends Fragment {
      String controlPointY = service.actualPillarBase.controlPointY;
      String controlPointX = service.actualPillarBase.controlPointX;
         if( controlPointY == null || controlPointX == null ){
-            return new SpannableStringBuilder("Hiba: Nincs " +
+            return new SpannableStringBuilder("Nincs " +
                     service.actualPillarBase.centerPillarId +  ".oh kontrollpont.")
                         .append("\n")
                         .append("\n")
@@ -198,11 +198,11 @@ public class PillarDataFragment extends Fragment {
                     23, infoText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
     }
-    else if( teoGammaAngle == Math.PI && measGammaAngle == Math.PI ){
+    else if(Math.PI / 90 > Math.abs(deltaGammaAngle)){
         infoText = new SpannableString("180°-os törésszög, ΔΥ= " +
                 MainActivity.convertAngleMinSecFormat(deltaGammaAngle));
         infoText.setSpan(new ForegroundColorSpan(ContextCompat.getColor(requireContext(), R.color.green)),
-                19, infoText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                0, infoText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
     }
     else {
         infoText = new SpannableString("Hibás törésszög, ΔΥ= " +

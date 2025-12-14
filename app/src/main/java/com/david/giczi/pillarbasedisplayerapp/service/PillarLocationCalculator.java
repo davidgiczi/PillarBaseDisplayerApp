@@ -214,27 +214,27 @@ public class PillarLocationCalculator {
         return (ordinate > 0 ? "+" : "") +
                 String.format(Locale.getDefault(),"%.3fm", ordinate)
                         .replace(",", ".") + " " +
-                getOrdinateErrorMargin(startPoint, endPoint);
+                getOrdinateErrorMargin(basePoint);
     }
     public String getAbscissaAsString(Point startPoint, Point endPoint, Point basePoint){
         double abscissa = getAbscissaValue(startPoint, endPoint, basePoint);
         return  (abscissa > 0 ? "+" :  "")  +
                 String.format(Locale.getDefault(), "%.3fm", abscissa)
                         .replace(",", ".") + " " +
-                getAbscissaErrorMargin(startPoint, endPoint);
+                getAbscissaErrorMargin(basePoint);
     }
     private double getOrdinateValue(Point startPoint, Point endPoint, Point basePoint){
         if( startPoint.equals(endPoint) ){
             return Double.NaN;
         }
        else if( startPoint.equals(basePoint) ){
-            return 0d;
+            return this.ordinate_distance;
         }
         double alfa = new AzimuthAndDistance(startPoint, endPoint).calcAzimuth() -
                 new AzimuthAndDistance(startPoint, basePoint).calcAzimuth();
         double distance = new AzimuthAndDistance(startPoint, basePoint).calcDistance();
 
-        return this.ordinate_distance - Math.sin(alfa) * distance;
+        return Math.sin(alfa) * distance;
     }
 
     private double getAbscissaValue(Point startPoint, Point endPoint, Point basePoint) {
@@ -252,30 +252,28 @@ public class PillarLocationCalculator {
             return new AzimuthAndDistance(startPoint, endPoint).calcDistance() / 2.0
                     - Math.cos(alfa) * distance;
         }
-        return this.abscissa_distance - Math.cos(alfa) * distance;
+        return Math.cos(alfa) * distance;
     }
 
-    private String getAbscissaErrorMargin(Point startPoint, Point endPoint){
-        double lengthOfMainLine = new AzimuthAndDistance(startPoint, endPoint).calcDistance();
+    private String getAbscissaErrorMargin(Point basePoint){
+        Point measEndPoint = new Point("MeasEndPoint", aveDirectionX, aveDirectionY);
+        double lengthOfMainLine = new AzimuthAndDistance(basePoint, measEndPoint).calcDistance();
         return "|" + String.format(Locale.getDefault(),"%.1f",lengthOfMainLine / 4.0)
                 .replace("," , ".") + "cm|";
     }
-    private String getOrdinateErrorMargin(Point startPoint, Point endPoint){
-        double lengthOfMainLine =  new AzimuthAndDistance(startPoint, endPoint).calcDistance();
+    private String getOrdinateErrorMargin(Point basePoint){
+        Point measEndPoint = new Point("MeasEndPoint", aveDirectionX, aveDirectionY);
+        double lengthOfMainLine =  new AzimuthAndDistance(basePoint, measEndPoint).calcDistance();
         return "|" + String.format(Locale.getDefault(),"%.1f",3 * lengthOfMainLine / 10)
                 .replace(",", ".") + "cm|";
     }
 
-    public boolean isOkAbscissaValue(Point basePoint){
-        Point startPoint = new Point("AveStart", aveCenterX, aveCenterY);
-        Point endPoint = new Point("AveEnd", aveDirectionX, aveDirectionY);
+    public boolean isOkAbscissaValue(Point startPoint, Point endPoint, Point basePoint){
         double lengthOfMainLine =  new AzimuthAndDistance(startPoint, endPoint).calcDistance();
         return 2.5 * lengthOfMainLine / 1000 >= Math.abs(getAbscissaValue(startPoint, endPoint, basePoint));
     }
 
-    public boolean isOkOrdinateValue(Point basePoint){
-        Point startPoint = new Point("AveStart", aveCenterX, aveCenterY);
-        Point endPoint = new Point("AveEnd", aveDirectionX, aveDirectionY);
+    public boolean isOkOrdinateValue(Point startPoint, Point endPoint, Point basePoint){
         double lengthOfMainLine = new AzimuthAndDistance(startPoint, endPoint).calcDistance();
         return 3 * lengthOfMainLine / 1000 >= Math.abs(getOrdinateValue(startPoint, endPoint, basePoint));
     }

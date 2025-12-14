@@ -85,17 +85,17 @@ public class PillarBaseParamsService {
                         actualPillarBase.setControlPointX(baseData.get(17));
                     }
                 }
-                if( baseData.size() == 18 && baseData.get(14).equals("0") ){
+                if( baseData.get(14).equals("0") ){
                  actualPillarBase.setRotationSide("right");
                 }
-                else if( baseData.size() == 18 && baseData.get(14).equals("1") ) {
+                else if( baseData.get(14).equals("1") ) {
                 actualPillarBase.setRotationSide("left");
                  }
-                else if( baseData.size() == 19 && baseData.get(15).equals("0") ){
-                    actualPillarBase.setRotationSide("right");
+                else if( baseData.get(15).equals("0") ){
+                actualPillarBase.setRotationSide("right");
                 }
-                else if( baseData.size() == 19 && baseData.get(15).equals("1") ) {
-                    actualPillarBase.setRotationSide("left");
+                else if( baseData.get(15).equals("1") ) {
+                actualPillarBase.setRotationSide("left");
                 }
                 PillarBaseParamsDataBase.databaseExecutor.execute(() ->
                          paramsDAO.insertPillarBaseParams(actualPillarBase));

@@ -1086,31 +1086,33 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         PopupWindow footCalcWindow = new PopupWindow(container, 1000, 700, true);
         footCalcWindow.showAtLocation(binding.getRoot(), Gravity.CENTER, 0, -400);
         Button calcButton = container.findViewById(R.id.btn_count);
+        TextView resultFootDistanceView = container.findViewById(R.id.result_foot_distance);
         calcButton.setOnClickListener(v -> {
-            String inputFootDistance = container.findViewById(R.id.input_value_of_foot_distance).toString();
+            String inputFootDistance = ((EditText) container.findViewById(R.id.input_value_of_foot_distance)).getText()
+                    .toString().replace(",", ".");
             if( inputFootDistance.isEmpty() || isInvalidInputChars(inputFootDistance)){
                 Toast.makeText(container.getContext(), "A lábtávolság értékének megadása szükséges.",
                         Toast.LENGTH_LONG).show();
                 return;
             }
-            String inputIllesztesiSik = container.findViewById(R.id.input_value_illesztesi_sik).toString();
+            String inputIllesztesiSik = ((EditText) container.findViewById(R.id.input_value_illesztesi_sik)).getText()
+                    .toString().replace(",", ".");
             if( inputIllesztesiSik.isEmpty() || isInvalidInputChars(inputIllesztesiSik)){
                 Toast.makeText(container.getContext(), "Az illesztési sík értékének megadása szükséges.",
                         Toast.LENGTH_LONG).show();
                 return;
             }
-            String inputSudarasodas = container.findViewById(R.id.input_value_sudarasodas).toString();
+            String inputSudarasodas = ((EditText) container.findViewById(R.id.input_value_sudarasodas)).getText()
+                    .toString().replace(",", ".");
             if( inputSudarasodas.isEmpty() || isInvalidInputChars(inputSudarasodas)){
                 Toast.makeText(container.getContext(), "A sudarasodás értékének megadása szükséges.",
                         Toast.LENGTH_LONG).show();
                 return;
             }
-
             double footDistance = Double.parseDouble(inputFootDistance) / 1000.0 +
                     (2 * Double.parseDouble(inputSudarasodas)
                             * Double.parseDouble(inputIllesztesiSik) / 100.0) / 1000.0;
           ((TextView) container.findViewById(R.id.text_calc_foot_distance)).setText(R.string.value_of_foot_distance);
-           TextView resultFootDistanceView = container.findViewById(R.id.result_foot_distance);
            String resultDistance = String.format(Locale.getDefault(), "%.3f", footDistance);
            resultFootDistanceView.setText(String.format(Locale.getDefault(), "%.3fm", footDistance));
            TextView ppFootDistanceView = findViewById(R.id.input_foot_distance_perpendicularly);
