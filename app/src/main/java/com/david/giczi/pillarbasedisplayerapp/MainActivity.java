@@ -1473,13 +1473,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         else if(((RadioButton) findViewById(R.id.radio_left)).isChecked()){
             BASE_DATA.add("1");
         }
-        if( service.actualPillarBase.controlPointId != null ){
+        if( service.actualPillarBase != null && service.actualPillarBase.controlPointId != null ){
             BASE_DATA.add(service.actualPillarBase.controlPointId);
         }
-        if( service.actualPillarBase.controlPointY != null ){
+        if( service.actualPillarBase != null && service.actualPillarBase.controlPointY != null ){
             BASE_DATA.add(service.actualPillarBase.controlPointY);
         }
-        if( service.actualPillarBase.controlPointX != null ){
+        if( service.actualPillarBase != null && service.actualPillarBase.controlPointX != null ){
             BASE_DATA.add(service.actualPillarBase.controlPointX);
         }
         IS_SAVE_RTK_FILE = ((CheckBox) findViewById(R.id.save_rtk_format)).isChecked();
