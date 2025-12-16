@@ -119,9 +119,9 @@ public class PillarLocationCalculator {
                     centerY = df.format(abscissaPoint.getY_coord()).replace(",", ".");
                 }
                 else {
-                    PolarPoint resultPoint = new PolarPoint(abscissaPoint, ordinate_distance,
-                            ordinate_distance < 0 ? mainLineData.calcAzimuth() + Math.PI / 2.0 :
-                                    mainLineData.calcAzimuth() + 3 * Math.PI / 2.0, "ResultPoint");
+                    PolarPoint resultPoint = new PolarPoint(abscissaPoint, Math.abs(ordinate_distance),
+                            ordinate_distance > 0 ? mainLineData.calcAzimuth() - Math.PI / 2.0 :
+                                    mainLineData.calcAzimuth() +  Math.PI / 2.0, "ResultPoint");
                     centerX = df.format(resultPoint.calcPolarPoint().getX_coord()).replace(",", ".");
                     centerY = df.format(resultPoint.calcPolarPoint().getY_coord()).replace(",", ".");
                 }
@@ -139,9 +139,9 @@ public class PillarLocationCalculator {
                     centerY = df.format(abscissaPoint.calcPolarPoint().getY_coord()).replace(",", ".");
                 }
                 else{
-                    PolarPoint resultPoint = new PolarPoint(abscissaPoint.calcPolarPoint(), ordinate_distance,
-                            ordinate_distance < 0 ? mainLineData.calcAzimuth() + Math.PI / 2.0 :
-                                    mainLineData.calcAzimuth() + 3 * Math.PI / 2.0, "ResultPoint");
+                    PolarPoint resultPoint = new PolarPoint(abscissaPoint.calcPolarPoint(), Math.abs(ordinate_distance),
+                            ordinate_distance > 0 ? mainLineData.calcAzimuth() - Math.PI / 2.0 :
+                                    mainLineData.calcAzimuth() + Math.PI / 2.0, "ResultPoint");
                     centerX = df.format(resultPoint.calcPolarPoint().getX_coord()).replace(",", ".");
                     centerY = df.format(resultPoint.calcPolarPoint().getY_coord()).replace(",", ".");
                 }
@@ -159,9 +159,9 @@ public class PillarLocationCalculator {
                     centerY = df.format(abscissaPoint.calcPolarPoint().getY_coord()).replace(",", ".");
                 }
                 else{
-                    PolarPoint resultPoint = new PolarPoint(abscissaPoint.calcPolarPoint(), ordinate_distance,
-                            ordinate_distance < 0 ? mainLineData.calcAzimuth() + Math.PI / 2.0 :
-                                    mainLineData.calcAzimuth() + 3 * Math.PI / 2.0, "ResultPoint");
+                    PolarPoint resultPoint = new PolarPoint(abscissaPoint.calcPolarPoint(), Math.abs(ordinate_distance),
+                            ordinate_distance > 0 ? mainLineData.calcAzimuth() - Math.PI / 2.0 :
+                                    mainLineData.calcAzimuth() + Math.PI / 2.0, "ResultPoint");
                     centerX = df.format(resultPoint.calcPolarPoint().getX_coord()).replace(",", ".");
                     centerY = df.format(resultPoint.calcPolarPoint().getY_coord()).replace(",", ".");
                 }
@@ -188,9 +188,9 @@ public class PillarLocationCalculator {
                 centerY = df.format(abscissaPoint.calcPolarPoint().getY_coord()).replace(",", ".");
             }
             else{
-                PolarPoint resultPoint = new PolarPoint(abscissaPoint.calcPolarPoint(), ordinate_distance,
-                        ordinate_distance < 0 ? mainLineData.calcAzimuth() + Math.PI / 2.0 :
-                                mainLineData.calcAzimuth() + 3 * Math.PI / 2.0, "ResultPoint");
+                PolarPoint resultPoint = new PolarPoint(abscissaPoint.calcPolarPoint(), Math.abs(ordinate_distance),
+                        ordinate_distance > 0 ? mainLineData.calcAzimuth() - Math.PI / 2.0 :
+                                mainLineData.calcAzimuth() +  Math.PI / 2.0, "ResultPoint");
                 centerX = df.format(resultPoint.calcPolarPoint().getX_coord()).replace(",", ".");
                 centerY = df.format(resultPoint.calcPolarPoint().getY_coord()).replace(",", ".");
             }
