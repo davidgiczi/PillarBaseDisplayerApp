@@ -20,6 +20,7 @@ public class PolarPoint {
 		
 		double newPointX = pointA.getX_coord() + Math.sin(azimuth) * distance;
 		double newPointY = pointA.getY_coord() + Math.cos(azimuth) * distance;
+
 		return new Point(newPointID, newPointX, newPointY);
 	}
 

@@ -120,11 +120,13 @@ public class PillarLocationCalculator {
                 }
                 else {
                     PolarPoint resultPoint = new PolarPoint(abscissaPoint, ordinate_distance,
-                            ordinate_distance > 0 ? mainLineData.calcAzimuth() - Math.PI / 2.0 :
-                                    mainLineData.calcAzimuth() + Math.PI / 2.0, "ResultPoint");
+                            ordinate_distance > 0 ? mainLineData.calcAzimuth() + Math.PI / 2.0 :
+                                    mainLineData.calcAzimuth() - 3 * Math.PI / 2.0, "ResultPoint");
                     centerX = df.format(resultPoint.calcPolarPoint().getX_coord()).replace(",", ".");
                     centerY = df.format(resultPoint.calcPolarPoint().getY_coord()).replace(",", ".");
                 }
+
+
             }
             else if( aveDirectionX != null ){
                 Point startPoint = new Point("StartPoint", aveCenterX, aveCenterY);
@@ -138,8 +140,8 @@ public class PillarLocationCalculator {
                 }
                 else{
                     PolarPoint resultPoint = new PolarPoint(abscissaPoint.calcPolarPoint(), ordinate_distance,
-                            ordinate_distance > 0 ? mainLineData.calcAzimuth() - Math.PI / 2.0 :
-                                    mainLineData.calcAzimuth() + Math.PI / 2.0, "ResultPoint");
+                            ordinate_distance > 0 ? mainLineData.calcAzimuth() + Math.PI / 2.0 :
+                                    mainLineData.calcAzimuth() - 3 * Math.PI / 2.0, "ResultPoint");
                     centerX = df.format(resultPoint.calcPolarPoint().getX_coord()).replace(",", ".");
                     centerY = df.format(resultPoint.calcPolarPoint().getY_coord()).replace(",", ".");
                 }
@@ -158,8 +160,8 @@ public class PillarLocationCalculator {
                 }
                 else{
                     PolarPoint resultPoint = new PolarPoint(abscissaPoint.calcPolarPoint(), ordinate_distance,
-                            ordinate_distance > 0 ? mainLineData.calcAzimuth() - Math.PI / 2.0 :
-                                    mainLineData.calcAzimuth() + Math.PI / 2.0, "ResultPoint");
+                            ordinate_distance > 0 ? mainLineData.calcAzimuth() + Math.PI / 2.0 :
+                                    mainLineData.calcAzimuth() - 3 * Math.PI / 2.0, "ResultPoint");
                     centerX = df.format(resultPoint.calcPolarPoint().getX_coord()).replace(",", ".");
                     centerY = df.format(resultPoint.calcPolarPoint().getY_coord()).replace(",", ".");
                 }
@@ -187,14 +189,15 @@ public class PillarLocationCalculator {
             }
             else{
                 PolarPoint resultPoint = new PolarPoint(abscissaPoint.calcPolarPoint(), ordinate_distance,
-                        ordinate_distance > 0 ? mainLineData.calcAzimuth() - Math.PI / 2.0 :
-                                mainLineData.calcAzimuth() + Math.PI / 2.0, "ResultPoint");
+                        ordinate_distance > 0 ? mainLineData.calcAzimuth() + Math.PI / 2.0 :
+                                mainLineData.calcAzimuth() - 3 * Math.PI / 2.0, "ResultPoint");
                 centerX = df.format(resultPoint.calcPolarPoint().getX_coord()).replace(",", ".");
                 centerY = df.format(resultPoint.calcPolarPoint().getY_coord()).replace(",", ".");
             }
             directionX = df.format(abscissa_distance == 0 ? aveDirectionX : aveCenterX).replace(",", ".");
             directionY = df.format(abscissa_distance == 0 ? aveDirectionY : aveCenterY).replace(",", ".");
         }
+
     }
 
     public void setAbscissa_distance(String abscissa_distance) {
