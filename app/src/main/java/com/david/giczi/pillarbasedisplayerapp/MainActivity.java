@@ -118,6 +118,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private Spinner openingStatisticsSpinner;
     public static PillarLocationCalculator calcPillarLocationData;
     private static final List<String> INVALID_INPUT_CHARS = Arrays.asList(" ", ".", ",", "-", ".-", "-.", ",-", "-," );
+    public static  String[] MEAS_PILLAR_DATA;
 
 
     @Override

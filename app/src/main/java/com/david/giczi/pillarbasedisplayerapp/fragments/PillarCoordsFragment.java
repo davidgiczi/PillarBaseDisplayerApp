@@ -311,4 +311,5 @@ public class PillarCoordsFragment extends Fragment {
         }
     }
 
+
 }

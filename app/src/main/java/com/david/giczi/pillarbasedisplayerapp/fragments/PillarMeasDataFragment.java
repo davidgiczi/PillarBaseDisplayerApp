@@ -26,7 +26,6 @@ public class PillarMeasDataFragment extends Fragment {
     private FragmentMeasDataBinding fragmentMeasDataBinding;
     private PillarBaseParamsService service;
 
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -89,6 +88,23 @@ public class PillarMeasDataFragment extends Fragment {
                 Toast.makeText(getContext(), "Koordináták nem számíthatók", Toast.LENGTH_LONG).show();
                 return;
             }
+            MainActivity.MEAS_PILLAR_DATA = new String[16];
+            MainActivity.MEAS_PILLAR_DATA[0] = fragmentMeasDataBinding.centerFoot1YCoordinate.getText().toString();
+            MainActivity.MEAS_PILLAR_DATA[1] = fragmentMeasDataBinding.centerFoot1XCoordinate.getText().toString();
+            MainActivity.MEAS_PILLAR_DATA[2] = fragmentMeasDataBinding.centerFoot2YCoordinate.getText().toString();
+            MainActivity.MEAS_PILLAR_DATA[3] = fragmentMeasDataBinding.centerFoot2XCoordinate.getText().toString();
+            MainActivity.MEAS_PILLAR_DATA[4] = fragmentMeasDataBinding.centerFoot3YCoordinate.getText().toString();
+            MainActivity.MEAS_PILLAR_DATA[5] = fragmentMeasDataBinding.centerFoot3XCoordinate.getText().toString();
+            MainActivity.MEAS_PILLAR_DATA[6] = fragmentMeasDataBinding.centerFoot4YCoordinate.getText().toString();
+            MainActivity.MEAS_PILLAR_DATA[7] = fragmentMeasDataBinding.centerFoot4XCoordinate.getText().toString();
+            MainActivity.MEAS_PILLAR_DATA[8] = fragmentMeasDataBinding.directionFoot1YCoordinate.getText().toString();
+            MainActivity.MEAS_PILLAR_DATA[9] = fragmentMeasDataBinding.directionFoot1XCoordinate.getText().toString();
+            MainActivity.MEAS_PILLAR_DATA[10] = fragmentMeasDataBinding.directionFoot2YCoordinate.getText().toString();
+            MainActivity.MEAS_PILLAR_DATA[11] = fragmentMeasDataBinding.directionFoot2XCoordinate.getText().toString();
+            MainActivity.MEAS_PILLAR_DATA[12] = fragmentMeasDataBinding.directionFoot3YCoordinate.getText().toString();
+            MainActivity.MEAS_PILLAR_DATA[13] = fragmentMeasDataBinding.directionFoot3XCoordinate.getText().toString();
+            MainActivity.MEAS_PILLAR_DATA[14] = fragmentMeasDataBinding.directionFoot4YCoordinate.getText().toString();
+            MainActivity.MEAS_PILLAR_DATA[15] = fragmentMeasDataBinding.directionFoot4XCoordinate.getText().toString();
             Bundle resultData = new Bundle();
             resultData.putString("calcCenterX", MainActivity.calcPillarLocationData.centerX);
             resultData.putString("calcCenterY", MainActivity.calcPillarLocationData.centerY);
@@ -104,12 +120,32 @@ public class PillarMeasDataFragment extends Fragment {
         return fragmentMeasDataBinding.getRoot();
     }
 
+    private void setMeasPillarData(){
+
+        if( MainActivity.MEAS_PILLAR_DATA != null ){
+            fragmentMeasDataBinding.centerFoot1YCoordinate.setText(MainActivity.MEAS_PILLAR_DATA[0]);
+            fragmentMeasDataBinding.centerFoot1XCoordinate.setText(MainActivity.MEAS_PILLAR_DATA[1]);
+            fragmentMeasDataBinding.centerFoot2YCoordinate.setText(MainActivity.MEAS_PILLAR_DATA[2]);
+            fragmentMeasDataBinding.centerFoot2XCoordinate.setText(MainActivity.MEAS_PILLAR_DATA[3]);
+            fragmentMeasDataBinding.centerFoot3YCoordinate.setText(MainActivity.MEAS_PILLAR_DATA[4]);
+            fragmentMeasDataBinding.centerFoot3XCoordinate.setText(MainActivity.MEAS_PILLAR_DATA[5]);
+            fragmentMeasDataBinding.centerFoot4YCoordinate.setText(MainActivity.MEAS_PILLAR_DATA[6]);
+            fragmentMeasDataBinding.centerFoot4XCoordinate.setText(MainActivity.MEAS_PILLAR_DATA[7]);
+            fragmentMeasDataBinding.directionFoot1YCoordinate.setText(MainActivity.MEAS_PILLAR_DATA[8]);
+            fragmentMeasDataBinding.directionFoot1XCoordinate.setText(MainActivity.MEAS_PILLAR_DATA[9]);
+            fragmentMeasDataBinding.directionFoot2YCoordinate.setText(MainActivity.MEAS_PILLAR_DATA[10]);
+            fragmentMeasDataBinding.directionFoot2XCoordinate.setText(MainActivity.MEAS_PILLAR_DATA[11]);
+            fragmentMeasDataBinding.directionFoot3YCoordinate.setText(MainActivity.MEAS_PILLAR_DATA[12]);
+            fragmentMeasDataBinding.directionFoot3XCoordinate.setText(MainActivity.MEAS_PILLAR_DATA[13]);
+            fragmentMeasDataBinding.directionFoot4YCoordinate.setText(MainActivity.MEAS_PILLAR_DATA[14]);
+            fragmentMeasDataBinding.directionFoot4XCoordinate.setText(MainActivity.MEAS_PILLAR_DATA[15]);
+        }
+    }
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if( service.actualPillarBase != null ){
-            setAbscissaAndOrdinateValue();
-        }
+        setMeasPillarData();
     }
 
     private void setAbscissaAndOrdinateValue(){
