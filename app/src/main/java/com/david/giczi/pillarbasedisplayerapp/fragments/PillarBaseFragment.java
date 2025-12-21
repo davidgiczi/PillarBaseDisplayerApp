@@ -260,7 +260,9 @@ public class PillarBaseFragment extends Fragment {
 
     private String getDistanceInfoByControlPoint(){
         PillarBaseParamsService service = ((MainActivity) requireActivity()).service;
-        if( service.actualPillarBase.controlPointX == null || service.actualPillarBase.controlPointY == null){
+        if( service.actualPillarBase == null ||
+                service.actualPillarBase.controlPointX == null ||
+                        service.actualPillarBase.controlPointY == null){
             return null;
         }
         Point controlPoint = new Point(service.actualPillarBase.controlPointId,
@@ -277,7 +279,9 @@ public class PillarBaseFragment extends Fragment {
 
     private String getAngleInfoByControlPoint(){
         PillarBaseParamsService service = ((MainActivity) requireActivity()).service;
-        if( service.actualPillarBase.controlPointX == null || service.actualPillarBase.controlPointY == null){
+        if( service.actualPillarBase == null ||
+                service.actualPillarBase.controlPointX == null ||
+                    service.actualPillarBase.controlPointY == null){
             return null;
         }
         Point controlPoint = new Point(service.actualPillarBase.controlPointId,
