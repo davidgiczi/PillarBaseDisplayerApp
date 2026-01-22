@@ -240,10 +240,10 @@ public class PillarBaseFragment extends Fragment {
                             directionIdValues[0] + directionIdValues[1] : directionPoint.getPointID())
                             + ". oszlopok távolsága: " +
                             String.format(Locale.getDefault(), "%.3fm", mainLineDistance.calcDistance()).replace(",", "."),
-                    3 * MM, getResources().getDisplayMetrics().heightPixels - 13 * MM, paint);
+                    3 * MM, getResources().getDisplayMetrics().heightPixels - 8 * MM, paint);
             assert distanceInfoByControlPoint != null;
             canvas.drawText(distanceInfoByControlPoint, 3 * MM,
-                    getResources().getDisplayMetrics().heightPixels - 8 * MM, paint);
+                    getResources().getDisplayMetrics().heightPixels - 13 * MM, paint);
             assert angleInfoByControlPoint != null;
             canvas.drawText(angleInfoByControlPoint, 3 * MM,
                     getResources().getDisplayMetrics().heightPixels - 3 * MM, paint);
@@ -271,7 +271,7 @@ public class PillarBaseFragment extends Fragment {
         Point centerPoint = new Point(service.actualPillarBase.centerPillarId,
                 Double.parseDouble(service.actualPillarBase.centerPillarY),
                 Double.parseDouble(service.actualPillarBase.centerPillarX));
-        return centerPoint.getPointID() + ". és " + controlPoint.getPointID() + ". oszlopok távolsága: " +
+        return  controlPoint.getPointID() + ". és " + centerPoint.getPointID() + ". oszlopok távolsága: " +
                 String.format(Locale.getDefault(), "%.3fm",
                         new AzimuthAndDistance(centerPoint, controlPoint).calcDistance())
                         .replace(",", ".");
