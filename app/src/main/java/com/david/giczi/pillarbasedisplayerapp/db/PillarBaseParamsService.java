@@ -66,16 +66,18 @@ public class PillarBaseParamsService {
                     actualPillarBase.setRotationAngle(baseData.get(12));
                     actualPillarBase.setRotationMin(baseData.get(13));
                     actualPillarBase.setRotationSec(baseData.get(14));
-                    if( baseData.size() == 21 ){
+                    if( baseData.size() == 22 ){
                         actualPillarBase.setControlPointId(baseData.get(16));
                         actualPillarBase.setControlPointY(baseData.get(17));
                         actualPillarBase.setControlPointX(baseData.get(18));
                         actualPillarBase.setHoleReady(Boolean.parseBoolean(baseData.get(19)));
                         actualPillarBase.setAxisReady(Boolean.parseBoolean(baseData.get(20)));
+                        actualPillarBase.setNumberOfMeasure(Integer.parseInt(baseData.get(21)));
                     }
-                   else if( baseData.size() == 18 ){
+                   else if( baseData.size() == 19 ){
                         actualPillarBase.setHoleReady(Boolean.parseBoolean(baseData.get(16)));
                         actualPillarBase.setAxisReady(Boolean.parseBoolean(baseData.get(17)));
+                        actualPillarBase.setNumberOfMeasure(Integer.parseInt(baseData.get(18)));
                     }
                 } else if( MainActivity.BASE_TYPE[1].equals(baseData.get(0)) ){
                     actualPillarBase.setPerpendicularHoleDistance(baseData.get(7));
@@ -85,16 +87,18 @@ public class PillarBaseParamsService {
                     actualPillarBase.setRotationAngle(baseData.get(11));
                     actualPillarBase.setRotationMin(baseData.get(12));
                     actualPillarBase.setRotationSec(baseData.get(13));
-                    if( baseData.size() == 20 ){
+                    if( baseData.size() == 21 ){
                         actualPillarBase.setControlPointId(baseData.get(15));
                         actualPillarBase.setControlPointY(baseData.get(16));
                         actualPillarBase.setControlPointX(baseData.get(17));
                         actualPillarBase.setHoleReady(Boolean.parseBoolean(baseData.get(18)));
                         actualPillarBase.setAxisReady(Boolean.parseBoolean(baseData.get(19)));
+                        actualPillarBase.setNumberOfMeasure(Integer.parseInt(baseData.get(20)));
                     }
-                    else if( baseData.size() == 17 ){
+                    else if( baseData.size() == 18 ){
                         actualPillarBase.setHoleReady(Boolean.parseBoolean(baseData.get(15)));
                         actualPillarBase.setAxisReady(Boolean.parseBoolean(baseData.get(16)));
+                        actualPillarBase.setNumberOfMeasure(Integer.parseInt(baseData.get(17)));
                     }
                 }
                 if( baseData.get(14).equals("0") ){
