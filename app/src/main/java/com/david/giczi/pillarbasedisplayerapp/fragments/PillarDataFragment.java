@@ -85,20 +85,9 @@ public class PillarDataFragment extends Fragment {
     private void showCalculatedPillarBaseDataDialog(Point calcBasePoint,
         String calcCenterX, String calcCenterY, String measDirectionX, String measDirectionY) {
         PillarBaseParamsService service = ((MainActivity) requireActivity()).service;
-        Point startPoint;
-
-        if( service.actualPillarBase.controlPointId == null ||
-              service.actualPillarBase.controlPointY == null ||
-                    service.actualPillarBase.controlPointX == null ){
-            startPoint = new Point(service.actualPillarBase.centerPillarId,
+        Point startPoint = new Point(service.actualPillarBase.centerPillarId,
                     Double.parseDouble(service.actualPillarBase.centerPillarY),
                     Double.parseDouble(service.actualPillarBase.centerPillarX));
-        }
-        else {
-            startPoint = new Point(service.actualPillarBase.controlPointId,
-                    Double.parseDouble(service.actualPillarBase.controlPointY),
-                    Double.parseDouble(service.actualPillarBase.controlPointX));
-        }
         Point endPoint = new Point(service.actualPillarBase.directionPillarId,
                 Double.parseDouble(service.actualPillarBase.directionPillarY),
                 Double.parseDouble(service.actualPillarBase.directionPillarX));

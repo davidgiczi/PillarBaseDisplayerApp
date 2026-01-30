@@ -217,14 +217,14 @@ public class PillarLocationCalculator {
         return (ordinate > 0 ? "+" : "") +
                 String.format(Locale.getDefault(),"%.3fm", ordinate)
                         .replace(",", ".") + " " +
-                getOrdinateErrorMargin(basePoint);
+                getOrdinateErrorMargin(startPoint, endPoint);
     }
     public String getAbscissaAsString(Point startPoint, Point endPoint, Point basePoint){
         double abscissa = getAbscissaValue(startPoint, endPoint, basePoint);
         return  (abscissa > 0 ? "+" :  "")  +
                 String.format(Locale.getDefault(), "%.3fm", abscissa)
                         .replace(",", ".") + " " +
-                getAbscissaErrorMargin(basePoint);
+                getAbscissaErrorMargin(startPoint, endPoint);
     }
     private double getOrdinateValue(Point startPoint, Point endPoint, Point basePoint){
         if( startPoint.equals(endPoint) ){
@@ -258,15 +258,13 @@ public class PillarLocationCalculator {
         return Math.cos(alfa) * distance;
     }
 
-    private String getAbscissaErrorMargin(Point basePoint){
-        Point measEndPoint = new Point("MeasEndPoint", aveDirectionX, aveDirectionY);
-        double lengthOfMainLine = new AzimuthAndDistance(basePoint, measEndPoint).calcDistance();
+    private String getAbscissaErrorMargin(Point startPoint, Point endPoint){
+        double lengthOfMainLine = new AzimuthAndDistance(startPoint, endPoint).calcDistance();
         return "|" + String.format(Locale.getDefault(),"%.1f",lengthOfMainLine / 4.0)
                 .replace("," , ".") + "cm|";
     }
-    private String getOrdinateErrorMargin(Point basePoint){
-        Point measEndPoint = new Point("MeasEndPoint", aveDirectionX, aveDirectionY);
-        double lengthOfMainLine =  new AzimuthAndDistance(basePoint, measEndPoint).calcDistance();
+    private String getOrdinateErrorMargin(Point startPoint, Point endPoint){
+        double lengthOfMainLine =  new AzimuthAndDistance(startPoint, endPoint).calcDistance();
         return "|" + String.format(Locale.getDefault(),"%.1f",3 * lengthOfMainLine / 10)
                 .replace(",", ".") + "cm|";
     }
