@@ -1483,6 +1483,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         if( service.actualPillarBase != null && service.actualPillarBase.controlPointX != null ){
             BASE_DATA.add(service.actualPillarBase.controlPointX);
         }
+        if( service.actualPillarBase != null  ){
+            BASE_DATA.add(String.valueOf(service.actualPillarBase.isHoleReady));
+            BASE_DATA.add(String.valueOf(service.actualPillarBase.isAxisReady));
+        }
         IS_SAVE_RTK_FILE = ((CheckBox) findViewById(R.id.save_rtk_format)).isChecked();
         IS_SAVE_TPS_FILE = ((CheckBox) findViewById(R.id.save_tps_format)).isChecked();
     }
