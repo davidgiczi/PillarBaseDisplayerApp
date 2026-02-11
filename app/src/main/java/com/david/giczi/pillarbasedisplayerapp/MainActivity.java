@@ -533,7 +533,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             service.actualPillarBase.setControlPointId(null);
             service.actualPillarBase.setControlPointY(null);
             service.actualPillarBase.setControlPointX(null);
-            service.updatePillarBaseParams();
+            service.savePillarBaseParams();
             return true;
         }
         if( controlPointId.isEmpty() || isInvalidInputChars(controlPointId) ){
@@ -551,7 +551,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         service.actualPillarBase.setControlPointId(controlPointId);
         service.actualPillarBase.setControlPointY(controlPointY);
         service.actualPillarBase.setControlPointX(controlPointX);
-        service.updatePillarBaseParams();
+        service.savePillarBaseParams();
         return true;
     }
 
@@ -597,7 +597,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             service.actualPillarBase.setHoleReady(measHoleCheckbox.isChecked());
             service.actualPillarBase.setAxisReady(measAxisCheckbox.isChecked());
             service.actualPillarBase.setNumberOfMeasure(Integer.parseInt(numberOfMeasureField.getText().toString()));
-            service.updatePillarBaseParams();
+            service.savePillarBaseParams();
             measuredInputDataWindow.dismiss();
                 Toast.makeText(this, "Az adatok sikeresen mentve az eszközre.",
                         Toast.LENGTH_LONG).show();
@@ -731,7 +731,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     continue;
                 }
 
-                service.insertOrUpdatePillarBaseParams(fileName.substring(0, fileName.indexOf(".")));
+                service.insertPillarBaseParams(fileName.substring(0, fileName.indexOf(".")));
                 numberOfInputFiles++;
 
             } catch (Exception e) {
@@ -1220,7 +1220,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         builder.setPositiveButton("Igen", (dialog, which) -> {
             if( isValidInputData() ){
                 getDataFromDataFragment();
-                service.insertOrUpdatePillarBaseParams(((EditText)findViewById(R.id.baseNameTitle)).getText().toString());
+                service.updatePillarBaseParams(((EditText)findViewById(R.id.baseNameTitle)).getText().toString());
                 Toast.makeText(this, "Az alap adatai sikeresen mentve az eszközre.",
                         Toast.LENGTH_LONG).show();
                 navController.navigate(R.id.action_DataFragment_to_CoordsFragment);

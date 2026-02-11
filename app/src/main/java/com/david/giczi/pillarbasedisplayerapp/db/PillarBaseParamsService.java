@@ -42,12 +42,12 @@ public class PillarBaseParamsService {
         });
     }
 
-    public void updatePillarBaseParams(){
+    public void savePillarBaseParams(){
         PillarBaseParamsDataBase.databaseExecutor.execute(() ->
                 paramsDAO.updatePillarBaseParams(actualPillarBase));
     }
 
-    public void insertOrUpdatePillarBaseParams(String baseName) {
+    public void updatePillarBaseParams(String baseName) {
                 List<String> baseData = MainActivity.BASE_DATA;
                 actualPillarBase = new PillarBaseParams(baseName);
                 actualPillarBase.setBaseType(baseData.get(0));
@@ -115,6 +115,60 @@ public class PillarBaseParamsService {
                 }
                 PillarBaseParamsDataBase.databaseExecutor.execute(() ->
                          paramsDAO.insertPillarBaseParams(actualPillarBase));
+    }
+
+    public void insertPillarBaseParams(String baseName) {
+        List<String> baseData = MainActivity.BASE_DATA;
+        actualPillarBase = new PillarBaseParams(baseName);
+        actualPillarBase.setBaseType(baseData.get(0));
+        actualPillarBase.setCenterPillarId(baseData.get(1));
+        actualPillarBase.setCenterPillarY(baseData.get(2));
+        actualPillarBase.setCenterPillarX(baseData.get(3));
+        actualPillarBase.setDirectionPillarId(baseData.get(4));
+        actualPillarBase.setDirectionPillarY(baseData.get(5));
+        actualPillarBase.setDirectionPillarX(baseData.get(6));
+        if( MainActivity.BASE_TYPE[0].equals(baseData.get(0)) ){
+            actualPillarBase.setDirectionDistance(baseData.get(7));
+            actualPillarBase.setPerpendicularFootDistance(baseData.get(8));
+            actualPillarBase.setParallelFootDistance(baseData.get(9));
+            actualPillarBase.setPerpendicularHoleDistance(baseData.get(10));
+            actualPillarBase.setParallelHoleDistance(baseData.get(11));
+            actualPillarBase.setRotationAngle(baseData.get(12));
+            actualPillarBase.setRotationMin(baseData.get(13));
+            actualPillarBase.setRotationSec(baseData.get(14));
+            if( baseData.size() == 19 ){
+                actualPillarBase.setControlPointId(baseData.get(16));
+                actualPillarBase.setControlPointY(baseData.get(17));
+                actualPillarBase.setControlPointX(baseData.get(18));
+            }
+        } else if( MainActivity.BASE_TYPE[1].equals(baseData.get(0)) ){
+            actualPillarBase.setPerpendicularHoleDistance(baseData.get(7));
+            actualPillarBase.setParallelHoleDistance(baseData.get(8));
+            actualPillarBase.setPerpendicularDirectionDistance(baseData.get(9));
+            actualPillarBase.setParallelDirectionDistance(baseData.get(10));
+            actualPillarBase.setRotationAngle(baseData.get(11));
+            actualPillarBase.setRotationMin(baseData.get(12));
+            actualPillarBase.setRotationSec(baseData.get(13));
+            if( baseData.size() == 18 ){
+                actualPillarBase.setControlPointId(baseData.get(15));
+                actualPillarBase.setControlPointY(baseData.get(16));
+                actualPillarBase.setControlPointX(baseData.get(17));
+            }
+        }
+        if( baseData.get(14).equals("0") ){
+            actualPillarBase.setRotationSide("right");
+        }
+        else if( baseData.get(14).equals("1") ) {
+            actualPillarBase.setRotationSide("left");
+        }
+        else if( baseData.get(15).equals("0") ){
+            actualPillarBase.setRotationSide("right");
+        }
+        else if( baseData.get(15).equals("1") ) {
+            actualPillarBase.setRotationSide("left");
+        }
+        PillarBaseParamsDataBase.databaseExecutor.execute(() ->
+                paramsDAO.insertPillarBaseParams(actualPillarBase));
     }
 
     public void deletePillarParamsByName(String baseName){
