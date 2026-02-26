@@ -106,6 +106,10 @@ public class PillarMeasDataFragment extends Fragment {
             MainActivity.MEAS_PILLAR_DATA[14] = fragmentMeasDataBinding.directionFoot4YCoordinate.getText().toString();
             MainActivity.MEAS_PILLAR_DATA[15] = fragmentMeasDataBinding.directionFoot4XCoordinate.getText().toString();
             Bundle resultData = new Bundle();
+            resultData.putString("aveCenterY", String.format(Locale.getDefault(),
+                    "%.3f", MainActivity.calcPillarLocationData.aveCenterX));
+            resultData.putString("aveCenterX", String.format(Locale.getDefault(),
+                    "%.3f", MainActivity.calcPillarLocationData.aveCenterY));
             resultData.putString("calcCenterX", MainActivity.calcPillarLocationData.centerX);
             resultData.putString("calcCenterY", MainActivity.calcPillarLocationData.centerY);
             resultData.putString("measDirectionX", MainActivity.calcPillarLocationData.directionX);

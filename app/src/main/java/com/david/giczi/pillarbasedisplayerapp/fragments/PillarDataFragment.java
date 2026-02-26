@@ -61,6 +61,8 @@ public class PillarDataFragment extends Fragment {
 
     private void displayPillarLocationData(){
         getParentFragmentManager().setFragmentResultListener("results", this, (requestKey, result) -> {
+            String aveCenterY = Objects.requireNonNull(result.get("aveCenterY")).toString();
+            String aveCenterX = Objects.requireNonNull(result.get("aveCenterX")).toString();
             String calcCenterX = Objects.requireNonNull(result.get("calcCenterX")).toString();
             String calcCenterY = Objects.requireNonNull(result.get("calcCenterY")).toString();
             String measDirectionX = Objects.requireNonNull(result.get("measDirectionX")).toString();
@@ -78,12 +80,14 @@ public class PillarDataFragment extends Fragment {
             }
             showCalculatedPillarBaseDataDialog(new Point("CalcBasePoint",
                             Double.parseDouble(calcCenterX), Double.parseDouble(calcCenterY)),
-                            calcCenterX, calcCenterY, measDirectionX, measDirectionY);
+                            calcCenterX, calcCenterY, measDirectionX, measDirectionY, aveCenterY, aveCenterX);
         });
     }
 
     private void showCalculatedPillarBaseDataDialog(Point calcBasePoint,
-        String calcCenterX, String calcCenterY, String measDirectionX, String measDirectionY) {
+        String calcCenterX, String calcCenterY,
+        String measDirectionX, String measDirectionY,
+        String aveCenterY, String aveCenterX) {
         PillarBaseParamsService service = ((MainActivity) requireActivity()).service;
         Point startPoint = new Point(service.actualPillarBase.centerPillarId,
                     Double.parseDouble(service.actualPillarBase.centerPillarY),
@@ -129,6 +133,8 @@ public class PillarDataFragment extends Fragment {
             fragmentDataBinding.inputXCoordinate.setText(calcCenterY);
             fragmentDataBinding.inputNextPrevYCoordinate.setText(measDirectionX);
             fragmentDataBinding.inputNextPrevXCoordinate.setText(measDirectionY);
+            service.actualPillarBase.setControlPointY(aveCenterY);
+            service.actualPillarBase.setControlPointX(aveCenterX);
         });
         builder.setNegativeButton("Nem", (dialog, which) -> dialog.dismiss());
         AlertDialog alert = builder.create();
