@@ -45,8 +45,7 @@ public class PillarCoordsFragment extends Fragment {
 
     @Override
     public View onCreateView(
-            @NonNull LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState
+            @NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState
     ) {
         fragmentCoordsBinding = FragmentCoordsBinding.inflate(inflater, container, false);
         try {

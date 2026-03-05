@@ -23,6 +23,8 @@ import com.david.giczi.pillarbasedisplayerapp.R;
 import com.david.giczi.pillarbasedisplayerapp.databinding.FragmentBaseBinding;
 import com.david.giczi.pillarbasedisplayerapp.db.PillarBaseParamsService;
 import com.david.giczi.pillarbasedisplayerapp.service.AzimuthAndDistance;
+import com.david.giczi.pillarbasedisplayerapp.service.PillarCoordsForPlateBase;
+import com.david.giczi.pillarbasedisplayerapp.service.PillarCoordsForWeightBase;
 import com.david.giczi.pillarbasedisplayerapp.service.Point;
 import com.david.giczi.pillarbasedisplayerapp.service.PolarPoint;
 
@@ -51,8 +53,7 @@ public class PillarBaseFragment extends Fragment {
 
     @Override
     public View onCreateView(
-            @NonNull LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState
+            @NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState
     ) {
         fragmentBaseBinding = FragmentBaseBinding.inflate(inflater, container, false);
         MainActivity.MENU.findItem(R.id.weight_base).setEnabled(false);
@@ -70,9 +71,43 @@ public class PillarBaseFragment extends Fragment {
         fragmentBaseBinding.drawingBase.setImageBitmap(bitmap);
         setFindPointValue();
         MainActivity.PAGE_COUNTER = 4;
+        Point center = new Point(MainActivity.BASE_DATA.get(1),
+                Double.parseDouble(MainActivity.BASE_DATA.get(2)),
+                Double.parseDouble(MainActivity.BASE_DATA.get(3)));
+        Point direction = new Point(MainActivity.BASE_DATA.get(4),
+                Double.parseDouble(MainActivity.BASE_DATA.get(5)),
+                Double.parseDouble(MainActivity.BASE_DATA.get(6)));
+        if( MainActivity.BASE_DATA.get(0).equals(MainActivity.BASE_TYPE[0]) ){
+            PillarCoordsForWeightBase calculatorForWeightBase =
+                    new PillarCoordsForWeightBase(center, direction);
+            calculatorForWeightBase.setDistanceOnTheAxis(Double.parseDouble(MainActivity.BASE_DATA.get(7)));
+            calculatorForWeightBase.setHorizontalDistanceBetweenPillarLegs(Double.parseDouble(MainActivity.BASE_DATA.get(8)));
+            calculatorForWeightBase.setVerticalDistanceBetweenPillarLegs(Double.parseDouble(MainActivity.BASE_DATA.get(9)));
+            calculatorForWeightBase.setHorizontalSizeOfHoleOfPillarLeg(Double.parseDouble(MainActivity.BASE_DATA.get(10)));
+            calculatorForWeightBase.setVerticalSizeOfHoleOfPillarLeg(Double.parseDouble(MainActivity.BASE_DATA.get(11)));
+            calculatorForWeightBase.setAngleValueBetweenMainPath(Double.parseDouble(MainActivity.BASE_DATA.get(12)));
+            calculatorForWeightBase.setAngularMinuteValueBetweenMainPath(Double.parseDouble(MainActivity.BASE_DATA.get(13)));
+            calculatorForWeightBase.setAngularSecondValueBetweenMainPath(Double.parseDouble(MainActivity.BASE_DATA.get(14)));
+            calculatorForWeightBase.setSideOfAngle("0".equals(MainActivity.BASE_DATA.get(15)));
+            calculatorForWeightBase.calculatePillarPoints();
+            MainActivity.PILLAR_BASE_COORDINATES = calculatorForWeightBase.getPillarPoints();
 
-        if(MainActivity.PILLAR_BASE_COORDINATES != null ){
-            setScaleValue();
+        } else if( MainActivity.BASE_DATA.get(0).equals(MainActivity.BASE_TYPE[1]) ){
+            PillarCoordsForPlateBase calculatorForPlateBase =
+                    new PillarCoordsForPlateBase(center, direction);
+            calculatorForPlateBase.setHorizontalSizeOfHole(Double.parseDouble(MainActivity.BASE_DATA.get(7)));
+            calculatorForPlateBase.setVerticalSizeOfHole(Double.parseDouble(MainActivity.BASE_DATA.get(8)));
+            calculatorForPlateBase.setHorizontalDistanceFromTheSideOfHole(Double.parseDouble(MainActivity.BASE_DATA.get(9)));
+            calculatorForPlateBase.setVerticalDistanceFromTheSideOfHole(Double.parseDouble(MainActivity.BASE_DATA.get(10)));
+            calculatorForPlateBase.setAngleValueBetweenMainPath(Double.parseDouble(MainActivity.BASE_DATA.get(11)));
+            calculatorForPlateBase.setAngularMinuteValueBetweenMainPath(Double.parseDouble(MainActivity.BASE_DATA.get(12)));
+            calculatorForPlateBase.setAngularSecondValueBetweenMainPath(Double.parseDouble(MainActivity.BASE_DATA.get(13)));
+            calculatorForPlateBase.setSideOfAngle("0".equals(MainActivity.BASE_DATA.get(14)));
+            calculatorForPlateBase.calculatePillarPoints();
+            MainActivity.PILLAR_BASE_COORDINATES = calculatorForPlateBase.getPillarPoints();
+        }
+        MainActivity.PILLAR_BASE_COORDINATES.add(direction);
+        setScaleValue();
             transformPillarBasePoints();
             addNorthSign();
             drawCircleForPoints();
@@ -89,7 +124,7 @@ public class PillarBaseFragment extends Fragment {
                 drawPillarAxesForPlateBase();
                 drawLegNameForPlateBase();
             }
-        }
+
         if( MainActivity.northPoleWindow != null ){
             MainActivity
             .northPoleWindow.showAtLocation(((MainActivity) requireActivity()).binding.getRoot(), Gravity.CENTER, 0, - 630 );

@@ -26,9 +26,9 @@ public class PillarMeasDataFragment extends Fragment {
     private FragmentMeasDataBinding fragmentMeasDataBinding;
     private PillarBaseParamsService service;
 
-    @Nullable
+
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         this.fragmentMeasDataBinding = FragmentMeasDataBinding.inflate(inflater, container, false);
         this.service = ((MainActivity) requireActivity()).service;
         MainActivity.PAGE_COUNTER = 1;

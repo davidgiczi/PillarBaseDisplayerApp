@@ -1012,7 +1012,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
 
 
-    private void readPillarBaseParamsFromDatabase(){
+    public void readPillarBaseParamsFromDatabase(){
         BASE_DATA.clear();
         BASE_DATA.add(service.actualPillarBase.baseType);
         BASE_DATA.add(service.actualPillarBase.centerPillarId);

@@ -49,7 +49,9 @@ public class PillarBaseParamsService {
 
     public void updatePillarBaseParams(String baseName) {
                 List<String> baseData = MainActivity.BASE_DATA;
-                actualPillarBase = new PillarBaseParams(baseName);
+                if( actualPillarBase == null ){
+                    actualPillarBase = new PillarBaseParams(baseName);
+                }
                 actualPillarBase.setBaseType(baseData.get(0));
                 actualPillarBase.setCenterPillarId(baseData.get(1));
                 actualPillarBase.setCenterPillarY(baseData.get(2));
@@ -67,9 +69,6 @@ public class PillarBaseParamsService {
                     actualPillarBase.setRotationMin(baseData.get(13));
                     actualPillarBase.setRotationSec(baseData.get(14));
                     if( baseData.size() == 22 ){
-                        actualPillarBase.setControlPointId(baseData.get(16));
-                        actualPillarBase.setControlPointY(baseData.get(17));
-                        actualPillarBase.setControlPointX(baseData.get(18));
                         actualPillarBase.setHoleReady(Boolean.parseBoolean(baseData.get(19)));
                         actualPillarBase.setAxisReady(Boolean.parseBoolean(baseData.get(20)));
                         actualPillarBase.setNumberOfMeasure(Integer.parseInt(baseData.get(21)));
@@ -88,9 +87,6 @@ public class PillarBaseParamsService {
                     actualPillarBase.setRotationMin(baseData.get(12));
                     actualPillarBase.setRotationSec(baseData.get(13));
                     if( baseData.size() == 21 ){
-                        actualPillarBase.setControlPointId(baseData.get(15));
-                        actualPillarBase.setControlPointY(baseData.get(16));
-                        actualPillarBase.setControlPointX(baseData.get(17));
                         actualPillarBase.setHoleReady(Boolean.parseBoolean(baseData.get(18)));
                         actualPillarBase.setAxisReady(Boolean.parseBoolean(baseData.get(19)));
                         actualPillarBase.setNumberOfMeasure(Integer.parseInt(baseData.get(20)));
