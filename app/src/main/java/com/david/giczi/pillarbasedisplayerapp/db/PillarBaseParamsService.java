@@ -97,16 +97,16 @@ public class PillarBaseParamsService {
                         actualPillarBase.setNumberOfMeasure(Integer.parseInt(baseData.get(17)));
                     }
                 }
-                if( baseData.get(14).equals("0") ){
+                if( baseData.get(0).equals(MainActivity.BASE_TYPE[0]) && baseData.get(15).equals("0") ){
                  actualPillarBase.setRotationSide("right");
                 }
-                else if( baseData.get(14).equals("1") ) {
+                else if( baseData.get(0).equals(MainActivity.BASE_TYPE[0]) && baseData.get(15).equals("1") ) {
                 actualPillarBase.setRotationSide("left");
                  }
-                else if( baseData.get(15).equals("0") ){
+                else if( baseData.get(0).equals(MainActivity.BASE_TYPE[1]) && baseData.get(14).equals("0") ){
                 actualPillarBase.setRotationSide("right");
                 }
-                else if( baseData.get(15).equals("1") ) {
+                else if( baseData.get(0).equals(MainActivity.BASE_TYPE[1]) && baseData.get(14).equals("1") ) {
                 actualPillarBase.setRotationSide("left");
                 }
                 PillarBaseParamsDataBase.databaseExecutor.execute(() ->
