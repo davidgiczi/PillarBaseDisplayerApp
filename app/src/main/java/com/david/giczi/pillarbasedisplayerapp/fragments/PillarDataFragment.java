@@ -180,11 +180,16 @@ public class PillarDataFragment extends Fragment {
     if( teoGammaAngle > 0  && Math.PI > teoGammaAngle && measGammaAngle > 0 && Math.PI > measGammaAngle ){
         infoText = new SpannableString("BAL oldali törésszög, ΔΥ= " +
                 MainActivity.convertAngleMinSecFormat(deltaGammaAngle));
-        if( Math.PI / 90 > Math.abs(deltaGammaAngle) ){
+
+        if( Math.PI / 90 > Math.abs(deltaGammaAngle) && isNot180Angle() && fragmentDataBinding.radioLeft.isChecked() ){
             infoText.setSpan(new ForegroundColorSpan(ContextCompat.getColor(requireContext(), R.color.green)),
                     22, infoText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
-        else {
+        else if( Math.PI / 90 > Math.abs(deltaGammaAngle) && !isNot180Angle() ){
+            infoText.setSpan(new ForegroundColorSpan(ContextCompat.getColor(requireContext(), R.color.green)),
+                    22, infoText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+        else if( isNot180Angle() ) {
             infoText.setSpan(new ForegroundColorSpan(ContextCompat.getColor(requireContext(), R.color.red)),
                     22, infoText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
@@ -192,11 +197,15 @@ public class PillarDataFragment extends Fragment {
     else if( teoGammaAngle > Math.PI && measGammaAngle > Math.PI){
         infoText = new SpannableString("JOBB oldali törésszög, ΔΥ= " +
                 MainActivity.convertAngleMinSecFormat(deltaGammaAngle));
-        if( Math.PI / 90 > Math.abs(deltaGammaAngle) ){
+        if( Math.PI / 90 > Math.abs(deltaGammaAngle) && isNot180Angle() && fragmentDataBinding.radioRight.isChecked() ) {
             infoText.setSpan(new ForegroundColorSpan(ContextCompat.getColor(requireContext(), R.color.green)),
                     23, infoText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
-        else{
+        else if( Math.PI / 90 > Math.abs(deltaGammaAngle) && !isNot180Angle() ){
+            infoText.setSpan(new ForegroundColorSpan(ContextCompat.getColor(requireContext(), R.color.green)),
+                    23, infoText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+        else if( isNot180Angle() ){
             infoText.setSpan(new ForegroundColorSpan(ContextCompat.getColor(requireContext(), R.color.red)),
                     23, infoText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
@@ -219,6 +228,12 @@ public class PillarDataFragment extends Fragment {
                                             .append("\n")
                                             .append(infoText).append("\n").append("\n")
                                             .append("Hozzáadja a mért adatokat?");
+    }
+
+    private boolean isNot180Angle(){
+        return Integer.parseInt( fragmentDataBinding.inputAngle.getText().toString() )
+                + Integer.parseInt( fragmentDataBinding.inputMin.getText().toString() )
+                + Integer.parseInt( fragmentDataBinding.inputSec.getText().toString() ) != 180;
     }
 
     @Override
