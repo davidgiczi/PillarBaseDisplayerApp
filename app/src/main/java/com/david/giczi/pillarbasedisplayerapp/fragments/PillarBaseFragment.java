@@ -266,7 +266,7 @@ public class PillarBaseFragment extends Fragment {
                             String.format(Locale.getDefault(), "%.3fm", mainLineDistance.calcDistance()).replace(",", "."),
                     3 * MM, getResources().getDisplayMetrics().heightPixels - 3 * MM, paint);
         }
-        else{
+        else {
             canvas.drawText("M= 1:" + (int) SCALE,
                     3 * MM, getResources().getDisplayMetrics().heightPixels - 18 * MM, paint);
             canvas.drawText((centerIdValues.length == 2 ?
@@ -276,12 +276,14 @@ public class PillarBaseFragment extends Fragment {
                             + ". oszlopok távolsága: " +
                             String.format(Locale.getDefault(), "%.3fm", mainLineDistance.calcDistance()).replace(",", "."),
                     3 * MM, getResources().getDisplayMetrics().heightPixels - 8 * MM, paint);
-            assert distanceInfoByControlPoint != null;
-            canvas.drawText(distanceInfoByControlPoint, 3 * MM,
-                    getResources().getDisplayMetrics().heightPixels - 13 * MM, paint);
-            assert angleInfoByControlPoint != null;
-            canvas.drawText(angleInfoByControlPoint, 3 * MM,
-                    getResources().getDisplayMetrics().heightPixels - 3 * MM, paint);
+            if( distanceInfoByControlPoint != null ) {
+                canvas.drawText(distanceInfoByControlPoint, 3 * MM,
+                        getResources().getDisplayMetrics().heightPixels - 13 * MM, paint);
+            }
+            if( angleInfoByControlPoint != null ) {
+                canvas.drawText(angleInfoByControlPoint, 3 * MM,
+                        getResources().getDisplayMetrics().heightPixels - 3 * MM, paint);
+            }
         }
         paint.setColor(ContextCompat.getColor(requireContext(), R.color.firebrick));
         for(int i = 1; i < transformedPillarBasePoints.size() - 1; i++){
