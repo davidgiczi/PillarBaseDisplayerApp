@@ -1220,8 +1220,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         builder.setPositiveButton("Igen", (dialog, which) -> {
             if( isValidInputData() ){
                 getDataFromDataFragment();
-                service.updatePillarBaseParams(((EditText)findViewById(R.id.baseNameTitle)).getText().toString());
-                Toast.makeText(this, "Az alap adatai sikeresen mentve az eszközre.",
+                String baseName = ((EditText)findViewById(R.id.baseNameTitle)).getText().toString();
+                if( service.actualPillarBase != null && baseName.equals(service.actualPillarBase.baseName) ){
+                    service.updatePillarBaseParams(baseName);
+                }
+                else {
+                    service.insertPillarBaseParams(baseName);
+                }
+                Toast.makeText(this, "\"" + baseName + "\" alap adatai sikeresen mentve az eszközre.",
                         Toast.LENGTH_LONG).show();
                 navController.navigate(R.id.action_DataFragment_to_CoordsFragment);
             }
