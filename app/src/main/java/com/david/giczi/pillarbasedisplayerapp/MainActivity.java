@@ -731,7 +731,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     continue;
                 }
 
-                service.insertPillarBaseParams(fileName.substring(0, fileName.indexOf(".")));
+                service.insertOrUpdatePillarBaseParams(fileName.substring(0, fileName.indexOf(".")), true);
                 numberOfInputFiles++;
 
             } catch (Exception e) {
@@ -1221,12 +1221,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             if( isValidInputData() ){
                 getDataFromDataFragment();
                 String baseName = ((EditText)findViewById(R.id.baseNameTitle)).getText().toString();
-                if( service.actualPillarBase != null && baseName.equals(service.actualPillarBase.baseName) ){
-                    service.updatePillarBaseParams(baseName);
-                }
-                else {
-                    service.insertPillarBaseParams(baseName);
-                }
+                service.insertOrUpdatePillarBaseParams(baseName,
+                        service.actualPillarBase == null || !baseName.equals(service.actualPillarBase.baseName));
                 Toast.makeText(this, "\"" + baseName + "\" alap adatai sikeresen mentve az eszközre.",
                         Toast.LENGTH_LONG).show();
                 navController.navigate(R.id.action_DataFragment_to_CoordsFragment);
