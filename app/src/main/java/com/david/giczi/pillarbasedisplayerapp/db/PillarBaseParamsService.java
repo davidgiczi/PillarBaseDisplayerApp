@@ -49,8 +49,23 @@ public class PillarBaseParamsService {
 
     public void insertOrUpdatePillarBaseParams(String baseName, boolean isInserted) {
                 List<String> baseData = MainActivity.BASE_DATA;
+                String controlPointId = null;
+                if( actualPillarBase.controlPointId != null ){
+                    controlPointId = actualPillarBase.controlPointId;
+                }
+                String controlPointY = null;
+                if( actualPillarBase.controlPointY != null ){
+                    controlPointY = actualPillarBase.controlPointY;
+                }
+                String controlPointX = null;
+                if( actualPillarBase.controlPointX != null ){
+                    controlPointX = actualPillarBase.controlPointX;
+                }
                 if( isInserted ){
                     actualPillarBase = new PillarBaseParams(baseName);
+                    actualPillarBase.setControlPointId(controlPointId);
+                    actualPillarBase.setControlPointY(controlPointY);
+                    actualPillarBase.setControlPointX(controlPointX);
                 }
                 actualPillarBase.setBaseType(baseData.get(0));
                 actualPillarBase.setCenterPillarId(baseData.get(1));
