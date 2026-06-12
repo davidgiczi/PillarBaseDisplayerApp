@@ -7,6 +7,7 @@ import com.david.giczi.pillarbasedisplayerapp.MainActivity;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 
 public class PillarBaseParamsService {
 
@@ -50,15 +51,15 @@ public class PillarBaseParamsService {
     public void insertOrUpdatePillarBaseParams(String baseName, boolean isInserted) {
                 List<String> baseData = MainActivity.BASE_DATA;
                 String controlPointId = null;
-                if( actualPillarBase.controlPointId != null ){
+                if( actualPillarBase != null && actualPillarBase.controlPointId != null ){
                     controlPointId = actualPillarBase.controlPointId;
                 }
                 String controlPointY = null;
-                if( actualPillarBase.controlPointY != null ){
+                if( actualPillarBase != null && actualPillarBase.controlPointY != null ){
                     controlPointY = actualPillarBase.controlPointY;
                 }
                 String controlPointX = null;
-                if( actualPillarBase.controlPointX != null ){
+                if( actualPillarBase != null && actualPillarBase.controlPointX != null ){
                     controlPointX = actualPillarBase.controlPointX;
                 }
                 if( isInserted ){
@@ -67,7 +68,7 @@ public class PillarBaseParamsService {
                     actualPillarBase.setControlPointY(controlPointY);
                     actualPillarBase.setControlPointX(controlPointX);
                 }
-                actualPillarBase.setBaseType(baseData.get(0));
+                Objects.requireNonNull(actualPillarBase).setBaseType(baseData.get(0));
                 actualPillarBase.setCenterPillarId(baseData.get(1));
                 actualPillarBase.setCenterPillarY(baseData.get(2));
                 actualPillarBase.setCenterPillarX(baseData.get(3));

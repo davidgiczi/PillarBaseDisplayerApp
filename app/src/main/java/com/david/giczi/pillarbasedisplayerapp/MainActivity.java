@@ -730,7 +730,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                             Toast.LENGTH_SHORT).show();
                     continue;
                 }
-
                 service.insertOrUpdatePillarBaseParams(fileName.substring(0, fileName.indexOf(".")), true);
                 numberOfInputFiles++;
 
