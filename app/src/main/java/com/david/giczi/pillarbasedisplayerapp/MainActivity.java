@@ -730,7 +730,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                             Toast.LENGTH_SHORT).show();
                     continue;
                 }
-                service.insertOrUpdatePillarBaseParams(fileName.substring(0, fileName.indexOf(".")), true);
+                service.insertOrUpdatePillarBaseParams(fileName.trim().substring(0, fileName.indexOf(".")), true);
                 numberOfInputFiles++;
 
             } catch (Exception e) {
@@ -1219,7 +1219,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         builder.setPositiveButton("Igen", (dialog, which) -> {
             if( isValidInputData() ){
                 getDataFromDataFragment();
-                String baseName = ((EditText)findViewById(R.id.baseNameTitle)).getText().toString();
+                String baseName = ((EditText)findViewById(R.id.baseNameTitle)).getText().toString().trim();
                 service.insertOrUpdatePillarBaseParams(baseName,
                         service.actualPillarBase == null || !baseName.equals(service.actualPillarBase.baseName));
                 Toast.makeText(this, "\"" + baseName + "\" alap adatai sikeresen mentve az eszközre.",
