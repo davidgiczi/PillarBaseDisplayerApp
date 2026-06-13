@@ -7,7 +7,6 @@ import com.david.giczi.pillarbasedisplayerapp.MainActivity;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 
 public class PillarBaseParamsService {
 
@@ -22,6 +21,7 @@ public class PillarBaseParamsService {
     public PillarBaseParamsService(Context context) {
         PillarBaseParamsDataBase dataBase = PillarBaseParamsDataBase.getInstance(context);
         this.paramsDAO = dataBase.PillarBaseParamsDAO();
+        this.actualPillarBase = new PillarBaseParams("");
     }
 
     public void getItems(){
@@ -50,25 +50,22 @@ public class PillarBaseParamsService {
 
     public void insertOrUpdatePillarBaseParams(String baseName, boolean isInserted) {
                 List<String> baseData = MainActivity.BASE_DATA;
-                String controlPointId = null;
-                if( actualPillarBase != null && actualPillarBase.controlPointId != null ){
-                    controlPointId = actualPillarBase.controlPointId;
-                }
-                String controlPointY = null;
-                if( actualPillarBase != null && actualPillarBase.controlPointY != null ){
-                    controlPointY = actualPillarBase.controlPointY;
-                }
-                String controlPointX = null;
-                if( actualPillarBase != null && actualPillarBase.controlPointX != null ){
-                    controlPointX = actualPillarBase.controlPointX;
-                }
+                String controlPointId = actualPillarBase.controlPointId;
+                String controlPointY = actualPillarBase.controlPointY;
+                String controlPointX = actualPillarBase.controlPointX;
+                boolean isHoleReady = actualPillarBase.isHoleReady;
+                boolean isAxisReady = actualPillarBase.isAxisReady;
+                int numberOfMeasure = actualPillarBase.numberOfMeasure;
                 if( isInserted ){
                     actualPillarBase = new PillarBaseParams(baseName);
                     actualPillarBase.setControlPointId(controlPointId);
                     actualPillarBase.setControlPointY(controlPointY);
                     actualPillarBase.setControlPointX(controlPointX);
+                    actualPillarBase.setHoleReady(isHoleReady);
+                    actualPillarBase.setAxisReady(isAxisReady);
+                    actualPillarBase.setNumberOfMeasure(numberOfMeasure);
                 }
-                Objects.requireNonNull(actualPillarBase).setBaseType(baseData.get(0));
+                actualPillarBase.setBaseType(baseData.get(0));
                 actualPillarBase.setCenterPillarId(baseData.get(1));
                 actualPillarBase.setCenterPillarY(baseData.get(2));
                 actualPillarBase.setCenterPillarX(baseData.get(3));

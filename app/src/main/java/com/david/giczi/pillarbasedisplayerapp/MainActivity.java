@@ -483,7 +483,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         controlPointInputDataWindow.showAtLocation(binding.getRoot(), Gravity.CENTER, 0, -400);
         Button okButton =  container.findViewById(R.id.ok_button);
 
-        if( service.actualPillarBase != null ){
+        if( !service.actualPillarBase.baseName.isEmpty() ){
             ((EditText) container.findViewById(R.id.control_point_id_field))
                     .setText(service.actualPillarBase.controlPointId);
             ((EditText) container.findViewById(R.id.control_point_first_coordinate_field))
@@ -492,7 +492,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     .setText(service.actualPillarBase.controlPointX);
         }
         okButton.setOnClickListener( b -> {
-         if( service.actualPillarBase == null ){
+         if( service.actualPillarBase.baseName.isEmpty() ){
              Toast.makeText(this, "Az adatok csak megnyitott projekt esetén menthetők.",
                      Toast.LENGTH_LONG).show();
              return;
