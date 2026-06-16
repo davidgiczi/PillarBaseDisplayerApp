@@ -86,11 +86,6 @@ public class PillarBaseParamsService {
                         actualPillarBase.setAxisReady(Boolean.parseBoolean(baseData.get(20)));
                         actualPillarBase.setNumberOfMeasure(Integer.parseInt(baseData.get(21)));
                     }
-                    else if( isInserted && baseData.size() == 19 ){
-                        actualPillarBase.setControlPointId(baseData.get(16));
-                        actualPillarBase.setControlPointY(baseData.get(17));
-                        actualPillarBase.setControlPointX(baseData.get(18));
-                    }
                    else if( !isInserted && baseData.size() == 19 ){
                         actualPillarBase.setHoleReady(Boolean.parseBoolean(baseData.get(16)));
                         actualPillarBase.setAxisReady(Boolean.parseBoolean(baseData.get(17)));
@@ -108,11 +103,6 @@ public class PillarBaseParamsService {
                         actualPillarBase.setHoleReady(Boolean.parseBoolean(baseData.get(18)));
                         actualPillarBase.setAxisReady(Boolean.parseBoolean(baseData.get(19)));
                         actualPillarBase.setNumberOfMeasure(Integer.parseInt(baseData.get(20)));
-                    }
-                    else if( isInserted && baseData.size() == 18 ){
-                        actualPillarBase.setControlPointId(baseData.get(15));
-                        actualPillarBase.setControlPointY(baseData.get(16));
-                        actualPillarBase.setControlPointX(baseData.get(17));
                     }
                     else if( !isInserted && baseData.size() == 18 ){
                         actualPillarBase.setHoleReady(Boolean.parseBoolean(baseData.get(15)));
