@@ -130,11 +130,6 @@ public class PillarDataFragment extends Fragment {
             fragmentDataBinding.inputXCoordinate.setText(calcCenterY);
             fragmentDataBinding.inputNextPrevYCoordinate.setText(measDirectionX);
             fragmentDataBinding.inputNextPrevXCoordinate.setText(measDirectionY);
-            if( service.actualPillarBase.controlPointId == null ||
-                    service.actualPillarBase.controlPointY == null ||
-                        service.actualPillarBase.controlPointX == null ){
-                return;
-            }
             service.actualPillarBase.
                     setControlPointId(service.actualPillarBase.centerPillarId.endsWith("M") ?
                             service.actualPillarBase.centerPillarId :
