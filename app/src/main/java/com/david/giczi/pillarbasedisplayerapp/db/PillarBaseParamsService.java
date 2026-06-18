@@ -127,6 +127,7 @@ public class PillarBaseParamsService {
     }
 
     public void deletePillarParamsByName(String baseName){
+        this.actualPillarBase = new PillarBaseParams("");
         PillarBaseParamsDataBase.databaseExecutor.execute(() ->
                 paramsDAO.deletePillarBaseParamsByName(baseName));
     }

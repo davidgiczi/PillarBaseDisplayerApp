@@ -86,6 +86,11 @@ public class PillarDataFragment extends Fragment {
         String measDirectionX, String measDirectionY,
         String aveCenterY, String aveCenterX) {
         PillarBaseParamsService service = ((MainActivity) requireActivity()).service;
+        if( service.actualPillarBase.baseName.isEmpty() ){
+            Toast.makeText(requireContext(), "Ellenőrző adatok csak mentett projekt esetén számíthatók.",
+                    Toast.LENGTH_LONG).show();
+            return;
+        }
         Point startPoint = new Point(service.actualPillarBase.centerPillarId,
                     Double.parseDouble(service.actualPillarBase.centerPillarY),
                     Double.parseDouble(service.actualPillarBase.centerPillarX));
@@ -130,6 +135,9 @@ public class PillarDataFragment extends Fragment {
             fragmentDataBinding.inputXCoordinate.setText(calcCenterY);
             fragmentDataBinding.inputNextPrevYCoordinate.setText(measDirectionX);
             fragmentDataBinding.inputNextPrevXCoordinate.setText(measDirectionY);
+            if( aveCenterX.equals(calcCenterX) && aveCenterY.equals(calcCenterY) ){
+                return;
+            }
             service.actualPillarBase.
                     setControlPointId(service.actualPillarBase.centerPillarId.endsWith("M") ?
                             service.actualPillarBase.centerPillarId :
@@ -146,7 +154,7 @@ public class PillarDataFragment extends Fragment {
      PillarBaseParamsService service = ((MainActivity) requireActivity()).service;
      String controlPointY = service.actualPillarBase.controlPointY;
      String controlPointX = service.actualPillarBase.controlPointX;
-        if( controlPointY == null || controlPointX == null ){
+        if( service.actualPillarBase.baseName.isEmpty() || controlPointY == null || controlPointX == null ){
             return new SpannableStringBuilder("Nincs " +
                     service.actualPillarBase.centerPillarId +  ".oh kontrollpont.")
                         .append("\n")
@@ -155,14 +163,21 @@ public class PillarDataFragment extends Fragment {
         }
     Point controlPoint = new Point(service.actualPillarBase.controlPointId,
             Double.parseDouble(controlPointY), Double.parseDouble(controlPointX));
+
     Point centerPoint = new Point(service.actualPillarBase.centerPillarId,
                                 Double.parseDouble(service.actualPillarBase.centerPillarY),
                                 Double.parseDouble(service.actualPillarBase.centerPillarX));
     Point nextPoint = new Point(service.actualPillarBase.directionPillarId,
                                 Double.parseDouble(service.actualPillarBase.directionPillarY),
                                 Double.parseDouble(service.actualPillarBase.directionPillarX));
-    if( centerPoint.equals(controlPoint) || centerPoint.equals(nextPoint) ){
-        return new SpannableStringBuilder("Hiba: Egyező pontok.")
+    if( centerPoint.equals(controlPoint) ){
+        return new SpannableStringBuilder("Hiba: A center-, és kontroll pont egyező.")
+                .append("\n")
+                .append("\n")
+                .append("Hozzáadja a mért adatokat?");
+    }
+    else if( centerPoint.equals(nextPoint) ){
+        return new SpannableStringBuilder("Hiba: A center-, és irány pont egyező.")
                 .append("\n")
                 .append("\n")
                 .append("Hozzáadja a mért adatokat?");
