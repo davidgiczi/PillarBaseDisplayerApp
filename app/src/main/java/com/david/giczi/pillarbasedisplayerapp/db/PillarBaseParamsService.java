@@ -64,6 +64,16 @@ public class PillarBaseParamsService {
                     actualPillarBase.setHoleReady(isHoleReady);
                     actualPillarBase.setAxisReady(isAxisReady);
                     actualPillarBase.setNumberOfMeasure(numberOfMeasure);
+                    if( baseData.size() == 18 ){
+                        actualPillarBase.setControlPointId(baseData.get(15));
+                        actualPillarBase.setControlPointY(baseData.get(16));
+                        actualPillarBase.setControlPointX(baseData.get(17));
+                    }
+                    else if( baseData.size() == 19 ){
+                        actualPillarBase.setControlPointId(baseData.get(16));
+                        actualPillarBase.setControlPointY(baseData.get(17));
+                        actualPillarBase.setControlPointX(baseData.get(18));
+                    }
                 }
                 actualPillarBase.setBaseType(baseData.get(0));
                 actualPillarBase.setCenterPillarId(baseData.get(1));
