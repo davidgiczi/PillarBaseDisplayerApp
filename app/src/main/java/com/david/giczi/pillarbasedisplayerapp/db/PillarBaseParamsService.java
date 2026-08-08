@@ -50,6 +50,7 @@ public class PillarBaseParamsService {
 
     public void insertOrUpdatePillarBaseParams(String baseName, boolean isInserted) {
                 List<String> baseData = MainActivity.BASE_DATA;
+                baseData.forEach(System.out::println);
                 String controlPointId = actualPillarBase.controlPointId;
                 String controlPointY = actualPillarBase.controlPointY;
                 String controlPointX = actualPillarBase.controlPointX;
@@ -64,16 +65,19 @@ public class PillarBaseParamsService {
                     actualPillarBase.setHoleReady(isHoleReady);
                     actualPillarBase.setAxisReady(isAxisReady);
                     actualPillarBase.setNumberOfMeasure(numberOfMeasure);
-                    if( baseData.size() == 18 ){
-                        actualPillarBase.setControlPointId(baseData.get(15));
-                        actualPillarBase.setControlPointY(baseData.get(16));
-                        actualPillarBase.setControlPointX(baseData.get(17));
-                    }
-                    else if( baseData.size() == 19 ){
-                        actualPillarBase.setControlPointId(baseData.get(16));
-                        actualPillarBase.setControlPointY(baseData.get(17));
-                        actualPillarBase.setControlPointX(baseData.get(18));
-                    }
+                   try {
+                       if (baseData.size() == 18) {
+                           Float.parseFloat(baseData.get(15));
+                           actualPillarBase.setControlPointId(baseData.get(15));
+                           actualPillarBase.setControlPointY(baseData.get(16));
+                           actualPillarBase.setControlPointX(baseData.get(17));
+                       } else if (baseData.size() == 19) {
+                           Float.parseFloat(baseData.get(16));
+                           actualPillarBase.setControlPointId(baseData.get(16));
+                           actualPillarBase.setControlPointY(baseData.get(17));
+                           actualPillarBase.setControlPointX(baseData.get(18));
+                       }
+                   } catch (NumberFormatException ignored){}
                 }
                 actualPillarBase.setBaseType(baseData.get(0));
                 actualPillarBase.setCenterPillarId(baseData.get(1));
