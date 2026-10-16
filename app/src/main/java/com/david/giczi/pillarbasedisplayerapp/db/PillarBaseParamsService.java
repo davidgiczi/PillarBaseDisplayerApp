@@ -3,6 +3,7 @@ package com.david.giczi.pillarbasedisplayerapp.db;
 import android.content.Context;
 
 import com.david.giczi.pillarbasedisplayerapp.MainActivity;
+import com.david.giczi.pillarbasedisplayerapp.utils.ProjectNameComparator;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -28,7 +29,9 @@ public class PillarBaseParamsService {
         itemList = new ArrayList<>();
         itemList.add("Alapok");
         PillarBaseParamsDataBase.databaseExecutor.execute(() -> {
-            for (String baseName : paramsDAO.getPillarBaseNameList()) {
+            List<String> baseNameList = paramsDAO.getPillarBaseNameList();
+            baseNameList.sort(new ProjectNameComparator());
+            for (String baseName : baseNameList) {
              itemList.add(baseName + "\t\t[ " + paramsDAO.getBaseNumberOfMeasureByName(baseName) + " ]");
             }
         });
@@ -50,7 +53,6 @@ public class PillarBaseParamsService {
 
     public void insertOrUpdatePillarBaseParams(String baseName, boolean isInserted) {
                 List<String> baseData = MainActivity.BASE_DATA;
-                baseData.forEach(System.out::println);
                 String controlPointId = actualPillarBase.controlPointId;
                 String controlPointY = actualPillarBase.controlPointY;
                 String controlPointX = actualPillarBase.controlPointX;
@@ -67,12 +69,12 @@ public class PillarBaseParamsService {
                     actualPillarBase.setNumberOfMeasure(numberOfMeasure);
                    try {
                        if (baseData.size() == 18) {
-                           Float.parseFloat(baseData.get(15));
+                           Float.parseFloat(baseData.get(16));
                            actualPillarBase.setControlPointId(baseData.get(15));
                            actualPillarBase.setControlPointY(baseData.get(16));
                            actualPillarBase.setControlPointX(baseData.get(17));
                        } else if (baseData.size() == 19) {
-                           Float.parseFloat(baseData.get(16));
+                           Float.parseFloat(baseData.get(17));
                            actualPillarBase.setControlPointId(baseData.get(16));
                            actualPillarBase.setControlPointY(baseData.get(17));
                            actualPillarBase.setControlPointX(baseData.get(18));
@@ -136,6 +138,7 @@ public class PillarBaseParamsService {
                 else if( baseData.get(0).equals(MainActivity.BASE_TYPE[1]) && baseData.get(14).equals("1") ) {
                 actualPillarBase.setRotationSide("left");
                 }
+
                 PillarBaseParamsDataBase.databaseExecutor.execute(() ->
                          paramsDAO.insertPillarBaseParams(actualPillarBase));
     }
