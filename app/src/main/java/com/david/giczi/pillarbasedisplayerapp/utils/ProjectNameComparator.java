@@ -42,6 +42,18 @@ public class ProjectNameComparator implements Comparator<String> {
             }
         }
 
-        return Integer.compare(Integer.parseInt(project1NumberData[0]), Integer.parseInt(project2NumberData[0]) );
+        int firstCompare = Integer.compare(Integer.parseInt(project1NumberData[0]), Integer.parseInt(project2NumberData[0]) );
+
+        if( firstCompare != 0 ){
+            return firstCompare;
+        }
+
+        if( project1NumberData.length > project2NumberData.length ){
+
+            return Integer.compare(Integer.parseInt(project1NumberData[1]), 0);
+
+        }
+
+        return Integer.compare(0, Integer.parseInt(project2NumberData[0]) );
     }
 }
